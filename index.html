@@ -24,8 +24,9 @@
 
    1) URL de l’API Web App (Google Apps Script) :
       • Bloc JavaScript : ERP_API_URL_DEFAULT + ligne « COLAR » (var API_URL) — même URL /exec.
-      • Si cette URL est valide, la page de connexion affiche directement email / mot de passe
-        (sans demander l’URL). localStorage « erp_api_url » reste prioritaire si déjà enregistré.
+      • Si cette URL est valide, la page         de connexion affiche directement email / mot de passe
+        (sans demander l’URL). localStorage « erp_api_url » : utilisé seulement si l’URL est un Web App
+        valide (/exec) ; une ancienne valeur incorrecte ne bloque plus l’URL déjà présente dans le fichier.
       • Le formulaire « URL API » sur l’écran login n’apparaît que si aucune URL valide n’est
         configurée dans le fichier ni en localStorage (ou via « Modifier l’URL de l’API »).
 
@@ -4263,7 +4264,8 @@
   </script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   <script>
-    // URL finale : localStorage erp_api_url (sauvé depuis l’écran de connexion / Config) écrase le collage ci-dessus.
+    // URL finale : localStorage erp_api_url (sauvé depuis l’écran de connexion / Config) n’écrase
+    // le collage ci-dessus que si l’URL est un Web App GAS valide (…/macros/s/…/exec).
 
     // ============================================================
     // TRADUÇÕES
@@ -6490,9 +6492,11 @@
       const savedRaw = localStorage.getItem('erp_api_url');
       const savedUrl = savedRaw ? String(savedRaw).trim() : '';
       const embedded = (typeof API_URL !== 'undefined' && API_URL) ? String(API_URL).trim() : '';
+      const defUrl = (typeof window.ERP_API_URL_DEFAULT === 'string') ? String(window.ERP_API_URL_DEFAULT).trim() : '';
       var resolved = '';
       if (isValidGsWebAppUrl(savedUrl)) resolved = savedUrl;
       else if (isValidGsWebAppUrl(embedded)) resolved = embedded;
+      else if (isValidGsWebAppUrl(defUrl)) resolved = defUrl;
       if (resolved) {
         API_URL = resolved;
         try {
@@ -8102,7 +8106,8 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       const savedUrl = localStorage.getItem('erp_api_url');
-      if (savedUrl) API_URL = savedUrl;
+      const su = savedUrl ? String(savedUrl).trim() : '';
+      if (su && isValidGsWebAppUrl(su)) API_URL = su;
       const savedToken = localStorage.getItem('erp_token');
       if (savedToken) { adminToken = savedToken; }
       document.querySelectorAll('.topbar .lang-btn').forEach(function (b) {
@@ -8122,15 +8127,17 @@
   <!--
 ================================================================================
 CONFIGURATION API : window.ERP_API_URL_DEFAULT (bloc script au-dessus du COLAR)
-+ ligne COLAR. localStorage erp_api_url (connexion / Paramètres) reste prioritaire.
++ ligne COLAR. localStorage erp_api_url (connexion / Paramètres) seulement si l’URL est valide (/exec) ;
+  sinon elle est ignorée et l’URL du fichier est utilisée.
 ================================================================================
 -->
 
   <script>
     (function () {
       var saved = localStorage.getItem('erp_api_url');
-      if (saved && String(saved).trim()) {
-        API_URL = String(saved).trim();
+      var s = saved ? String(saved).trim() : '';
+      if (s && typeof isValidGsWebAppUrl === 'function' && isValidGsWebAppUrl(s)) {
+        API_URL = s;
       }
     })();
     var BOUTIQUE_STOREFRONT_URL = (typeof window.ERP_BOUTIQUE_URL === 'string' && window.ERP_BOUTIQUE_URL.trim()) ? window.ERP_BOUTIQUE_URL.trim() : 'boutique_client.html';
