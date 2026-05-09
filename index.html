@@ -24,7 +24,7 @@
 
    1) URL de l’API Web App (Google Apps Script) :
       • Bloc JavaScript : ERP_API_URL_DEFAULT + ligne « COLAR » (var API_URL) — même URL /exec.
-      • Si cette URL est valide, la page         de connexion affiche directement email / mot de passe
+      • Si cette URL est valide, la page de connexion affiche directement email / mot de passe
         (sans demander l’URL). localStorage « erp_api_url » : utilisé seulement si l’URL est un Web App
         valide (/exec) ; une ancienne valeur incorrecte ne bloque plus l’URL déjà présente dans le fichier.
       • Le formulaire « URL API » sur l’écran login n’apparaît que si aucune URL valide n’est
@@ -4222,7 +4222,7 @@
 
   <script>
     /* ═══ ADMIN — déploiement 02-admin-erp (GitHub Pages) ═══
-       Source canonique : VENTE EN LIGNE TPE/admin_erp.html. Recopier puis conserver les URLs ci-dessous.
+       Copie alignée sur VENTE EN LIGNE TPE/admin_erp.html ; même code, seul ce bloc CONFIG diffère.
        ERP_ADMIN_URL = index.html (racine admin). Remplacez ERP_BOUTIQUE_URL par l’URL HTTPS du dépôt
        BOUTIQUE / BOUTIQUE_CLIENT (…/index.html) si la vitrine est sur un autre dépôt. */
     window.ERP_API_URL_DEFAULT = 'https://script.google.com/macros/s/AKfycbztGNP_42KhnEpCQ2UQ4SJJECgbTZlAxaJCtU-0WjKaxiyBDcWdjJEvEFz9VFyg4xOv/exec';
