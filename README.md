@@ -1,5 +1,7 @@
 # Admin ERP — GitHub Pages
 
+Alias : **ADMIN** (même paquet que ce dossier).
+
 ## Fichiers à la racine du dépôt
 
 Placez **le contenu de ce dossier** à la racine du dépôt GitHub dédié à l’administration.
@@ -16,9 +18,7 @@ Placez **le contenu de ce dossier** à la racine du dépôt GitHub dédié à l�
 1. Dans **`index.html`** (ou `admin_erp.html`), renseigner la même **URL Web App** `/exec` que pour la vitrine (`ERP_API_URL_DEFAULT` / bloc équivalent).  
    `window.ERP_ADMIN_URL` vaut `index.html` pour les liens internes lorsque le site est servi à la racine.
 
-2. Si la **vitrine** est sur un autre dépôt GitHub Pages, définir une URL **HTTPS absolue** (souvent `…/index.html`) :
-   - `window.ERP_BOUTIQUE_URL = 'https://VOTRE-USER.github.io/VOTRE-REPO-BOUTIQUE/index.html';`
-   - ou la variable documentée en fin de fichier (`BOUTIQUE_STOREFRONT_URL` selon votre version).
+2. Remplacer **`window.ERP_BOUTIQUE_URL`** par l’URL **HTTPS** de votre dépôt **BOUTIQUE / BOUTIQUE_CLIENT** (souvent `…/index.html`) si la vitrine n’est pas sur le même site. Les fichiers livrés contiennent un exemple `VOTRE-USER` / `VOTRE-REPO-BOUTIQUE` à adapter.
 
 ## Activer GitHub Pages
 
