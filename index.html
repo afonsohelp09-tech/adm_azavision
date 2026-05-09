@@ -318,7 +318,42 @@
     }
 
     html:not([data-theme="dark"]) td {
-      color: var(--text-mid);
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    html:not([data-theme="dark"]) .toolbar-row input[type="text"],
+    html:not([data-theme="dark"]) .toolbar-row select,
+    html:not([data-theme="dark"]) .toolbar-row input[type="date"],
+    html:not([data-theme="dark"]) .toolbar-row input[type="number"],
+    html:not([data-theme="dark"]) .toolbar-row input[type="search"] {
+      background: #fff !important;
+      color: #0f172a !important;
+      border-color: var(--border-strong) !important;
+      font-weight: 500;
+    }
+
+    html:not([data-theme="dark"]) .toolbar-row .btn.outline {
+      border-color: var(--border-strong);
+      color: var(--brand);
+      background: #fff;
+      font-weight: 600;
+    }
+
+    html:not([data-theme="dark"]) .toolbar-row .btn.outline:hover {
+      border-color: var(--brand-mid);
+      color: var(--brand-deep);
+      background: #f8fafc;
+    }
+
+    html:not([data-theme="dark"]) #bulkActionsBar {
+      background: linear-gradient(135deg, var(--brand) 0%, var(--brand-mid) 100%) !important;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: var(--shadow);
+    }
+
+    html:not([data-theme="dark"]) #bulkActionsBar .btn.sm {
+      font-weight: 700;
     }
 
     html:not([data-theme="dark"]) tr:hover td {
@@ -1770,8 +1805,8 @@
           <span data-i18n="guia">Guia rápido</span></div>
         <div class="nav-item nav-boutique-preview" role="button" tabindex="0" onclick="openBoutiqueStorefront()"
           onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openBoutiqueStorefront();}"
-          title="Ouvre la vitrine dans un nouvel onglet"><span class="icon">🛍️</span> <span
-            data-i18n="navBoutiquePreview">Voir la boutique</span></div>
+          data-i18n-title="nav_boutique_title" title="Abrir a vitrine num novo separador"><span class="icon">🛍️</span> <span
+            data-i18n="navBoutiquePreview">Ver a minha loja</span></div>
 
         <div class="nav-section" data-i18n="nav_catalogo">CATÁLOGO</div>
         <div class="nav-item" data-nav="produtos" onclick="showPage('produtos')"><span class="icon">👗</span> <span
@@ -1840,7 +1875,7 @@
       <header class="app-header">
         <div class="topbar">
           <button type="button" class="sidebar-toggle" onclick="toggleAdminSidebar()"
-            aria-label="Ouvrir ou fermer le menu latéral" aria-expanded="false" id="sidebarToggleBtn">☰</button>
+            data-i18n-aria-label="aria_sidebar" aria-label="Abrir ou fechar o menu lateral" aria-expanded="false" id="sidebarToggleBtn">☰</button>
           <div class="topbar-main">
             <nav class="breadcrumb" id="breadcrumbNav" aria-label="Breadcrumb">
               <button type="button" class="bc-link" id="bcHomeBtn" onclick="showPage('dashboard')"
@@ -1854,7 +1889,8 @@
           </div>
           <div class="topbar-actions">
             <div style="position:relative;">
-              <input type="text" id="globalSearchInput" placeholder="🔍 Pesquisar..."
+              <input type="text" id="globalSearchInput" placeholder="🔍 Pesquisar…"
+                data-i18n-placeholder="global_search_ph"
                 style="padding:8px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;width:180px;outline:none;font-family:var(--font);"
                 oninput="globalSearchDebounce()"
                 onfocus="this.style.width='260px';this.style.borderColor='var(--accent)'"
@@ -2102,7 +2138,7 @@
           </div>
         </div>
         <div class="card" style="margin-top:20px;">
-          <div class="card-header"><span class="card-title">⚡ Ações Rápidas</span></div>
+          <div class="card-header"><span class="card-title" data-i18n="dash_quick_actions">⚡ Ações rápidas</span></div>
           <div style="padding:16px 20px; display:flex; gap:10px; flex-wrap:wrap;">
             <button class="btn sm" onclick="showPage('produtos'); setTimeout(()=>openProductModalNew(),300)">+ Novo
               Produto</button>
@@ -2115,11 +2151,11 @@
         </div>
         <div class="card" style="margin-top:20px;">
           <div class="card-header">
-            <span class="card-title">📋 Activité récente</span>
-            <button class="btn sm outline" onclick="loadRecentActivity()">🔄</button>
+            <span class="card-title" data-i18n="dash_recent_activity">📋 Atividade recente</span>
+            <button class="btn sm outline" onclick="loadRecentActivity()" data-i18n-aria-label="btn_refresh">🔄</button>
           </div>
           <div id="activityLogBody" style="max-height:300px;overflow-y:auto;padding:8px 16px;">
-            <div style="color:var(--text2);font-size:13px;text-align:center;padding:20px;">Chargement...</div>
+            <div style="color:var(--text2);font-size:13px;text-align:center;padding:20px;" data-i18n="loading">A carregar...</div>
           </div>
         </div>
       </div>
@@ -2137,18 +2173,20 @@
           <button type="button" class="btn sm outline" onclick="loadProdutos()" data-i18n="btn_refresh">🔄
             Atualizar</button>
           <button type="button" class="btn sm outline" onclick="refreshAllCatalogData()"
-            title="Recarrega categorias, lista de catálogo e produtos">🔄 Catálogo</button>
+            data-i18n-title="catalog_refresh_title" title="Recarrega categorias, lista de catálogo e produtos"
+            data-i18n="btn_catalog_refresh">🔄 Catálogo</button>
           <button type="button" class="btn sm outline" onclick="exportSelectedProductsCsv()"
             data-i18n="btn_export_csv">⬇ CSV</button>
-          <button type="button" class="btn sm outline" onclick="document.getElementById('csvFileInput').click()">📥
-            Importar CSV</button>
+          <button type="button" class="btn sm outline" onclick="document.getElementById('csvFileInput').click()"
+            data-i18n="btn_import_csv">📥 Importar CSV</button>
           <input type="file" id="csvFileInput" accept=".csv" style="display:none;"
             onchange="handleProductCsvImport(this)">
           <button class="btn sm" onclick="openProductModalNew()"><span data-i18n="btn_add_product">+
               Produto</span></button>
         </div>
         <div class="toolbar-row" style="flex-wrap:wrap;gap:8px;margin-top:8px;">
-          <span style="font-size:12px;color:var(--text2);align-self:center;margin-right:8px;">Seleção:</span>
+          <span style="font-size:12px;color:var(--text2);align-self:center;margin-right:8px;font-weight:600;"
+            data-i18n="lbl_selection">Seleção:</span>
           <button type="button" class="btn sm outline" onclick="bulkProductAct('activate')">✅ Ativar</button>
           <button type="button" class="btn sm outline" onclick="bulkProductAct('deactivate')">⏸️ Desativar</button>
           <button type="button" class="btn sm outline" onclick="bulkProductAct('catalog_publish')">🌐 Publicar
@@ -2160,15 +2198,15 @@
         </div>
         <div id="bulkActionsBar"
           style="display:none;background:var(--accent);padding:10px 16px;border-radius:10px;margin:8px 0;align-items:center;gap:10px;flex-wrap:wrap;">
-          <span style="color:#fff;font-size:13px;font-weight:600;" id="bulkSelectedCount">0 sélectionné(s)</span>
-          <button class="btn sm" style="background:#fff;color:var(--accent);" onclick="bulkActivateProducts()">✅
-            Activer</button>
-          <button class="btn sm" style="background:#fff;color:var(--orange);" onclick="bulkDeactivateProducts()">⏸
-            Désactiver</button>
-          <button class="btn sm" style="background:#fff;color:var(--red);" onclick="bulkDeleteProducts()">🗑
-            Supprimer</button>
-          <button class="btn sm outline" style="color:#fff;border-color:#fff;" onclick="clearBulkSelection()">✖
-            Annuler</button>
+          <span style="color:#fff;font-size:13px;font-weight:600;" id="bulkSelectedCount">0 selecionado(s)</span>
+          <button type="button" class="btn sm" style="background:#fff;color:var(--accent);"
+            onclick="bulkActivateProducts()" data-i18n="btn_bulk_bar_activate">✅ Ativar</button>
+          <button type="button" class="btn sm" style="background:#fff;color:var(--orange);"
+            onclick="bulkDeactivateProducts()" data-i18n="btn_bulk_bar_deactivate">⏸ Desativar</button>
+          <button type="button" class="btn sm" style="background:#fff;color:var(--red);"
+            onclick="bulkDeleteProducts()" data-i18n="btn_bulk_bar_delete">🗑 Remover</button>
+          <button type="button" class="btn sm outline" style="color:#fff;border-color:#fff;"
+            onclick="clearBulkSelection()" data-i18n="btn_bulk_bar_clear">✖ Limpar</button>
         </div>
         <div class="card">
           <div class="card-header"><span class="card-title" data-i18n="catalog_products_title">Catálogo —
@@ -2250,17 +2288,15 @@
             data-i18n="btn_refresh">🔄 Atualizar</button>
           <button type="button" class="btn sm success" onclick="openBulkInventoryModal()"
             data-i18n="btn_bulk_stock">Inventário (selecionados)</button>
-          <button type="button" class="btn sm outline" onclick="openBulkStockMinModal()">📉 Stock mín.
-            (selecionados)</button>
+          <button type="button" class="btn sm outline" onclick="openBulkStockMinModal()"
+            data-i18n="btn_stock_min_sel">📉 Stock mín. (selecionados)</button>
           <button class="btn sm danger" onclick="loadStockAlerts()">⚠️ <span
               data-i18n="btn_alerts">Alertas</span></button>
-          <button class="btn sm" onclick="openModal('modalInventory'); loadInventoryProducts()"
-            style="margin-left:auto;">📋 Inventaire physique</button>
+          <button class="btn sm" onclick="openModal('modalInventory'); loadInventoryProducts()" style="margin-left:auto;"
+            data-i18n="btn_physical_inv">📋 Inventário físico</button>
         </div>
         <p data-i18n="stockPageHint"
-          style="font-size:12px;color:var(--text2);margin:0 0 14px;line-height:1.55;max-width:920px;">COR = cor
-          (couleur) : chaque ligne est une variante produit. La couleur et la taille se modifient dans Produits → éditer
-          le produit, pas dans ce tableau (ici : quantités via 📦).</p>
+          style="font-size:12px;color:var(--text2);margin:0 0 14px;line-height:1.55;max-width:920px;">COR é a cor da variante. Tamanho e cor definem-se em Produtos → editar; nesta grelha altere só quantidades e stock mínimo (📦).</p>
         <div class="card">
           <div class="card-header"><span class="card-title" data-i18n="stock_inventory_title">📦 Inventário &amp; stock
               por variante</span>
@@ -2508,10 +2544,10 @@
         <div style="display:flex;gap:10px;flex-wrap:wrap;margin:12px 0;">
           <select id="filterFaturasStatus" onchange="loadFaturas()"
             style="padding:8px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;">
-            <option value="">Tous les statuts</option>
-            <option value="pending">En attente</option>
-            <option value="paid">Payée</option>
-            <option value="overdue">En retard</option>
+            <option value="" data-i18n="fatura_opt_all">Todos os estados</option>
+            <option value="pending" data-i18n="fatura_opt_pending">Pendente</option>
+            <option value="paid" data-i18n="fatura_opt_paid">Paga</option>
+            <option value="overdue" data-i18n="fatura_opt_overdue">Em atraso</option>
           </select>
           <input type="date" id="filterFaturasFrom" onchange="loadFaturas()"
             style="padding:8px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;">
@@ -2524,13 +2560,13 @@
           <table>
             <thead>
               <tr>
-                <th>Nº FACTURE</th>
+                <th data-i18n="th_invoice">Nº FATURA</th>
                 <th data-i18n="th_order">PEDIDO</th>
-                <th>CLIENT</th>
-                <th>DATE</th>
-                <th>TOTAL</th>
-                <th>STATUT</th>
-                <th data-i18n="th_actions">ACTIONS</th>
+                <th data-i18n="th_client">CLIENTE</th>
+                <th data-i18n="th_date">DATA</th>
+                <th data-i18n="th_total">TOTAL</th>
+                <th data-i18n="th_status_col">ESTADO</th>
+                <th data-i18n="th_actions">AÇÕES</th>
               </tr>
             </thead>
             <tbody id="faturasBody">
@@ -2547,40 +2583,40 @@
         <div class="toolbar-row">
           <select id="filterReturnStatus" onchange="loadReturns()"
             style="padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--text);min-width:160px;">
-            <option value="">Tous les retours</option>
-            <option value="requested">Demandé</option>
-            <option value="approved">Approuvé</option>
-            <option value="received">Reçu</option>
-            <option value="refunded">Remboursé</option>
-            <option value="rejected">Rejeté</option>
+            <option value="" data-i18n="ret_filter_all">Todas as devoluções</option>
+            <option value="requested" data-i18n="pay_stat_requested">Pedido</option>
+            <option value="approved" data-i18n="ret_stat_approved">Aprovado</option>
+            <option value="received" data-i18n="ret_stat_received">Recebido</option>
+            <option value="refunded" data-i18n="ret_stat_refunded">Reembolsado</option>
+            <option value="rejected" data-i18n="ret_stat_rejected">Rejeitado</option>
           </select>
-          <button class="btn sm outline" onclick="loadReturns()">🔄 Actualiser</button>
-          <button class="btn sm" onclick="openModal('modalNewReturn')">+ Nouveau retour</button>
+          <button type="button" class="btn sm outline" onclick="loadReturns()" data-i18n="btn_refresh">🔄 Atualizar</button>
+          <button type="button" class="btn sm" onclick="openModal('modalNewReturn')" data-i18n="ret_new_btn">+ Nova devolução</button>
         </div>
         <div class="card">
-          <div class="card-header"><span class="card-title">↩️ Demandes de retour</span></div>
+          <div class="card-header"><span class="card-title" data-i18n="ret_card_title">↩️ Pedidos de devolução</span></div>
           <table>
             <thead>
               <tr>
-                <th>ID RETOUR</th>
-                <th>COMMANDE</th>
-                <th>CLIENT</th>
-                <th>PRODUIT</th>
-                <th>RAISON</th>
-                <th>STATUT</th>
-                <th>DATE</th>
-                <th>ACTIONS</th>
+                <th data-i18n="ret_th_id">ID</th>
+                <th data-i18n="ret_th_order">PEDIDO</th>
+                <th data-i18n="th_client">CLIENTE</th>
+                <th data-i18n="ret_th_product">PRODUTO</th>
+                <th data-i18n="ret_th_reason">MOTIVO</th>
+                <th data-i18n="th_status_col">ESTADO</th>
+                <th data-i18n="th_date">DATA</th>
+                <th data-i18n="th_actions_short">AÇÕES</th>
               </tr>
             </thead>
             <tbody id="returnsBody">
               <tr>
-                <td colspan="8" style="text-align:center;color:var(--text2);padding:24px;">Chargement...</td>
+                <td colspan="8" style="text-align:center;color:var(--text2);padding:24px;" data-i18n="loading">A carregar...</td>
               </tr>
             </tbody>
           </table>
         </div>
         <div class="card" style="margin-top:20px;">
-          <div class="card-header"><span class="card-title">📝 Notes / Politique retours (interne)</span></div>
+          <div class="card-header"><span class="card-title" data-i18n="ret_notes_card">📝 Notas / Política de devoluções (interno)</span></div>
           <div style="padding:20px;">
             <textarea id="devolucoesNotas" rows="5"
               style="width:100%;padding:12px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:var(--font);font-size:13px;"></textarea>
@@ -3040,6 +3076,7 @@
           <button class="btn sm outline" id="cfgTabPayments" onclick="showConfigTab('payments')">💳 Paiements</button>
           <button class="btn sm outline" id="cfgTabEmail" onclick="showConfigTab('email')">📧 Email/SMTP</button>
           <button class="btn sm outline" id="cfgTabSecurity" onclick="showConfigTab('security')">🔒 Sécurité</button>
+          <button class="btn sm outline" id="cfgTabAdvanced" onclick="showConfigTab('advanced')">📑 Sheets / Avancé</button>
           <button class="btn sm outline" id="cfgTabBackup" onclick="showConfigTab('backup')">💾 Backup/Export</button>
         </div>
         <div id="cfgPanelBoutique">
@@ -3055,6 +3092,12 @@
                 <div class="form-group"><label>Cidade</label><input type="text" id="cfg_cidade"></div>
                 <div class="form-group"><label>País</label><input type="text" id="cfg_pais" value="Portugal"></div>
                 <div class="form-group"><label>TVA (%)</label><input type="number" id="cfg_tva" value="23"></div>
+                <div class="form-group"><label>Moeda (ISO — folha EMPRESA)</label><input type="text" id="cfg_moeda"
+                    placeholder="EUR" maxlength="8" style="font-family:var(--mono);"></div>
+                <div class="form-group"><label>URL do logótipo</label><input type="url" id="cfg_logo_url"
+                    placeholder="https://..."></div>
+                <div class="form-group"><label>Website público</label><input type="url" id="cfg_website"
+                    placeholder="https://..."></div>
               </div>
               <button class="btn sm success" style="margin-top:16px;" onclick="saveEmpresa()">💾 Guardar
                 Alterações</button>
@@ -3718,6 +3761,119 @@
           </div>
         </div>
 
+        <!-- ADVANCED — many keys → sheet CONFIG (chave/valor) -->
+        <div id="cfgPanelAdvanced" style="display:none;">
+          <div class="card">
+            <div class="card-header"><span class="card-title">📑 Parâmetros avançados → folha CONFIG</span></div>
+            <div style="padding:20px;">
+              <p style="font-size:13px;color:var(--text2);margin:0 0 16px;line-height:1.55;">Todos os campos abaixo
+                são gravados na folha <strong>CONFIG</strong> do Google Sheets (uma linha por chave). Use para
+                centralizar texto, URLs e opções usadas pela vitrine ou pelo script, sem editar manualmente a planilha.
+              </p>
+              <div class="card" style="margin-bottom:18px;background:var(--bg3);border-color:var(--border);">
+                <div class="card-header"><span class="card-title" style="font-size:14px;">🏷 Marca &amp; SEO extra</span>
+                </div>
+                <div style="padding:16px 18px;">
+                  <div class="grid2">
+                    <div class="form-group"><label>Nome exibido na vitrine (<code>store_name</code>)</label><input
+                        type="text" id="cfg_adv_store_name" placeholder="Ex.: Nhalabene"></div>
+                    <div class="form-group"><label>Nome curto do site (<code>site_name</code>)</label><input type="text"
+                        id="cfg_adv_site_name" placeholder="Meta / emails"></div>
+                    <div class="form-group" style="grid-column:1/-1;"><label>Palavras-chave SEO
+                        (<code>meta_keywords</code>)</label><textarea id="cfg_adv_meta_keywords" rows="2"
+                        placeholder="venda online, roupa, Portugal…"></textarea></div>
+                    <div class="form-group"><label>Favicon (URL)</label><input type="url" id="cfg_adv_favicon_url"
+                        placeholder="https://…/favicon.ico"></div>
+                    <div class="form-group"><label>Imagem Open Graph (URL)</label><input type="url" id="cfg_adv_og_image_url"
+                        placeholder="https://…/og.jpg"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="card" style="margin-bottom:18px;background:var(--bg3);border-color:var(--border);">
+                <div class="card-header"><span class="card-title" style="font-size:14px;">📧 Operação &amp;
+                    notificações</span></div>
+                <div style="padding:16px 18px;">
+                  <div class="grid2">
+                    <div class="form-group"><label>Email da loja / pedidos (<code>store_email</code>)</label><input
+                        type="email" id="cfg_adv_store_email" placeholder="pedidos@…"></div>
+                    <div class="form-group"><label>Prefixo visual p/ ref. encomenda</label><input type="text"
+                        id="cfg_adv_order_prefix" placeholder="NB-" maxlength="16"></div>
+                    <div class="form-group"><label>Prefixo documentos (fatura/recibo)</label><input type="text"
+                        id="cfg_adv_invoice_prefix" placeholder="FT-" maxlength="16"></div>
+                    <div class="form-group"><label>Limite stock baixo (alerta)</label><input type="number"
+                        id="cfg_adv_stock_alert_threshold" min="0" step="1" placeholder="5"></div>
+                    <div class="form-group"><label>Quantidade máx. por linha de carrinho</label><input type="number"
+                        id="cfg_adv_max_qty_product" min="1" step="1" placeholder="99"></div>
+                  </div>
+                  <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-top:12px;">
+                    <input type="checkbox" id="cfg_adv_admin_notify_orders"> Notificar admin por email em novas encomendas
+                    (<code>admin_notify_new_orders</code>)
+                  </label>
+                </div>
+              </div>
+              <div class="card" style="margin-bottom:18px;background:var(--bg3);border-color:var(--border);">
+                <div class="card-header"><span class="card-title" style="font-size:14px;">🛠 Modo manutenção &amp;
+                    políticas</span></div>
+                <div style="padding:16px 18px;">
+                  <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-bottom:12px;">
+                    <input type="checkbox" id="cfg_adv_maintenance_mode"> Modo manutenção (mensagem abaixo)
+                  </label>
+                  <div class="form-group"><label>Mensagem de manutenção</label><textarea id="cfg_adv_maintenance_message"
+                      rows="2" placeholder="Voltamos em breve."></textarea></div>
+                  <div class="grid2" style="margin-top:12px;">
+                    <div class="form-group"><label>Prazo de devolução (dias)</label><input type="number"
+                        id="cfg_adv_return_days" min="0" step="1" placeholder="14"></div>
+                    <div class="form-group"><label>Notas de garantia (texto curto)</label><input type="text"
+                        id="cfg_adv_warranty_notes" placeholder="2 anos defeito fabrico…"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="card" style="margin-bottom:18px;background:var(--bg3);border-color:var(--border);">
+                <div class="card-header"><span class="card-title" style="font-size:14px;">📊 Tracking &amp; redes
+                    extra</span></div>
+                <div style="padding:16px 18px;">
+                  <div class="grid2">
+                    <div class="form-group"><label>Google Analytics 4 (ID)</label><input type="text" id="cfg_adv_ga4_id"
+                        placeholder="G-XXXXXXXX" style="font-family:var(--mono);font-size:13px;"></div>
+                    <div class="form-group"><label>Facebook Pixel (ID)</label><input type="text" id="cfg_adv_fb_pixel"
+                        placeholder="1234567890" style="font-family:var(--mono);font-size:13px;"></div>
+                    <div class="form-group"><label>YouTube (URL)</label><input type="url" id="cfg_adv_social_youtube"></div>
+                    <div class="form-group"><label>TikTok (URL ou @)</label><input type="text" id="cfg_adv_social_tiktok">
+                    </div>
+                    <div class="form-group"><label>LinkedIn (URL)</label><input type="url" id="cfg_adv_social_linkedin">
+                    </div>
+                    <div class="form-group"><label>Pinterest (URL)</label><input type="url" id="cfg_adv_social_pinterest">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button type="button" class="btn sm success" onclick="saveSheetsAdvancedConfig()">💾 Guardar parâmetros
+                avançados (CONFIG)</button>
+
+              <div class="card" style="margin-top:24px;background:var(--bg3);border-color:var(--border);">
+                <div class="card-header"><span class="card-title" style="font-size:14px;">➕ Chaves personalizadas
+                    (CONFIG)</span></div>
+                <div style="padding:16px 18px;">
+                  <p style="font-size:12px;color:var(--text2);margin:0 0 10px;line-height:1.5;">Uma linha por par
+                    <code>chave=valor</code>. Linhas vazias ou começadas por <code>#</code> são ignoradas. Usar
+                    <code>\n</code> no valor para mudança de linha. Isto <strong>atualiza ou cria</strong> linhas na
+                    folha CONFIG (não apaga chaves que não estejam listadas).
+                  </p>
+                  <textarea id="cfg_extra_kv" rows="10"
+                    style="width:100%;padding:12px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:var(--mono);font-size:12px;"
+                    placeholder="minha_chave=valor&#10;outra_chave=texto longo"></textarea>
+                  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;">
+                    <button type="button" class="btn sm success" onclick="saveCustomConfigLines()">💾 Gravar chaves desta
+                      caixa</button>
+                    <button type="button" class="btn sm outline" onclick="reloadCustomConfigLinesOnly()">🔄 Recarregar
+                      lista (apenas extras)</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div id="cfgPanelBackup" style="display:none;">
           <div class="card">
             <div class="card-header"><span class="card-title">💾 Sauvegarde & Export des données</span></div>
@@ -3755,13 +3911,12 @@
             </div>
           </div>
           <div class="card" style="margin-top:20px;">
-            <div class="card-header"><span class="card-title">⚠️ Zone dangereuse</span></div>
+            <div class="card-header"><span class="card-title" data-i18n="cfg_danger_title">⚠️ Zona sensível</span></div>
             <div style="padding:20px;">
-              <p style="font-size:13px;color:var(--red);margin-bottom:12px;">Ces actions sont irréversibles. Procédez
-                avec prudence.</p>
-              <button class="btn sm danger"
-                onclick="if(confirm('ATTENTION: Voulez-vous vraiment réinitialiser les feuilles du spreadsheet ? Cette action est irréversible.')){api('initializeSheets',{}).then(r=>toast(r?.success?'Feuilles réinitialisées':'Erreur','ok'))}">🔄
-                Réinitialiser les feuilles</button>
+              <p style="font-size:13px;color:var(--red);margin-bottom:12px;" data-i18n="cfg_danger_intro">Estas ações
+                são irreversíveis. Prossiga com cuidado.</p>
+              <button type="button" class="btn sm danger" onclick="resetSpreadsheetSheets()" data-i18n="cfg_btn_reset_sheets">🔄
+                Reiniciar folhas</button>
             </div>
           </div>
         </div>
@@ -4065,14 +4220,12 @@
   <div id="toast"></div>
 
   <script>
-    /* ═══ CONFIGURATION PAR DÉFAUT — FICHIERS CANONIQUES : ce dossier « VENTE EN LIGNE TPE » ═══
-       Toujours modifier d’abord admin_erp.html / boutique_client.html ici, puis recopier vers
-       DEPLOIEMENT-GITHUB/ (voir README de chaque sous-dossier).
-       Ouverture locale : noms de fichiers ci-dessous. GitHub Pages (racine du site déployé) :
-       après copie, utiliser souvent ERP_BOUTIQUE_URL = 'index.html' et ERP_ADMIN_URL = 'index.html'.
-       Remplacez l’URL API par celle de votre Web App (…/exec). Idem ligne COLAR ci-dessous. */
+    /* ═══ ADMIN — déploiement 02-admin-erp (GitHub Pages) ═══
+       Source canonique : VENTE EN LIGNE TPE/admin_erp.html. Recopier puis conserver les URLs ci-dessous.
+       ERP_ADMIN_URL = index.html (racine admin). Remplacez ERP_BOUTIQUE_URL par l’URL HTTPS du dépôt
+       BOUTIQUE / BOUTIQUE_CLIENT (…/index.html) si la vitrine est sur un autre dépôt. */
     window.ERP_API_URL_DEFAULT = 'https://script.google.com/macros/s/AKfycbztGNP_42KhnEpCQ2UQ4SJJECgbTZlAxaJCtU-0WjKaxiyBDcWdjJEvEFz9VFyg4xOv/exec';
-    window.ERP_BOUTIQUE_URL = 'boutique_client.html';
+    window.ERP_BOUTIQUE_URL = 'https://VOTRE-USER.github.io/VOTRE-REPO-BOUTIQUE/index.html';
     window.ERP_ADMIN_URL = 'index.html';
   </script>
   <!--
@@ -4116,11 +4269,20 @@
     // TRADUÇÕES
     // ============================================================
     const langs = {
-      pt: { dashboard: 'Dashboard', guia: 'Guia rápido', guia_page_intro: 'Instruções resumidas, exemplos e lembrete sobre os quatro idiomas da vitrine (PT por defeito).', navBoutiquePreview: 'Ver a minha loja', produtos: 'Produtos', categorias: 'Categorias', stock: 'Stock', pedidos: 'Pedidos', entregas: 'Envios', clientes: 'Clientes', pagamentos: 'Pagamentos', cupons: 'Cupões', avaliacoes: 'Avaliações', newsletter: 'Newsletter', financeiro: 'Financeiro', audit: 'Audit / Logs', configuracoes: 'Configurações', atendimento: 'Atendimento', relatorios: 'Relatórios', loading: 'A carregar...', saved: 'Guardado com sucesso!', error: 'Erro', sessionExpired: 'Sessão expirada', btn_logout: 'Terminar sessão', mediatheque: 'Médiathèque (Drive)', mediathequeHint: 'Imagens na pasta ERP_Boutique_Images no Drive da Apps Script. Clique para copiar o URL; nos produtos use « Biblioteca Drive » para aplicar.', nodata: 'Sem dados', nav_principal: 'PRINCIPAL', nav_catalogo: 'CATÁLOGO', nav_vendas: 'VENDAS', nav_marketing: 'MARKETING', nav_sistema: 'SISTEMA', nav_shortcuts: 'ATALHOS', nav_shortcuts_hint: 'Mesma ordem do menu lateral', nav_toolbar_modules: 'Módulos', bc_home_title: 'Início (Dashboard)', ph_search_prod: '🔍 Pesquisar produtos...', ph_search_cat: '🔍 Pesquisar categoria...', ph_search_stock: '🔍 Produto, variante, SKU...', btn_refresh: '🔄 Atualizar', btn_export_csv: '⬇ CSV', btn_add_product: '+ Produto', btn_new_category: '+ Categoria', btn_bulk_stock: 'Inventário (selecionados)', btn_alerts: 'Alertas', btn_send_email: 'Enviar email', btn_open_wa: 'Abrir WhatsApp', btn_apply: 'Aplicar', btn_cancel: 'Cancelar', select_all: 'Selecionar visíveis', all_categories: 'Todas as categorias', th_img: 'IMG', th_product: 'PRODUTO', th_category: 'CATEGORIA', th_price: 'PREÇO', th_stock: 'STOCK', th_status: 'ESTADO', th_actions: 'AÇÕES', th_name: 'NOME', th_parent: 'CATEGORIA PAI', th_variant: 'VARIANTE', th_size: 'TAMANHO', th_color: 'COR', th_min: 'MÍN.', catalog_products_title: 'Catálogo — produtos', catalog_categories_title: 'Categorias — definição', stock_inventory_title: 'Inventário & stock por variante', stock_movements_title: 'Movimentos de stock (recentes)', stockPageHint: 'COR = cor (couleur) : vêm do cadastro da variante no produto. Nesta grelha só altera quantidades e mínimo (📦). Para mudar tamanho/cor: Produtos → editar produto → linhas no formato tamanho:cor:stock.', prodDescLabel: 'Descrição do produto', prodDescHint: 'Este texto aparece na ficha do produto na loja (abaixo do preço). Descreva materiais, cuidados, corte, etc.', atendimento_title: 'Atendimento — Email & WhatsApp', atendimento_intro: 'Envie e-mails (Gmail do script) ou abra o WhatsApp com texto gerado. Preencha nome, pedido, totais.', lbl_template: 'Modelo', lbl_msg_lang: 'Idioma do texto', bulk_stock_title: 'Inventário em lote', bulk_stock_desc: 'Define a mesma quantidade para as linhas selecionadas (contagem física).', lbl_new_qty: 'Nova quantidade', th_check: '', btn_edit_selection: '✏️ Editar seleção', modal_cat_new: '📂 Nova categoria', modal_cat_edit: '📂 Editar categoria', kpi_avg_ticket: 'TICKET MÉDIO', kpi_avg_ticket_sub: 'Valor médio por pedido', kpi_orders_month: 'PEDIDOS (MÊS)', kpi_orders_month_sub: 'No mês corrente', ph_search_orders: '🔍 ID pedido ou email...', btn_export_orders: '⬇ CSV pedidos', legal_urls_title: '🔗 Ligações legais (vitrine)', legal_urls_hint: 'URLs no rodapé da loja.', lbl_legal_terms: 'Termos (URL)', lbl_legal_privacy: 'Privacidade (URL)', lbl_legal_returns: 'Devoluções (URL)', lbl_cookie_banner: 'Banner de cookies (RGPD)', marcas: 'Marcas', faturas: 'Faturas & PDF', devolucoes: 'Devoluções', nav_promo_cupons: 'Cupões & promoções', marcas_title: '🏷 Marcas & fornecedores', marcas_intro: 'Uma marca por linha. Texto de apoio à vitrine.', marcas_list_label: 'Lista de marcas', btn_save: 'Guardar', faturas_intro: 'Acesso rápido a PDFs por pedido.', faturas_goto_orders: 'Ir para Pedidos', faturas_table_title: 'Documentos por pedido', th_order: 'PEDIDO', devolucoes_title: 'Política de devoluções', devolucoes_intro: 'Notas internas; o cliente vê o URL legal na vitrine.', devolucoes_notes_label: 'Notas da equipa', devolucoes_recent: 'Pedidos cancelados', btn_view_order: 'Ver', dash_charts_title: 'Desempenho', dash_chart_revenue: 'Evolução Receita', dash_chart_top: 'Top Produtos', dash_chart_payments: 'Repartição Pagamentos', dash_chart_orders_status: 'Pedidos por Estado', btn_test_api: '🔌 Testar ligação API', api_ping_ok: 'API acessível e a responder.', lang_policy_intro: 'Este painel e a vitrine usam português de Portugal (PT) como língua por defeito. O seletor no topo (PT · FR · EN · ES) e o da loja oferecem sempre francês, inglês e espanhol para clientes internacionais.', lang_switcher_aria: 'Idiomas do painel: Português de Portugal (predefinição), Français, English, Español', lang_boutique_card_title: '🌐 Idioma e moeda (vitrine)', lang_boutique_default_hint: 'Primeira visita na loja: aplica o idioma escolhido abaixo (recomendado: português de Portugal). No cabeçalho da vitrine o cliente pode alternar sempre entre PT, FR, EN e ES.', lang_boutique_default_label: 'Idioma por defeito da vitrine', api_ping_fail: 'API não respondeu como esperado.' },
+      pt: { dashboard: 'Dashboard', guia: 'Guia rápido', guia_page_intro: 'Instruções resumidas, exemplos e lembrete sobre os quatro idiomas da vitrine (PT por defeito).', navBoutiquePreview: 'Ver a minha loja', produtos: 'Produtos', categorias: 'Categorias', stock: 'Stock', pedidos: 'Pedidos', entregas: 'Envios', clientes: 'Clientes', pagamentos: 'Pagamentos', cupons: 'Cupões', avaliacoes: 'Avaliações', newsletter: 'Newsletter', financeiro: 'Financeiro', audit: 'Audit / Logs', configuracoes: 'Configurações', atendimento: 'Atendimento', relatorios: 'Relatórios', loading: 'A carregar...', saved: 'Guardado com sucesso!', error: 'Erro', sessionExpired: 'Sessão expirada', btn_logout: 'Terminar sessão', mediatheque: 'Mediateca (Drive)', mediathequeHint: 'Ficheiros na pasta ERP_Boutique_Images. Clique para copiar o URL; em Produtos use « Biblioteca Drive » para aplicar.', nodata: 'Sem dados', nav_principal: 'PRINCIPAL', nav_catalogo: 'CATÁLOGO', nav_vendas: 'VENDAS', nav_marketing: 'MARKETING', nav_sistema: 'SISTEMA', nav_shortcuts: 'ATALHOS', nav_shortcuts_hint: 'Mesma ordem do menu lateral', nav_toolbar_modules: 'Módulos', bc_home_title: 'Início (Dashboard)', ph_search_prod: '🔍 Pesquisar produtos...', ph_search_cat: '🔍 Pesquisar categoria...', ph_search_stock: '🔍 Produto, variante, SKU...', btn_refresh: '🔄 Atualizar', btn_export_csv: '⬇ CSV', btn_add_product: '+ Produto', btn_new_category: '+ Categoria', btn_bulk_stock: 'Inventário (selecionados)', btn_alerts: 'Alertas', btn_send_email: 'Enviar email', btn_open_wa: 'Abrir WhatsApp', btn_apply: 'Aplicar', btn_cancel: 'Cancelar', select_all: 'Selecionar visíveis', all_categories: 'Todas as categorias', th_img: 'IMG', th_product: 'PRODUTO', th_category: 'CATEGORIA', th_price: 'PREÇO', th_stock: 'STOCK', th_status: 'ESTADO', th_actions: 'AÇÕES', th_name: 'NOME', th_parent: 'CATEGORIA PAI', th_variant: 'VARIANTE', th_size: 'TAMANHO', th_color: 'COR', th_min: 'MÍN.', catalog_products_title: 'Catálogo — produtos', catalog_categories_title: 'Categorias — definição', stock_inventory_title: 'Inventário & stock por variante', stock_movements_title: 'Movimentos de stock (recentes)', stockPageHint: 'COR é a cor da variante. Tamanho e cor definem-se em Produtos → editar; nesta grelha altere só quantidades e stock mínimo (📦). Formato das linhas: tamanho:cor:stock.', prodDescLabel: 'Descrição do produto', prodDescHint: 'Este texto aparece na ficha do produto na loja (abaixo do preço). Descreva materiais, cuidados, corte, etc.', atendimento_title: 'Atendimento — Email & WhatsApp', atendimento_intro: 'Envie e-mails (Gmail do script) ou abra o WhatsApp com texto gerado. Preencha nome, pedido, totais.', lbl_template: 'Modelo', lbl_msg_lang: 'Idioma do texto', bulk_stock_title: 'Inventário em lote', bulk_stock_desc: 'Define a mesma quantidade para as linhas selecionadas (contagem física).', lbl_new_qty: 'Nova quantidade', th_check: '', btn_edit_selection: '✏️ Editar seleção', modal_cat_new: '📂 Nova categoria', modal_cat_edit: '📂 Editar categoria', kpi_avg_ticket: 'TICKET MÉDIO', kpi_avg_ticket_sub: 'Valor médio por pedido', kpi_orders_month: 'PEDIDOS (MÊS)', kpi_orders_month_sub: 'No mês corrente', ph_search_orders: '🔍 ID pedido ou email...', btn_export_orders: '⬇ CSV pedidos', legal_urls_title: '🔗 Ligações legais (vitrine)', legal_urls_hint: 'URLs no rodapé da loja.', lbl_legal_terms: 'Termos (URL)', lbl_legal_privacy: 'Privacidade (URL)', lbl_legal_returns: 'Devoluções (URL)', lbl_cookie_banner: 'Banner de cookies (RGPD)', marcas: 'Marcas', faturas: 'Faturas & PDF', devolucoes: 'Devoluções', nav_promo_cupons: 'Cupões & promoções', marcas_title: '🏷 Marcas & fornecedores', marcas_intro: 'Uma marca por linha. Texto de apoio à vitrine.', marcas_list_label: 'Lista de marcas', btn_save: 'Guardar', faturas_intro: 'Acesso rápido a PDFs por pedido.', faturas_goto_orders: 'Ir para Pedidos', faturas_table_title: 'Documentos por pedido', th_order: 'PEDIDO', devolucoes_title: 'Política de devoluções', devolucoes_intro: 'Notas internas; o cliente vê o URL legal na vitrine.', devolucoes_notes_label: 'Notas da equipa', devolucoes_recent: 'Pedidos cancelados', btn_view_order: 'Ver', dash_charts_title: 'Desempenho', dash_chart_revenue: 'Evolução Receita', dash_chart_top: 'Top Produtos', dash_chart_payments: 'Repartição Pagamentos', dash_chart_orders_status: 'Pedidos por Estado', btn_test_api: '🔌 Testar ligação API', api_ping_ok: 'API acessível e a responder.', lang_policy_intro: 'Este painel e a vitrine usam português de Portugal (PT) como língua por defeito. O seletor no topo (PT · FR · EN · ES) e o da loja oferecem sempre francês, inglês e espanhol para clientes internacionais.', lang_switcher_aria: 'Idiomas do painel: Português de Portugal (predefinição), Français, English, Español', lang_boutique_card_title: '🌐 Idioma e moeda (vitrine)', lang_boutique_default_hint: 'Primeira visita na loja: aplica o idioma escolhido abaixo (recomendado: português de Portugal). No cabeçalho da vitrine o cliente pode alternar sempre entre PT, FR, EN e ES.', lang_boutique_default_label: 'Idioma por defeito da vitrine', api_ping_fail: 'API não respondeu como esperado.' },
       fr: { dashboard: 'Tableau de bord', guia: 'Guide rapide', guia_page_intro: 'Instructions courtes, exemples et rappel sur les quatre langues de la vitrine (PT par défaut).', navBoutiquePreview: 'Voir ma boutique', produtos: 'Produits', categorias: 'Catégories', stock: 'Stock', pedidos: 'Commandes', entregas: 'Livraisons', clientes: 'Clients', pagamentos: 'Paiements', cupons: 'Coupons', avaliacoes: 'Avis clients', newsletter: 'Newsletter', financeiro: 'Finance', audit: 'Audit / Journaux', configuracoes: 'Paramètres', atendimento: 'Service client', relatorios: 'Rapports', loading: 'Chargement...', saved: 'Sauvegardé !', error: 'Erreur', sessionExpired: 'Session expirée', btn_logout: 'Déconnexion', mediatheque: 'Médiathèque (Drive)', mediathequeHint: 'Fichiers du dossier ERP_Boutique_Images. Cliquez pour copier l’URL ; dans Produit, utilisez « Bibliothèque Drive » pour l’appliquer.', nodata: 'Aucune donnée', nav_principal: 'PRINCIPAL', nav_catalogo: 'CATALOGUE', nav_vendas: 'VENTES', nav_marketing: 'MARKETING', nav_sistema: 'SYSTÈME', nav_shortcuts: 'RACCOURCIS', nav_shortcuts_hint: 'Même ordre que le menu', nav_toolbar_modules: 'Modules', bc_home_title: 'Accueil (tableau de bord)', ph_search_prod: '🔍 Rechercher des produits...', ph_search_cat: '🔍 Rechercher une catégorie...', ph_search_stock: '🔍 Produit, variante, SKU...', btn_refresh: '🔄 Actualiser', btn_export_csv: '⬇ CSV', btn_add_product: '+ Produit', btn_new_category: '+ Catégorie', btn_bulk_stock: 'Inventaire (sélection)', btn_alerts: 'Alertes', btn_send_email: 'Envoyer e-mail', btn_open_wa: 'Ouvrir WhatsApp', btn_apply: 'Appliquer', btn_cancel: 'Annuler', select_all: 'Sélectionner visibles', all_categories: 'Toutes catégories', th_img: 'IMG', th_product: 'PRODUIT', th_category: 'CATÉGORIE', th_price: 'PRIX', th_stock: 'STOCK', th_status: 'STATUT', th_actions: 'ACTIONS', th_name: 'NOM', th_parent: 'CATÉGORIE PARENT', th_variant: 'VARIANTE', th_size: 'TAILLE', th_color: 'COULEUR', th_min: 'MIN.', catalog_products_title: 'Catalogue — produits', catalog_categories_title: 'Catégories', stock_inventory_title: 'Inventaire & stock (variantes)', stock_movements_title: 'Mouvements de stock', stockPageHint: 'COR est l’abréviation portugaise de « cor » = couleur. Taille et couleur définissent la variante ; elles se modifient dans Produits (éditer le produit → variantes), pas dans ce tableau. Ici vous réglez seulement les quantités et le seuil minimum (bouton 📦).', prodDescLabel: 'Description du produit', prodDescHint: 'Ce texte apparaît sur la fiche article de la boutique (sous le prix). Décrivez matière, entretien, coupe, etc.', atendimento_title: 'Service client — Email & WhatsApp', atendimento_intro: 'Envoyez des e-mails (Gmail du compte script) ou ouvrez WhatsApp avec un texte généré.', lbl_template: 'Modèle', lbl_msg_lang: 'Langue', bulk_stock_title: 'Inventaire par lot', bulk_stock_desc: 'Définir la même quantité pour les lignes sélectionnées.', lbl_new_qty: 'Nouvelle quantité', th_check: '', btn_edit_selection: '✏️ Éditer la sélection', modal_cat_new: '📂 Nouvelle catégorie', modal_cat_edit: '📂 Modifier la catégorie', kpi_avg_ticket: 'PANIER MOYEN', kpi_avg_ticket_sub: 'Montant moyen par commande', kpi_orders_month: 'COMMANDES (MOIS)', kpi_orders_month_sub: 'Mois en cours', ph_search_orders: '🔍 N° commande ou e-mail...', btn_export_orders: '⬇ CSV commandes', legal_urls_title: '🔗 Liens légaux (vitrine)', legal_urls_hint: 'URLs affichées en pied de page.', lbl_legal_terms: 'CGV (URL)', lbl_legal_privacy: 'Confidentialité (URL)', lbl_legal_returns: 'Retours (URL)', lbl_cookie_banner: 'Bannière cookies (RGPD)', marcas: 'Marques', faturas: 'Factures & PDF', devolucoes: 'Retours', nav_promo_cupons: 'Coupons & promos', marcas_title: '🏷 Marques', marcas_intro: 'Une marque par ligne.', marcas_list_label: 'Liste des marques', btn_save: 'Enregistrer', faturas_intro: 'Accès rapide aux PDF par commande.', faturas_goto_orders: 'Aller aux commandes', faturas_table_title: 'Documents par commande', th_order: 'COMMANDE', devolucoes_title: 'Politique de retours', devolucoes_intro: 'Notes internes.', devolucoes_notes_label: 'Notes équipe', devolucoes_recent: 'Commandes annulées', btn_view_order: 'Voir', dash_charts_title: 'Performance', dash_chart_revenue: 'Évolution CA', dash_chart_top: 'Top Produits', dash_chart_payments: 'Répartition Paiements', dash_chart_orders_status: 'Commandes par statut', btn_test_api: '🔌 Tester l’API', api_ping_ok: 'API joignable et opérationnelle.', lang_policy_intro: 'La majorité des utilisateurs parlent portugais : le portugais est la langue par défaut de ce panneau et de la boutique. Les sélecteurs PT · FR · EN · ES (en haut et sur la vitrine) incluent toujours le français, l\'anglais et l\'espagnol — essentiel pour les clients internationaux.', lang_switcher_aria: 'Langues du panneau : Portugais (par défaut), Français, Anglais, Espagnol', lang_boutique_card_title: '🌐 Langue et devise (vitrine)', lang_boutique_default_hint: 'Première visite : applique la langue ci-dessous (recommandé : portugais). L\'en-tête de la vitrine permet de passer à tout moment à PT, FR, EN ou ES.', lang_boutique_default_label: 'Langue par défaut de la vitrine', api_ping_fail: 'Réponse API inattendue ou erreur.' },
       en: { dashboard: 'Dashboard', guia: 'Quick guide', guia_page_intro: 'Short how-to, examples, and a reminder about the four storefront languages (PT default).', navBoutiquePreview: 'View storefront', produtos: 'Products', categorias: 'Categories', stock: 'Stock', pedidos: 'Orders', entregas: 'Shipping', clientes: 'Customers', pagamentos: 'Payments', cupons: 'Coupons', avaliacoes: 'Reviews', newsletter: 'Newsletter', financeiro: 'Finance', audit: 'Audit / Logs', configuracoes: 'Settings', atendimento: 'Customer care', relatorios: 'Reports', loading: 'Loading...', saved: 'Saved!', error: 'Error', sessionExpired: 'Session expired', btn_logout: 'Log out', mediatheque: 'Media library (Drive)', mediathequeHint: 'Files in the ERP_Boutique_Images folder. Click to copy URL; in Products use « Drive library » to apply.', nodata: 'No data', nav_principal: 'MAIN', nav_catalogo: 'CATALOG', nav_vendas: 'SALES', nav_marketing: 'MARKETING', nav_sistema: 'SYSTEM', nav_shortcuts: 'SHORTCUTS', nav_shortcuts_hint: 'Same order as the sidebar', nav_toolbar_modules: 'Modules', bc_home_title: 'Home (dashboard)', ph_search_prod: '🔍 Search products...', ph_search_cat: '🔍 Search category...', ph_search_stock: '🔍 Product, variant, SKU...', btn_refresh: '🔄 Refresh', btn_export_csv: '⬇ CSV', btn_add_product: '+ Product', btn_new_category: '+ Category', btn_bulk_stock: 'Inventory (selected)', btn_alerts: 'Alerts', btn_send_email: 'Send email', btn_open_wa: 'Open WhatsApp', btn_apply: 'Apply', btn_cancel: 'Cancel', select_all: 'Select visible', all_categories: 'All categories', th_img: 'IMG', th_product: 'PRODUCT', th_category: 'CATEGORY', th_price: 'PRICE', th_stock: 'STOCK', th_status: 'STATUS', th_actions: 'ACTIONS', th_name: 'NAME', th_parent: 'PARENT', th_variant: 'VARIANT', th_size: 'SIZE', th_color: 'COLOR', th_min: 'MIN.', catalog_products_title: 'Catalog — products', catalog_categories_title: 'Categories', stock_inventory_title: 'Inventory & stock by variant', stock_movements_title: 'Stock movements', stockPageHint: 'COR means color (Portuguese cor). Size and color are set on each product variant under Products → edit product. This screen only changes stock quantity and minimum (📦).', prodDescLabel: 'Product description', prodDescHint: 'Shown on the product page under the price. Describe materials, care, fit, etc.', atendimento_title: 'Customer care — Email & WhatsApp', atendimento_intro: 'Send emails (script Gmail) or open WhatsApp with generated text.', lbl_template: 'Template', lbl_msg_lang: 'Language', bulk_stock_title: 'Bulk inventory', bulk_stock_desc: 'Set the same quantity for selected rows (physical count).', lbl_new_qty: 'New quantity', th_check: '', btn_edit_selection: '✏️ Edit selection', modal_cat_new: '📂 New category', modal_cat_edit: '📂 Edit category', kpi_avg_ticket: 'AVG. ORDER VALUE', kpi_avg_ticket_sub: 'Average per order', kpi_orders_month: 'ORDERS (MONTH)', kpi_orders_month_sub: 'Current month', ph_search_orders: '🔍 Order ID or email...', btn_export_orders: '⬇ Export CSV', legal_urls_title: '🔗 Legal links (storefront)', legal_urls_hint: 'Footer URLs: terms, privacy, returns.', lbl_legal_terms: 'Terms (URL)', lbl_legal_privacy: 'Privacy (URL)', lbl_legal_returns: 'Returns (URL)', lbl_cookie_banner: 'Cookie banner (GDPR)', marcas: 'Brands', faturas: 'Invoices & PDF', devolucoes: 'Returns', nav_promo_cupons: 'Coupons & deals', marcas_title: '🏷 Brands', marcas_intro: 'One brand per line.', marcas_list_label: 'Brand list', btn_save: 'Save', faturas_intro: 'Quick access to order PDFs.', faturas_goto_orders: 'Go to orders', faturas_table_title: 'Documents per order', th_order: 'ORDER', devolucoes_title: 'Returns policy', devolucoes_intro: 'Internal notes.', devolucoes_notes_label: 'Team notes', devolucoes_recent: 'Cancelled orders', btn_view_order: 'View', dash_charts_title: 'Performance', dash_chart_revenue: 'Revenue Trend', dash_chart_top: 'Top Products', dash_chart_payments: 'Payments Breakdown', dash_chart_orders_status: 'Orders by Status', btn_test_api: '🔌 Test API', api_ping_ok: 'API is reachable and responding.', lang_policy_intro: 'European Portuguese (Portugal) is the default language for this admin panel and the storefront. The PT · FR · EN · ES switchers always include French, English, and Spanish — essential for international customers.', lang_switcher_aria: 'Admin languages: Portuguese (Portugal, default), French, English, Spanish', lang_boutique_card_title: '🌐 Language & currency (storefront)', lang_boutique_default_hint: 'First visit uses the language below (recommended: European Portuguese). The storefront header always lets customers switch between PT, FR, EN, and ES.', lang_boutique_default_label: 'Default storefront language', api_ping_fail: 'Unexpected API response or error.' },
       es: { dashboard: 'Panel', guia: 'Guía rápida', guia_page_intro: 'Instrucciones breves, ejemplos y recuerdo de los cuatro idiomas de la vitrina (PT por defecto).', navBoutiquePreview: 'Ver la tienda', produtos: 'Productos', categorias: 'Categorías', stock: 'Stock', pedidos: 'Pedidos', entregas: 'Envíos', clientes: 'Clientes', pagamentos: 'Pagos', cupons: 'Cupones', avaliacoes: 'Valoraciones', newsletter: 'Newsletter', financeiro: 'Finanzas', audit: 'Auditoría', configuracoes: 'Configuración', atendimento: 'Atención', relatorios: 'Informes', loading: 'Cargando...', saved: '¡Guardado!', error: 'Error', sessionExpired: 'Sesión expirada', btn_logout: 'Cerrar sesión', mediatheque: 'Mediateca (Drive)', mediathequeHint: 'Archivos en la carpeta ERP_Boutique_Images. Clic para copiar URL.', nodata: 'Sin datos', nav_principal: 'PRINCIPAL', nav_catalogo: 'CATÁLOGO', nav_vendas: 'VENTAS', nav_marketing: 'MARKETING', nav_sistema: 'SISTEMA', nav_shortcuts: 'ATAJOS', nav_shortcuts_hint: 'Mismo orden que el menú lateral', nav_toolbar_modules: 'Módulos', bc_home_title: 'Inicio (panel)', ph_search_prod: '🔍 Buscar productos...', ph_search_cat: '🔍 Buscar categoría...', ph_search_stock: '🔍 Producto, variante...', btn_refresh: '🔄 Actualizar', btn_export_csv: '⬇ CSV', btn_add_product: '+ Producto', btn_new_category: '+ Categoría', btn_bulk_stock: 'Inventario (selección)', btn_alerts: 'Alertas', btn_send_email: 'Enviar email', btn_open_wa: 'Abrir WhatsApp', btn_apply: 'Aplicar', btn_cancel: 'Cancelar', select_all: 'Seleccionar visibles', all_categories: 'Todas las categorías', th_img: 'IMG', th_product: 'PRODUCTO', th_category: 'CATEGORÍA', th_price: 'PRECIO', th_stock: 'STOCK', th_status: 'ESTADO', th_actions: 'ACCIONES', th_name: 'NOMBRE', th_parent: 'CATEGORÍA PADRE', th_variant: 'VARIANTE', th_size: 'TALLA', th_color: 'COLOR', th_min: 'MÍN.', catalog_products_title: 'Catálogo — productos', catalog_categories_title: 'Categorías', stock_inventory_title: 'Inventario y stock', stock_movements_title: 'Movimientos de stock', stockPageHint: 'COR = color (portugués). Talla y color son de la variante en Productos → editar. Aquí solo cantidades y mínimo (📦).', prodDescLabel: 'Descripción del producto', prodDescHint: 'Se muestra en la ficha del producto bajo el precio. Materiales, cuidados, tallaje, etc.', atendimento_title: 'Atención — Email y WhatsApp', atendimento_intro: 'Envíe correos (Gmail del script) o abra WhatsApp con texto generado.', lbl_template: 'Plantilla', lbl_msg_lang: 'Idioma', bulk_stock_title: 'Inventario en lote', bulk_stock_desc: 'Define la misma cantidad para las filas seleccionadas.', lbl_new_qty: 'Nueva cantidad', th_check: '', btn_edit_selection: '✏️ Editar selección', modal_cat_new: '📂 Nueva categoría', modal_cat_edit: '📂 Editar categoría', kpi_avg_ticket: 'TICKET MEDIO', kpi_avg_ticket_sub: 'Importe medio por pedido', kpi_orders_month: 'PEDIDOS (MES)', kpi_orders_month_sub: 'Mes en curso', ph_search_orders: '🔍 ID pedido o email...', btn_export_orders: '⬇ CSV pedidos', legal_urls_title: '🔗 Enlaces legales (tienda)', legal_urls_hint: 'URLs en el pie: términos, privacidad, devoluciones.', lbl_legal_terms: 'Términos (URL)', lbl_legal_privacy: 'Privacidad (URL)', lbl_legal_returns: 'Devoluciones (URL)', lbl_cookie_banner: 'Banner de cookies (RGPD)', marcas: 'Marcas', faturas: 'Facturas y PDF', devolucoes: 'Devoluciones', nav_promo_cupons: 'Cupones y promos', marcas_title: '🏷 Marcas', marcas_intro: 'Una marca por línea.', marcas_list_label: 'Lista de marcas', btn_save: 'Guardar', faturas_intro: 'Acceso rápido a PDF por pedido.', faturas_goto_orders: 'Ir a pedidos', faturas_table_title: 'Documentos por pedido', th_order: 'PEDIDO', devolucoes_title: 'Política de devoluciones', devolucoes_intro: 'Notas internas.', devolucoes_notes_label: 'Notas del equipo', devolucoes_recent: 'Pedidos cancelados', btn_view_order: 'Ver', dash_charts_title: 'Rendimiento', dash_chart_revenue: 'Evolución Ingresos', dash_chart_top: 'Top Productos', dash_chart_payments: 'Distribución Pagos', dash_chart_orders_status: 'Pedidos por Estado', btn_test_api: '🔌 Probar API', api_ping_ok: 'API accesible y operativa.', lang_policy_intro: 'La mayoría habla portugués: el portugués (PT) es el idioma por defecto del panel y de la tienda. Los selectores PT · FR · EN · ES incluyen siempre francés, inglés y español — imprescindible para clientes internacionales.', lang_switcher_aria: 'Idiomas del panel: Portugués (predeterminado), Francés, Inglés, Español', lang_boutique_card_title: '🌐 Idioma y moneda (vitrina)', lang_boutique_default_hint: 'Primera visita: usa el idioma de abajo (recomendado: portugués). En la cabecera de la tienda el cliente puede cambiar en todo momento entre PT, FR, EN y ES.', lang_boutique_default_label: 'Idioma por defecto de la vitrina', api_ping_fail: 'La API no respondió como se esperaba.' }
     };
+    (function mergeAdminExtraI18n() {
+      var X = {
+        pt: { bulk_selected: '{n} selecionado(s)', lbl_selection: 'Seleção:', btn_bulk_bar_activate: '✅ Ativar', btn_bulk_bar_deactivate: '⏸ Desativar', btn_bulk_bar_delete: '🗑 Remover', btn_bulk_bar_clear: '✖ Limpar', dash_recent_activity: '📋 Atividade recente', mediatheque_page_blurb: 'Imagens da pasta ERP_Boutique_Images. Copie o URL ou abra um produto para associar.', nav_boutique_title: 'Abrir a vitrine num novo separador', btn_import_csv: '📥 Importar CSV', btn_catalog_refresh: '🔄 Catálogo', catalog_refresh_title: 'Recarrega categorias, lista de catálogo e produtos', modal_close: 'Fechar', client_modal_title: '👤 Ficha do cliente', btn_preview_email: '👁 Pré-visualizar', card_email_preview: '📧 Pré-visualização da mensagem', fin_revenue_sub: 'Período selecionado', fin_pay_split: '💳 Repartição por método de pagamento', fin_tx_detail: '📋 Detalhe das transações', transporteurs_title: '🚚 Transportadores configurados', dev_return_title: '↩️ Registar uma devolução', dev_return_save: '💾 Guardar devolução', dev_motive_defective: 'Produto defeituoso', dev_motive_wrong_size: 'Tamanho incorreto', dev_motive_not_desc: 'Não conforme à descrição', dev_motive_other: 'Desistência / arrependimento', dev_details_ph: 'Detalhes adicionais...', lbl_qty: 'Quantidade', inv_modal_cancel: 'Cancelar', aria_sidebar: 'Abrir ou fechar o menu lateral', global_search_ph: '🔍 Pesquisar…', fatura_opt_all: 'Todos os estados', fatura_opt_pending: 'Pendente', fatura_opt_paid: 'Paga', fatura_opt_overdue: 'Em atraso', ret_filter_all: 'Todas as devoluções', ret_stat_approved: 'Aprovado', ret_stat_received: 'Recebido', ret_stat_refunded: 'Reembolsado', ret_stat_rejected: 'Rejeitado', ret_new_btn: '+ Nova devolução', ret_card_title: '↩️ Pedidos de devolução', ret_notes_card: '📝 Notas / Política de devoluções (interno)', pay_stat_requested: 'Pedido', th_invoice: 'Nº FATURA', th_client: 'CLIENTE', th_date: 'DATA', th_total: 'TOTAL', th_status_col: 'ESTADO', th_actions_short: 'AÇÕES', ret_th_id: 'ID', ret_th_order: 'PEDIDO', ret_th_product: 'PRODUTO', ret_th_reason: 'MOTIVO', lang_opt_fr: 'Francês', lang_opt_en: 'Inglês', lang_opt_es: 'Espanhol', dash_quick_actions: '⚡ Ações rápidas', btn_stock_min_sel: '📉 Stock mín. (selecionados)', btn_physical_inv: '📋 Inventário físico', err_products: 'Erro ao carregar produtos', err_image: 'Erro de imagem', err_generic_suffix: 'Erro', err_save: 'Erro ao guardar', cfg_danger_title: '⚠️ Zona sensível', cfg_danger_intro: 'Estas ações são irreversíveis. Prossiga com cuidado.', cfg_btn_reset_sheets: '🔄 Reiniciar folhas', sheets_reset_confirm: 'ATENÇÃO: Reiniciar todas as folhas da folha de cálculo? Esta ação é irreversível.', sheets_reset_ok: 'Folhas reiniciadas', stock_inv_intro: 'Leia ou introduza as quantidades reais contadas. Os ajustes serão guardados como movimentos de stock.', login_label_email: 'Email', bulk_toast_activated: '{n} produto(s) ativado(s)', bulk_toast_deactivated: '{n} produto(s) desativado(s)', bulk_toast_deleted: '{n} produto(s) removido(s)', bulk_confirm_delete: 'Remover {n} produto(s)? Esta ação é irreversível.', inv_empty_list: 'Sem produtos', inv_no_adjustment: 'Nenhum ajustamento a aplicar', inv_confirm_apply: 'Aplicar {n} ajustamento(s) de stock?', inv_toast_applied: '{ok}/{total} ajustamento(s) aplicado(s)', sheets_reset_fail: 'Erro', session_reconnect_hint: 'Volte a iniciar sessão.' },
+        fr: { bulk_selected: '{n} sélectionné(s)', lbl_selection: 'Sélection :', btn_bulk_bar_activate: '✅ Activer', btn_bulk_bar_deactivate: '⏸ Désactiver', btn_bulk_bar_delete: '🗑 Supprimer', btn_bulk_bar_clear: '✖ Annuler', dash_recent_activity: '📋 Activité récente', mediatheque_page_blurb: 'Images du dossier ERP_Boutique_Images. Copiez l’URL ou ouvrez un produit pour l’assigner.', nav_boutique_title: 'Ouvrir la vitrine dans un nouvel onglet', btn_import_csv: '📥 Importer CSV', btn_catalog_refresh: '🔄 Catalogue', catalog_refresh_title: 'Recharge catégories, liste catalogue et produits', modal_close: 'Fermer', client_modal_title: '👤 Fiche client', btn_preview_email: '👁 Prévisualiser', card_email_preview: '📧 Prévisualisation du message', fin_revenue_sub: 'Période sélectionnée', fin_pay_split: '💳 Répartition par moyen de paiement', fin_tx_detail: '📋 Détail des transactions', transporteurs_title: '🚚 Transporteurs configurés', dev_return_title: '↩️ Enregistrer un retour', dev_return_save: '💾 Enregistrer le retour', dev_motive_defective: 'Produit défectueux', dev_motive_wrong_size: 'Taille incorrecte', dev_motive_not_desc: 'Non conforme à la description', dev_motive_other: 'Rétractation / changement d’avis', dev_details_ph: 'Détails supplémentaires...', lbl_qty: 'Quantité', inv_modal_cancel: 'Annuler', aria_sidebar: 'Ouvrir ou fermer le menu latéral', global_search_ph: '🔍 Rechercher…', fatura_opt_all: 'Tous les statuts', fatura_opt_pending: 'En attente', fatura_opt_paid: 'Payée', fatura_opt_overdue: 'En retard', ret_filter_all: 'Tous les retours', ret_stat_approved: 'Approuvé', ret_stat_received: 'Reçu', ret_stat_refunded: 'Remboursé', ret_stat_rejected: 'Rejeté', ret_new_btn: '+ Nouveau retour', ret_card_title: '↩️ Demandes de retour', ret_notes_card: '📝 Notes / Politique retours (interne)', pay_stat_requested: 'Demandé', th_invoice: 'Nº FACTURE', th_client: 'CLIENT', th_date: 'DATE', th_total: 'TOTAL', th_status_col: 'STATUT', th_actions_short: 'ACTIONS', ret_th_id: 'ID RETOUR', ret_th_order: 'COMMANDE', ret_th_product: 'PRODUIT', ret_th_reason: 'RAISON', lang_opt_fr: 'Français', lang_opt_en: 'English', lang_opt_es: 'Español', dash_quick_actions: '⚡ Actions rapides', btn_stock_min_sel: '📉 Stock min. (sélection)', btn_physical_inv: '📋 Inventaire physique', err_products: 'Erreur produits', err_image: 'Erreur image', err_generic_suffix: 'Erreur', err_save: 'Erreur de sauvegarde', cfg_danger_title: '⚠️ Zone dangereuse', cfg_danger_intro: 'Ces actions sont irréversibles. Procédez avec prudence.', cfg_btn_reset_sheets: '🔄 Réinitialiser les feuilles', sheets_reset_confirm: 'ATTENTION : réinitialiser toutes les feuilles du classeur ? Cette action est irréversible.', sheets_reset_ok: 'Feuilles réinitialisées', stock_inv_intro: 'Scannez ou saisissez les quantités réelles comptées. Les ajustements seront enregistrés comme mouvements de stock.', login_label_email: 'Email', bulk_toast_activated: '{n} produit(s) activé(s)', bulk_toast_deactivated: '{n} produit(s) désactivé(s)', bulk_toast_deleted: '{n} produit(s) supprimé(s)', bulk_confirm_delete: 'Supprimer {n} produit(s) ? Cette action est irréversible.', inv_empty_list: 'Aucun produit', inv_no_adjustment: 'Aucun ajustement à appliquer', inv_confirm_apply: 'Appliquer {n} ajustement(s) de stock ?', inv_toast_applied: '{ok}/{total} ajustement(s) appliqué(s)', sheets_reset_fail: 'Erreur', session_reconnect_hint: 'Reconnectez-vous.' },
+        en: { bulk_selected: '{n} selected', lbl_selection: 'Selection:', btn_bulk_bar_activate: '✅ Activate', btn_bulk_bar_deactivate: '⏸ Deactivate', btn_bulk_bar_delete: '🗑 Remove', btn_bulk_bar_clear: '✖ Clear', dash_recent_activity: '📋 Recent activity', mediatheque_page_blurb: 'Images from ERP_Boutique_Images folder. Copy the URL or open a product to assign.', nav_boutique_title: 'Open storefront in new tab', btn_import_csv: '📥 Import CSV', btn_catalog_refresh: '🔄 Catalog', catalog_refresh_title: 'Reload categories, catalog list and products', modal_close: 'Close', client_modal_title: '👤 Client record', btn_preview_email: '👁 Preview', card_email_preview: '📧 Message preview', fin_revenue_sub: 'Selected period', fin_pay_split: '💳 Split by payment method', fin_tx_detail: '📋 Transaction detail', transporteurs_title: '🚚 Configured carriers', dev_return_title: '↩️ Register a return', dev_return_save: '💾 Save return', dev_motive_defective: 'Defective product', dev_motive_wrong_size: 'Wrong size', dev_motive_not_desc: 'Not as described', dev_motive_other: 'Changed mind', dev_details_ph: 'Additional details...', lbl_qty: 'Quantity', inv_modal_cancel: 'Cancel', aria_sidebar: 'Open or close sidebar', global_search_ph: '🔍 Search…', fatura_opt_all: 'All statuses', fatura_opt_pending: 'Pending', fatura_opt_paid: 'Paid', fatura_opt_overdue: 'Overdue', ret_filter_all: 'All returns', ret_stat_approved: 'Approved', ret_stat_received: 'Received', ret_stat_refunded: 'Refunded', ret_stat_rejected: 'Rejected', ret_new_btn: '+ New return', ret_card_title: '↩️ Return requests', ret_notes_card: '📝 Notes / Returns policy (internal)', pay_stat_requested: 'Requested', th_invoice: 'INVOICE #', th_client: 'CLIENT', th_date: 'DATE', th_total: 'TOTAL', th_status_col: 'STATUS', th_actions_short: 'ACTIONS', ret_th_id: 'RETURN ID', ret_th_order: 'ORDER', ret_th_product: 'PRODUCT', ret_th_reason: 'REASON', lang_opt_fr: 'French', lang_opt_en: 'English', lang_opt_es: 'Spanish', dash_quick_actions: '⚡ Quick actions', btn_stock_min_sel: '📉 Min. stock (selected)', btn_physical_inv: '📋 Physical inventory', err_products: 'Error loading products', err_image: 'Image error', err_generic_suffix: 'Error', err_save: 'Save error', cfg_danger_title: '⚠️ Danger zone', cfg_danger_intro: 'These actions cannot be undone. Proceed with care.', cfg_btn_reset_sheets: '🔄 Reset spreadsheet sheets', sheets_reset_confirm: 'WARNING: Reset all spreadsheet tabs? This cannot be undone.', sheets_reset_ok: 'Sheets reset', stock_inv_intro: 'Scan or enter counted quantities. Adjustments are saved as stock movements.', login_label_email: 'Email', bulk_toast_activated: '{n} product(s) activated', bulk_toast_deactivated: '{n} product(s) deactivated', bulk_toast_deleted: '{n} product(s) removed', bulk_confirm_delete: 'Remove {n} product(s)? This cannot be undone.', inv_empty_list: 'No products', inv_no_adjustment: 'No adjustments to apply', inv_confirm_apply: 'Apply {n} stock adjustment(s)?', inv_toast_applied: '{ok}/{total} adjustment(s) applied', sheets_reset_fail: 'Error', session_reconnect_hint: 'Please sign in again.' },
+        es: { bulk_selected: '{n} seleccionado(s)', lbl_selection: 'Selección:', btn_bulk_bar_activate: '✅ Activar', btn_bulk_bar_deactivate: '⏸ Desactivar', btn_bulk_bar_delete: '🗑 Eliminar', btn_bulk_bar_clear: '✖ Limpiar', dash_recent_activity: '📋 Actividad reciente', mediatheque_page_blurb: 'Imágenes de la carpeta ERP_Boutique_Images. Copie la URL o abra un producto para asignar.', nav_boutique_title: 'Abrir la tienda en una pestaña nueva', btn_import_csv: '📥 Importar CSV', btn_catalog_refresh: '🔄 Catálogo', catalog_refresh_title: 'Recarga categorías, lista de catálogo y productos', modal_close: 'Cerrar', client_modal_title: '👤 Ficha del cliente', btn_preview_email: '👁 Vista previa', card_email_preview: '📧 Vista previa del mensaje', fin_revenue_sub: 'Período seleccionado', fin_pay_split: '💳 Reparto por método de pago', fin_tx_detail: '📋 Detalle de transacciones', transporteurs_title: '🚚 Transportistas configurados', dev_return_title: '↩️ Registrar una devolución', dev_return_save: '💾 Guardar devolución', dev_motive_defective: 'Producto defectuoso', dev_motive_wrong_size: 'Talla incorrecta', dev_motive_not_desc: 'No coincide con la descripción', dev_motive_other: 'Arrepentimiento / desistimiento', dev_details_ph: 'Detalles adicionales...', lbl_qty: 'Cantidad', inv_modal_cancel: 'Cancelar', aria_sidebar: 'Abrir o cerrar el menú lateral', global_search_ph: '🔍 Buscar…', fatura_opt_all: 'Todos los estados', fatura_opt_pending: 'Pendiente', fatura_opt_paid: 'Pagada', fatura_opt_overdue: 'Vencida', ret_filter_all: 'Todas las devoluciones', ret_stat_approved: 'Aprobado', ret_stat_received: 'Recibido', ret_stat_refunded: 'Reembolsado', ret_stat_rejected: 'Rechazado', ret_new_btn: '+ Nueva devolución', ret_card_title: '↩️ Solicitudes de devolución', ret_notes_card: '📝 Notas / Política de devoluciones (interno)', pay_stat_requested: 'Solicitado', th_invoice: 'Nº FACTURA', th_client: 'CLIENTE', th_date: 'FECHA', th_total: 'TOTAL', th_status_col: 'ESTADO', th_actions_short: 'ACCIONES', ret_th_id: 'ID', ret_th_order: 'PEDIDO', ret_th_product: 'PRODUCTO', ret_th_reason: 'MOTIVO', lang_opt_fr: 'Francés', lang_opt_en: 'Inglés', lang_opt_es: 'Español', dash_quick_actions: '⚡ Acciones rápidas', btn_stock_min_sel: '📉 Stock mín. (selección)', btn_physical_inv: '📋 Inventario físico', err_products: 'Error al cargar productos', err_image: 'Error de imagen', err_generic_suffix: 'Error', err_save: 'Error al guardar', cfg_danger_title: '⚠️ Zona peligrosa', cfg_danger_intro: 'Estas acciones son irreversibles. Actúe con cuidado.', cfg_btn_reset_sheets: '🔄 Restablecer hojas', sheets_reset_confirm: 'ATENCIÓN: ¿Restablecer todas las hojas? Esta acción no se puede deshacer.', sheets_reset_ok: 'Hojas reiniciadas', stock_inv_intro: 'Escanee o introduzca las cantidades contadas. Los ajustes se guardan como movimientos de stock.', login_label_email: 'Email', bulk_toast_activated: '{n} producto(s) activado(s)', bulk_toast_deactivated: '{n} producto(s) desactivado(s)', bulk_toast_deleted: '{n} producto(s) eliminado(s)', bulk_confirm_delete: '¿Eliminar {n} producto(s)? Esta acción no se puede deshacer.', inv_empty_list: 'Sin productos', inv_no_adjustment: 'No hay ajustes que aplicar', inv_confirm_apply: '¿Aplicar {n} ajuste(s) de stock?', inv_toast_applied: '{ok}/{total} ajuste(s) aplicado(s)', sheets_reset_fail: 'Error', session_reconnect_hint: 'Vuelva a iniciar sesión.' }
+      };
+      Object.keys(X).forEach(function (k) { if (langs[k]) Object.assign(langs[k], X[k]); });
+    })();
 
     const GUIA_HTML = {
       pt: '<div style="max-width:920px;line-height:1.65;font-size:14px;color:var(--text);">' +
@@ -4218,8 +4380,11 @@
     function applyAdminI18n() {
       document.querySelectorAll('[data-i18n]').forEach(function (el) {
         var k = el.getAttribute('data-i18n');
+        var tmpl = el.getAttribute('data-i18n-html');
         var v = (langs[lang] && langs[lang][k]) || (langs.pt && langs.pt[k]);
-        if (k && v) el.textContent = v;
+        if (k && v) {
+          if (tmpl === '1') el.innerHTML = v; else el.textContent = v;
+        }
       });
       document.querySelectorAll('[data-i18n-placeholder]').forEach(function (el) {
         var k = el.getAttribute('data-i18n-placeholder');
@@ -4230,6 +4395,11 @@
         var k = el.getAttribute('data-i18n-aria-label');
         var v = (langs[lang] && langs[lang][k]) || (langs.pt && langs.pt[k]);
         if (k && v) el.setAttribute('aria-label', v);
+      });
+      document.querySelectorAll('[data-i18n-title]').forEach(function (el) {
+        var k = el.getAttribute('data-i18n-title');
+        var v = (langs[lang] && langs[lang][k]) || (langs.pt && langs.pt[k]);
+        if (k && v) el.setAttribute('title', v);
       });
     }
 
@@ -4242,6 +4412,7 @@
       document.querySelectorAll('.lang-btn').forEach(function (b) { b.classList.remove('active'); });
       if (btn) btn.classList.add('active');
       applyAdminI18n();
+      try { if (typeof updateBulkCount === 'function') updateBulkCount(); } catch (e0) { }
       updateTopNav(currentAdminPage);
       if (currentAdminPage === 'guia') loadGuia();
     }
@@ -4251,9 +4422,17 @@
     // ============================================================
     function handleAdminSessionExpired() {
       try {
-        toast((typeof t === 'function' ? t('sessionExpired') : 'Session expirée') + ' — reconnectez-vous.', 'error');
+        toast((typeof t === 'function' ? t('sessionExpired') : 'Session expirée') + ' — ' + (typeof t === 'function' ? t('session_reconnect_hint') : ''), 'error');
       } catch (e1) { }
       doLogout();
+    }
+
+    function resetSpreadsheetSheets() {
+      if (!confirm(t('sheets_reset_confirm'))) return;
+      api('initializeSheets', {}).then(function (r) {
+        if (r && r.success) toast(t('sheets_reset_ok'), 'ok');
+        else toast((r && r.error) ? r.error : t('sheets_reset_fail'), 'error');
+      });
     }
 
     async function api(action, data = {}) {
@@ -4761,7 +4940,7 @@
       const r = await api('getProducts', {});
       if (!r) return;
       if (r.success === false) {
-        toast('❌ ' + (r.error || 'Erreur produits'), 'error');
+        toast('❌ ' + (r.error || t('err_products')), 'error');
         allProducts = [];
         productIdMap = {};
         filterProducts();
@@ -5120,7 +5299,7 @@
           toast('❌ ' + (r && r.error ? r.error : 'Échec envoi'), 'error');
         }
       } catch (e) {
-        toast('❌ ' + (e.message || 'Erreur image'), 'error');
+        toast('❌ ' + (e.message || t('err_image')), 'error');
       }
     }
 
@@ -5474,7 +5653,7 @@
       carriers.push(carrier);
       const r2 = await api('updateConfig', { carriers_json: JSON.stringify(carriers) });
       if (r2?.success) { toast('✅ Transporteur ajouté', 'success'); closeModal('modalTransporteur'); loadTransporteurs(); }
-      else toast('❌ ' + (r2?.error || 'Erreur'), 'error');
+      else toast('❌ ' + (r2?.error || t('error')), 'error');
     }
 
     async function deleteTransporteur(idx) {
@@ -5594,7 +5773,7 @@
       var note = noteEl ? noteEl.value : '';
       var r = await api('updateOrder', { orderId: currentOrderId, notes: note });
       if (r && r.success) toast('Note sauvegardée', 'success');
-      else toast('Erreur: ' + (r && r.error ? r.error : ''), 'error');
+      else toast(t('error') + ': ' + (r && r.error ? r.error : ''), 'error');
     }
 
     async function exportOrdersCsv() {
@@ -6014,13 +6193,13 @@
       };
       var r = await api('createReturn', data);
       if (r?.success) { toast('Retour enregistré !', 'ok'); closeModal('modalNewReturn'); loadReturns(); }
-      else toast('Erreur: ' + (r?.error || ''), 'error');
+      else toast(t('error') + ': ' + (r?.error || ''), 'error');
     }
 
     async function updateReturnStatus(returnId, newStatus) {
       var r = await api('updateReturnStatus', { return_id: returnId, status: newStatus });
       if (r?.success) { toast('Statut mis à jour: ' + newStatus, 'ok'); loadReturns(); }
-      else toast('Erreur: ' + (r?.error || ''), 'error');
+      else toast(t('error') + ': ' + (r?.error || ''), 'error');
     }
 
     async function saveDevolucoesNotas() {
@@ -6279,7 +6458,7 @@
       const accent = document.getElementById('cfg_color_accent').value;
       const r = await api('updateStoreDesign', { dark: main, gold: accent });
       if (r?.success) toast('✅ Design mis à jour!', 'success');
-      else toast('❌ Erreur: ' + (r?.error || 'Coud non sauver'), 'error');
+      else toast('❌ ' + t('error') + ': ' + (r?.error || t('err_save')), 'error');
     }
 
     async function changeAdminPassword() {
@@ -6291,7 +6470,7 @@
         toast('✅ Mot de passe modifié', 'success');
         document.getElementById('cfg_old_pass').value = '';
         document.getElementById('cfg_new_pass').value = '';
-      } else toast('❌ ' + (r?.error || 'Erreur'), 'error');
+      } else toast('❌ ' + (r?.error || t('error')), 'error');
     }
 
     function isValidGsWebAppUrl(u) {
@@ -6803,7 +6982,108 @@
       seo_robots: 'cfg_seo_robots'
     };
 
-    function fillBoutiqueConfigFields(c) {
+    var SHEETS_ADVANCED_CFG_IDS = {
+      store_name: 'cfg_adv_store_name',
+      site_name: 'cfg_adv_site_name',
+      meta_keywords: 'cfg_adv_meta_keywords',
+      favicon_url: 'cfg_adv_favicon_url',
+      og_image_url: 'cfg_adv_og_image_url',
+      store_email: 'cfg_adv_store_email',
+      order_prefix: 'cfg_adv_order_prefix',
+      invoice_prefix: 'cfg_adv_invoice_prefix',
+      stock_alert_threshold: 'cfg_adv_stock_alert_threshold',
+      max_quantity_per_product: 'cfg_adv_max_qty_product',
+      admin_notify_new_orders: 'cfg_adv_admin_notify_orders',
+      maintenance_mode: 'cfg_adv_maintenance_mode',
+      maintenance_message: 'cfg_adv_maintenance_message',
+      return_policy_days: 'cfg_adv_return_days',
+      warranty_notes: 'cfg_adv_warranty_notes',
+      ga4_measurement_id: 'cfg_adv_ga4_id',
+      facebook_pixel_id: 'cfg_adv_fb_pixel',
+      social_youtube: 'cfg_adv_social_youtube',
+      social_tiktok: 'cfg_adv_social_tiktok',
+      social_linkedin: 'cfg_adv_social_linkedin',
+      social_pinterest: 'cfg_adv_social_pinterest'
+    };
+
+    var RESERVED_CFG_KEYS = (function () {
+      var s = new Set();
+      Object.keys(BOUTIQUE_CFG_IDS).forEach(function (k) { s.add(k); });
+      Object.keys(SHEETS_ADVANCED_CFG_IDS).forEach(function (k) { s.add(k); });
+      ['color_main', 'color_accent', 'tva_default', 'tva_included', 'tva_reduced', 'tva_exempt', 'pay_stripe_enabled', 'stripe_public_key', 'currency_code', 'pay_paypal_enabled', 'paypal_client_id', 'pay_transfer_enabled', 'transfer_iban', 'pay_cod_enabled', 'email_provider', 'email_sender_name', 'email_sender', 'email_bcc', 'sendgrid_api_key', 'email_signature', 'session_hours', 'max_login_attempts', 'audit_enabled', 'devise', 'tva', 'language', 'email_support'].forEach(function (k) { s.add(k); });
+      return s;
+    })();
+
+    function fillSheetsAdvancedConfig(c) {
+      if (!c) return;
+      Object.keys(SHEETS_ADVANCED_CFG_IDS).forEach(function (key) {
+        var id = SHEETS_ADVANCED_CFG_IDS[key];
+        var el = document.getElementById(id);
+        if (!el) return;
+        var v = c[key];
+        if (el.type === 'checkbox') {
+          el.checked = v === true || v === '1' || v === 'true' || v === 1;
+          return;
+        }
+        if (v === undefined || v === null) v = '';
+        el.value = v;
+      });
+    }
+
+    function readSheetsAdvancedValue(key) {
+      var id = SHEETS_ADVANCED_CFG_IDS[key];
+      if (!id) return '';
+      var el = document.getElementById(id);
+      if (!el) return '';
+      if (el.type === 'checkbox') return el.checked ? '1' : '0';
+      return el.value;
+    }
+
+    async function saveSheetsAdvancedConfig() {
+      var data = {};
+      Object.keys(SHEETS_ADVANCED_CFG_IDS).forEach(function (k) { data[k] = readSheetsAdvancedValue(k); });
+      const r = await api('updateConfig', data);
+      if (r?.success) toast(t('saved'), 'success');
+      else toast('❌ ' + (r?.error || t('error')), 'error');
+    }
+
+    function fillCustomConfigLines(c) {
+      var ta = document.getElementById('cfg_extra_kv');
+      if (!ta || !c) return;
+      var lines = [];
+      Object.keys(c).sort().forEach(function (k) {
+        if (RESERVED_CFG_KEYS.has(k)) return;
+        var raw = String(c[k] != null ? c[k] : '');
+        raw = raw.replace(/\\/g, '\\\\').replace(/\n/g, '\\n');
+        lines.push(k + '=' + raw);
+      });
+      ta.value = lines.join('\n');
+    }
+
+    async function saveCustomConfigLines() {
+      var ta = document.getElementById('cfg_extra_kv');
+      if (!ta) return;
+      var data = {};
+      ta.value.split(/\r?\n/).forEach(function (line) {
+        line = line.trim();
+        if (!line || line.charAt(0) === '#') return;
+        var eq = line.indexOf('=');
+        if (eq < 1) return;
+        var k = line.slice(0, eq).trim();
+        var v = line.slice(eq + 1).replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
+        if (k) data[k] = v;
+      });
+      if (!Object.keys(data).length) { toast('Nenhum par chave=valor para gravar.', 'info'); return; }
+      const r = await api('updateConfig', data);
+      if (r?.success) { toast(t('saved'), 'success'); loadConfig(); }
+      else toast('❌ ' + (r?.error || t('error')), 'error');
+    }
+
+    async function reloadCustomConfigLinesOnly() {
+      const cfg = await api('getConfig', {});
+      if (cfg && cfg.success && cfg.config) fillCustomConfigLines(cfg.config);
+      toast('Lista atualizada.', 'ok');
+    }
       if (!c) return;
       function setEl(id, key, def) {
         var el = document.getElementById(id);
@@ -6900,12 +7180,17 @@
         document.getElementById('cfg_cidade').value = e.cidade || '';
         document.getElementById('cfg_pais').value = e.pais || 'Portugal';
         document.getElementById('cfg_tva').value = e.tva_padrao || '23';
+        document.getElementById('cfg_moeda').value = e.moeda || 'EUR';
+        document.getElementById('cfg_logo_url').value = e.logo_url || '';
+        document.getElementById('cfg_website').value = e.website || '';
         document.getElementById('lojaNome').textContent = e.nome || 'Minha Loja';
       }
       document.getElementById('apiUrlInput').value = (!API_URL || API_URL.includes('INSEREZ_VOTRE')) ? '' : API_URL;
       const cfg = await api('getConfig', {});
       if (cfg && cfg.success && cfg.config) {
         fillBoutiqueConfigFields(cfg.config);
+        fillSheetsAdvancedConfig(cfg.config);
+        fillCustomConfigLines(cfg.config);
         fillExtendedConfigPanels(cfg.config);
         var cm = cfg.config.color_main;
         var ca = cfg.config.color_accent;
@@ -6952,7 +7237,7 @@
     }
 
     function showConfigTab(tab) {
-      ['boutique', 'taxes', 'payments', 'email', 'security', 'backup'].forEach(t => {
+      ['boutique', 'taxes', 'payments', 'email', 'security', 'advanced', 'backup'].forEach(t => {
         var panel = document.getElementById('cfgPanel' + t.charAt(0).toUpperCase() + t.slice(1));
         if (panel) panel.style.display = t === tab ? 'block' : 'none';
         var btn = document.getElementById('cfgTab' + t.charAt(0).toUpperCase() + t.slice(1));
@@ -7043,7 +7328,7 @@
         tva_exempt: document.getElementById('cfg_tva_exempt')?.value
       });
       if (r?.success) toast('✅ Taxes enregistrées', 'success');
-      else toast('❌ ' + (r?.error || 'Erreur'), 'error');
+      else toast('❌ ' + (r?.error || t('error')), 'error');
     }
 
     async function savePaymentConfig() {
@@ -7058,7 +7343,7 @@
         pay_cod_enabled: document.getElementById('cfg_pay_cod')?.checked ? '1' : '0'
       });
       if (r?.success) toast('✅ Paiements enregistrés', 'success');
-      else toast('❌ ' + (r?.error || 'Erreur'), 'error');
+      else toast('❌ ' + (r?.error || t('error')), 'error');
     }
 
     async function saveEmailConfig() {
@@ -7071,7 +7356,7 @@
         email_signature: document.getElementById('cfg_email_signature')?.value
       });
       if (r?.success) toast('✅ Email config sauvegardée', 'success');
-      else toast('❌ ' + (r?.error || 'Erreur'), 'error');
+      else toast('❌ ' + (r?.error || t('error')), 'error');
     }
 
     async function saveSecurityConfig() {
@@ -7081,11 +7366,23 @@
         audit_enabled: document.getElementById('cfg_audit_enabled')?.checked ? '1' : '0'
       });
       if (r?.success) toast('✅ Sécurité enregistrée', 'success');
-      else toast('❌ ' + (r?.error || 'Erreur'), 'error');
+      else toast('❌ ' + (r?.error || t('error')), 'error');
     }
 
     async function saveEmpresa() {
-      const r = await api('updateEmpresa', { nome: document.getElementById('cfg_nome').value, nif: document.getElementById('cfg_nif').value, email: document.getElementById('cfg_email').value, telefone: document.getElementById('cfg_tel').value, morada: document.getElementById('cfg_morada').value, cidade: document.getElementById('cfg_cidade').value, pais: document.getElementById('cfg_pais').value, tva_padrao: document.getElementById('cfg_tva').value });
+      const r = await api('updateEmpresa', {
+        nome: document.getElementById('cfg_nome').value,
+        nif: document.getElementById('cfg_nif').value,
+        email: document.getElementById('cfg_email').value,
+        telefone: document.getElementById('cfg_tel').value,
+        morada: document.getElementById('cfg_morada').value,
+        cidade: document.getElementById('cfg_cidade').value,
+        pais: document.getElementById('cfg_pais').value,
+        moeda: (document.getElementById('cfg_moeda').value || 'EUR').trim(),
+        tva_padrao: document.getElementById('cfg_tva').value,
+        logo_url: document.getElementById('cfg_logo_url').value,
+        website: document.getElementById('cfg_website').value
+      });
       if (r?.success) { toast('✅ Empresa atualizada!', 'success'); document.getElementById('lojaNome').textContent = document.getElementById('cfg_nome').value; }
     }
 
@@ -7375,11 +7672,13 @@
       var checked = document.querySelectorAll('.prod-select-cb:checked');
       var bar = document.getElementById('bulkActionsBar');
       var count = document.getElementById('bulkSelectedCount');
+      var n = checked.length;
+      var tpl = (typeof t === 'function' ? t('bulk_selected') : '{n}');
+      if (count) count.textContent = String(tpl).replace(/\{n\}/g, String(n));
       if (checked.length > 0) {
-        bar.style.display = 'flex';
-        count.textContent = checked.length + ' sélectionné(s)';
+        if (bar) bar.style.display = 'flex';
       } else {
-        bar.style.display = 'none';
+        if (bar) bar.style.display = 'none';
       }
     }
 
@@ -7400,7 +7699,7 @@
       for (var i = 0; i < ids.length; i++) {
         await api('updateProduct', { produto_id: ids[i], ativo: 'sim' });
       }
-      toast(ids.length + ' produit(s) activé(s)', 'ok');
+      toast(String(t('bulk_toast_activated')).replace(/\{n\}/g, String(ids.length)), 'ok');
       clearBulkSelection();
       loadProdutos();
     }
@@ -7411,7 +7710,7 @@
       for (var i = 0; i < ids.length; i++) {
         await api('updateProduct', { produto_id: ids[i], ativo: 'nao' });
       }
-      toast(ids.length + ' produit(s) désactivé(s)', 'ok');
+      toast(String(t('bulk_toast_deactivated')).replace(/\{n\}/g, String(ids.length)), 'ok');
       clearBulkSelection();
       loadProdutos();
     }
@@ -7419,11 +7718,11 @@
     async function bulkDeleteProducts() {
       var ids = getSelectedProductIds();
       if (!ids.length) return;
-      if (!confirm('Supprimer ' + ids.length + ' produit(s) ? Cette action est irréversible.')) return;
+      if (!confirm(String(t('bulk_confirm_delete')).replace(/\{n\}/g, String(ids.length)))) return;
       for (var i = 0; i < ids.length; i++) {
         await api('deleteProduct', { produto_id: ids[i] });
       }
-      toast(ids.length + ' produit(s) supprimé(s)', 'ok');
+      toast(String(t('bulk_toast_deleted')).replace(/\{n\}/g, String(ids.length)), 'ok');
       clearBulkSelection();
       loadProdutos();
     }
@@ -7442,7 +7741,7 @@
     function renderInventoryList(products) {
       var tbody = document.getElementById('inventoryListBody');
       if (!tbody) return;
-      if (!products.length) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text2);padding:16px;">Aucun produit</td></tr>'; return; }
+      if (!products.length) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text2);padding:16px;">' + escHtml(t('inv_empty_list')) + '</td></tr>'; return; }
       tbody.innerHTML = products.map(function (p) {
         var stock = parseInt(p.stock) || parseInt(p.stock_total) || 0;
         return '<tr>' +
@@ -7473,15 +7772,15 @@
         if (isNaN(realQty) || realQty === sysQty) return;
         adjustments.push({ produto_id: inp.dataset.id, old_stock: sysQty, new_stock: realQty, diff: realQty - sysQty });
       });
-      if (!adjustments.length) { toast('Aucun ajustement à appliquer', 'info'); return; }
-      if (!confirm('Appliquer ' + adjustments.length + ' ajustement(s) de stock ?')) return;
+      if (!adjustments.length) { toast(t('inv_no_adjustment'), 'info'); return; }
+      if (!confirm(String(t('inv_confirm_apply')).replace(/\{n\}/g, String(adjustments.length)))) return;
       var ok = 0;
       for (var i = 0; i < adjustments.length; i++) {
         var a = adjustments[i];
         var r = await api('updateProduct', { produto_id: a.produto_id, stock: String(a.new_stock) });
         if (r?.success) ok++;
       }
-      toast(ok + '/' + adjustments.length + ' ajustement(s) appliqué(s)', 'ok');
+      toast(String(t('inv_toast_applied')).replace(/\{ok\}/g, String(ok)).replace(/\{total\}/g, String(adjustments.length)), 'ok');
       closeModal('modalInventory');
       loadStockPage();
     }
@@ -7813,6 +8112,7 @@
         document.documentElement.lang = lang === 'pt' ? 'pt-PT' : lang === 'en' ? 'en' : lang === 'fr' ? 'fr' : 'es';
       } catch (e) { }
       applyAdminI18n();
+      try { if (typeof updateBulkCount === 'function') updateBulkCount(); } catch (e1) { }
       updateTopNav(currentAdminPage);
       startDashAutoRefresh();
       void tryRestoreAdminSession();
