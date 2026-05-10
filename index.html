@@ -409,6 +409,45 @@
       color: #fff;
     }
 
+    html:not([data-theme="dark"]) .btn.outline {
+      border-color: var(--border-strong);
+      color: var(--brand-deep);
+      background: #fff;
+      font-weight: 600;
+    }
+
+    html:not([data-theme="dark"]) .btn.outline:hover {
+      border-color: var(--brand-mid);
+      color: var(--brand);
+      background: #f1f5f9;
+    }
+
+    html:not([data-theme="dark"]) .pay-gateway-hint {
+      background: rgba(15, 82, 120, 0.09);
+      color: var(--text-mid);
+    }
+
+    html:not([data-theme="dark"]) .pay-gateway-ol {
+      color: var(--text-mid);
+    }
+
+    html:not([data-theme="dark"]) .pay-instruction-block:not(.pay-instruction-warn):not(.pay-instruction-ok) {
+      background: #f8fafc;
+      color: var(--text-mid);
+    }
+
+    html:not([data-theme="dark"]) .pay-gateway-ol code,
+    html:not([data-theme="dark"]) .pay-instruction-block code,
+    html:not([data-theme="dark"]) .pay-config-intro code {
+      background: rgba(15, 23, 42, 0.07);
+      color: #0f172a;
+    }
+
+    html:not([data-theme="dark"]) small {
+      color: var(--text2);
+      opacity: 1;
+    }
+
     html[data-theme="dark"] tr:hover td {
       background: rgba(255, 255, 255, 0.04);
     }
@@ -1494,6 +1533,11 @@
     .badge.purple {
       background: rgba(15, 82, 120, .15);
       color: var(--accent);
+    }
+
+    .badge.gray {
+      background: rgba(100, 116, 139, .18);
+      color: var(--text-mid);
     }
 
     .page {
@@ -5166,7 +5210,7 @@
 
     function catalogBadgeHtml(p) {
       var cs = p.catalogo_status || 'publicado';
-      if (cs === 'rascunho') return '<span class="badge" style="background:#444;color:#ccc;">Brouillon</span>';
+      if (cs === 'rascunho') return '<span class="badge gray">Brouillon</span>';
       if (cs === 'agendado') {
         var d = p.publicar_em ? new Date(p.publicar_em) : null;
         var txt = (d && !isNaN(d.getTime())) ? d.toLocaleString() : '—';
@@ -6900,10 +6944,11 @@
         if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(5);
         return s.length > 12 ? s.slice(0, 10) + '…' : s;
       });
+      const ctSales = getChartTheme();
       reportChartInstance = new Chart(ctx, {
         type: 'bar',
         data: { labels: chartLabels, datasets: [{ label: 'Receita (€)', data, backgroundColor: 'rgba(15,82,120,.6)', borderRadius: 6 }] },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,.06)' }, ticks: { color: '#aaa' } }, x: { grid: { display: false }, ticks: { color: '#aaa', maxRotation: 45 } } } }
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: ctSales.gridColor }, ticks: { color: ctSales.tickColor } }, x: { grid: { display: false }, ticks: { color: ctSales.tickColor, maxRotation: 45 } } } }
       });
     }
 
@@ -6920,10 +6965,11 @@
       const ctx = document.getElementById('reportChart');
       if (reportChartInstance) reportChartInstance.destroy();
       const colors = ['#0f5278', '#00d4a0', '#ff9f43', '#74b9ff', '#a29bfe', '#fd79a8', '#00cec9', '#636e72', '#ff7675', '#fdcb6e'];
+      const ctProd = getChartTheme();
       reportChartInstance = new Chart(ctx, {
         type: 'bar',
         data: { labels: lastReportData.slice(0, 10).map(r => r.produto.substring(0, 15)), datasets: [{ label: 'Vendidos', data: lastReportData.slice(0, 10).map(r => r.vendidos), backgroundColor: colors.map(c => c + 'CC'), borderRadius: 6 }] },
-        options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, grid: { color: 'rgba(255,255,255,.06)' }, ticks: { color: '#aaa' } }, y: { grid: { display: false }, ticks: { color: '#aaa', font: { size: 11 } } } } }
+        options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, grid: { color: ctProd.gridColor }, ticks: { color: ctProd.tickColor } }, y: { grid: { display: false }, ticks: { color: ctProd.tickColor, font: { size: 11 } } } } }
       });
     }
 
@@ -6941,10 +6987,11 @@
       const ctx = document.getElementById('reportChart');
       if (reportChartInstance) reportChartInstance.destroy();
       const top5 = lastReportData.slice(0, 5);
+      const ctCli = getChartTheme();
       reportChartInstance = new Chart(ctx, {
         type: 'doughnut',
         data: { labels: top5.map(r => r.nome.substring(0, 20)), datasets: [{ data: top5.map(r => parseFloat(r.compras)), backgroundColor: ['#0f5278CC', '#00d4a0CC', '#ff9f43CC', '#74b9ffCC', '#a29bfeCC'], borderWidth: 0 }] },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: '#ccc', font: { size: 11 }, padding: 10, usePointStyle: true } } } }
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: ctCli.legendColor, font: { size: 11 }, padding: 10, usePointStyle: true } } } }
       });
     }
 
@@ -7023,10 +7070,11 @@
       if (_finChartInstance) _finChartInstance.destroy();
       var ctx = document.getElementById('finRevenueChart')?.getContext('2d');
       if (ctx) {
+        var ctFin = getChartTheme();
         _finChartInstance = new Chart(ctx, {
           type: 'line',
           data: { labels: labels, datasets: [{ label: 'CA (€)', data: values, borderColor: '#0f5278', backgroundColor: 'rgba(15,82,120,.15)', fill: true, tension: .3, pointRadius: 3 }] },
-          options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { color: '#888' } }, x: { ticks: { color: '#888', maxRotation: 45 } } } }
+          options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: ctFin.gridColor }, ticks: { color: ctFin.tickColor } }, x: { grid: { display: false }, ticks: { color: ctFin.tickColor, maxRotation: 45 } } } }
         });
       }
 
@@ -7939,6 +7987,13 @@
         try { localStorage.setItem('erp_admin_theme', 'dark'); } catch (e) { }
       }
       try { applyAdminI18n(); } catch (e) { }
+      try {
+        var ap = document.querySelector('.page.active');
+        var pid = ap ? ap.id : '';
+        if (typeof loadDashCharts === 'function' && pid === 'page-dashboard') void loadDashCharts();
+        if (typeof loadFinanceiro === 'function' && pid === 'page-financeiro') void loadFinanceiro();
+        if (typeof loadReport === 'function' && pid === 'page-relatorios') void loadReport();
+      } catch (eCharts) { }
     }
     try { applyAdminI18n(); } catch (eThemeSync) { }
 
@@ -8255,11 +8310,21 @@
       };
     }
 
+    function getChartTheme() {
+      const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+      return {
+        tickColor: dark ? '#94a3b8' : '#334155',
+        gridColor: dark ? 'rgba(255,255,255,.08)' : 'rgba(15, 23, 42, 0.09)',
+        legendColor: dark ? '#cbd5e1' : '#0f172a'
+      };
+    }
+
     function renderRevenueChart(res) {
       const ctx = document.getElementById('chartRevenue');
       if (!ctx) return;
       if (chartRevenue) chartRevenue.destroy();
       const c = getChartColors();
+      const t = getChartTheme();
       const series = res?.success ? res.series || {} : {};
       const labels = Object.keys(series).sort();
       const data = labels.map(l => series[l] || 0);
@@ -8282,8 +8347,8 @@
           responsive: true, maintainAspectRatio: false,
           plugins: { legend: { display: false } },
           scales: {
-            y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,.06)' }, ticks: { color: '#aaa', callback: v => '€' + v } },
-            x: { grid: { display: false }, ticks: { color: '#aaa', maxRotation: 0 } }
+            y: { beginAtZero: true, grid: { color: t.gridColor }, ticks: { color: t.tickColor, callback: v => '€' + v } },
+            x: { grid: { display: false }, ticks: { color: t.tickColor, maxRotation: 0 } }
           }
         }
       });
@@ -8294,6 +8359,7 @@
       if (!ctx) return;
       if (chartTopProducts) chartTopProducts.destroy();
       const c = getChartColors();
+      const t = getChartTheme();
       const items = res?.success ? (res.top || []).slice(0, 8) : [];
       const labels = items.map(i => (i.nome || i.produto_id || '').substring(0, 18));
       const data = items.map(i => i.total_vendido || i.quantidade || 0);
@@ -8316,8 +8382,8 @@
           responsive: true, maintainAspectRatio: false,
           plugins: { legend: { display: false } },
           scales: {
-            x: { beginAtZero: true, grid: { color: 'rgba(255,255,255,.06)' }, ticks: { color: '#aaa' } },
-            y: { grid: { display: false }, ticks: { color: '#aaa', font: { size: 11 } } }
+            x: { beginAtZero: true, grid: { color: t.gridColor }, ticks: { color: t.tickColor } },
+            y: { grid: { display: false }, ticks: { color: t.tickColor, font: { size: 11 } } }
           }
         }
       });
@@ -8328,6 +8394,7 @@
       if (!ctx) return;
       if (chartPayments) chartPayments.destroy();
       const c = getChartColors();
+      const t = getChartTheme();
       const methods = res?.success ? res.byMethod || {} : {};
       const labels = Object.keys(methods);
       const data = labels.map(l => methods[l]);
@@ -8347,7 +8414,7 @@
         options: {
           responsive: true, maintainAspectRatio: false,
           plugins: {
-            legend: { position: 'right', labels: { color: '#ccc', font: { size: 11 }, padding: 10, usePointStyle: true, pointStyleWidth: 10 } }
+            legend: { position: 'right', labels: { color: t.legendColor, font: { size: 11 }, padding: 10, usePointStyle: true, pointStyleWidth: 10 } }
           }
         }
       });
@@ -8358,6 +8425,7 @@
       if (!ctx) return;
       if (chartOrdersStatus) chartOrdersStatus.destroy();
       const c = getChartColors();
+      const t = getChartTheme();
       const kpis = dashRes?.success ? dashRes.kpis || {} : {};
       const statusMap = {
         'Pendentes': { val: kpis.pedidos_pendentes || 0, color: c.orange },
@@ -8376,7 +8444,7 @@
         options: {
           responsive: true, maintainAspectRatio: false,
           plugins: {
-            legend: { position: 'right', labels: { color: '#ccc', font: { size: 11 }, padding: 10, usePointStyle: true, pointStyleWidth: 10 } }
+            legend: { position: 'right', labels: { color: t.legendColor, font: { size: 11 }, padding: 10, usePointStyle: true, pointStyleWidth: 10 } }
           }
         }
       });
