@@ -25,21 +25,20 @@
    1) URL de l’API Web App (Google Apps Script) :
       • Bloc JavaScript : ERP_API_URL_DEFAULT + ligne « COLAR » (var API_URL) — même URL /exec.
       • Si cette URL est valide, la page de connexion affiche directement email / mot de passe
-        (sans demander l’URL). localStorage « erp_api_url » : utilisé seulement si l’URL est un Web App
-        valide (/exec) ; une ancienne valeur incorrecte ne bloque plus l’URL déjà présente dans le fichier.
-      • Le formulaire « URL API » sur l’écran login n’apparaît que si aucune URL valide n’est
-        configurée dans le fichier ni en localStorage (ou via « Modifier l’URL de l’API »).
+        (sans demander l’URL). Priorité : 1) COLAR + ERP_API_URL_DEFAULT dans ce fichier, 2) sinon
+        localStorage « erp_api_url » si valide. L’URL du fichier est recopiée dans localStorage pour
+        éviter qu’une ancienne valeur ne masque l’URL intégrée.
+      • Le formulaire « URL API » du login a été retiré : l’URL se règle uniquement dans le code
+        (COLAR / ERP_API_URL_DEFAULT) ou dans Paramètres une fois connecté.
 
    2) Exemple d’URL valide :
       https://script.google.com/macros/s/AKfycbxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx/exec
 
-   3) Téléphone : menu ☰ pour ouvrir / fermer le panneau latéral (≤900px).
-
-   4) Thème : mode clair par défaut (style proche du portail staff Transfers) ; 🌙/☀️ mémorisent le choix (localStorage erp_admin_theme).
-
-   5) Pensez « Publier » en HTTPS (Google Sites, hébergeur) pour éviter les blocages CORS.
-
-   6) Login par défaut : admin@loja.com / admin123 (à changer côté feuille USERS).
+   3) Connexion : écran type portail réception staff (bandeau + formulaire) ; bascule ☀️/🌙 sur la page de login.
+   4) Téléphone : menu ☰ pour ouvrir / fermer le panneau latéral (≤900px).
+   5) Thème : mode clair par défaut (style proche du portail staff Transfers) ; 🌙/☀️ mémorisent le choix (localStorage erp_admin_theme).
+   6) Pensez « Publier » en HTTPS (Google Sites, hébergeur) pour éviter les blocages CORS.
+   7) Login par défaut : admin@loja.com / admin123 (à changer côté feuille USERS).
    ============================================================ */
     :root {
       /* Inspiré du portail staff Transfers : bleu ardoise + ambre (légèrement différent du navy/or classique). */
@@ -435,19 +434,22 @@
 
     /* LOGIN */
     #loginPage {
+      position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
       min-height: 100vh;
       background: var(--bg);
+      padding: 24px 16px;
     }
 
     .login-box {
       background: var(--bg2);
       border: 1px solid var(--border);
       border-radius: 20px;
-      padding: 48px;
-      width: 380px;
+      padding: 0;
+      width: 100%;
+      max-width: 430px;
     }
 
     .login-logo {
@@ -540,6 +542,143 @@
       width: auto;
       font-size: 13px;
       border-radius: 8px;
+    }
+
+    /* ── Connexion type portail staff / réception (Transfers) ── */
+    .login-theme-toggle {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      z-index: 3;
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      background: rgba(255, 255, 255, 0.14);
+      color: #fff;
+      font-size: 20px;
+      line-height: 1;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .login-theme-toggle:hover {
+      background: rgba(255, 255, 255, 0.24);
+      transform: translateY(-1px);
+    }
+
+    html[data-theme="dark"] .login-theme-toggle {
+      border-color: var(--border-strong);
+      background: var(--bg3);
+      color: var(--text);
+    }
+
+    .login-card-staff {
+      width: 100%;
+      max-width: 430px;
+      padding: 0;
+      overflow: hidden;
+      border-radius: var(--radius);
+    }
+
+    .login-brand-band {
+      padding: 22px 28px 20px;
+      background: linear-gradient(135deg, var(--brand-deep) 0%, var(--brand) 55%, var(--brand-mid) 100%);
+      border-bottom: 3px solid var(--gold);
+    }
+
+    html[data-theme="dark"] .login-brand-band {
+      background: linear-gradient(135deg, #0a1018 0%, var(--brand-deep) 45%, var(--brand) 100%);
+      border-bottom-color: var(--accent);
+    }
+
+    .login-brand-title {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: 0.04em;
+      line-height: 1.25;
+    }
+
+    .login-brand-sub {
+      margin-top: 8px;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.88);
+      line-height: 1.45;
+    }
+
+    .login-card-body {
+      padding: 26px 28px 30px;
+    }
+
+    .login-no-api-banner {
+      display: none;
+      margin-bottom: 18px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(220, 38, 38, 0.45);
+      background: rgba(220, 38, 38, 0.08);
+      font-size: 13px;
+      line-height: 1.55;
+      color: var(--text);
+    }
+
+    .login-no-api-banner strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--red);
+      font-size: 13px;
+    }
+
+    .login-no-api-banner p {
+      margin: 0;
+      color: var(--text-mid);
+    }
+
+    .login-no-api-banner code {
+      font-family: var(--mono);
+      font-size: 11px;
+      background: var(--bg3);
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+
+    .login-welcome-hint {
+      display: none;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text2);
+      line-height: 1.55;
+      margin-bottom: 18px;
+      padding: 10px 12px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+
+    .login-box.login-api-configured .login-welcome-hint {
+      display: block;
+    }
+
+    .login-form-title {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text);
+      text-align: center;
+      margin: 0 0 6px;
+    }
+
+    #loginFormSection {
+      border-top: none;
+      padding-top: 0;
+    }
+
+    .login-box.login-api-configured #loginFormSection .login-sub {
+      margin-top: 4px;
     }
 
     /* Paiements — aide visuelle configuration (vitrine + gateways) */
@@ -1736,55 +1875,35 @@
 
   <a href="#main-admin" class="skip-link">Aller au contenu principal</a>
 
-  <!-- LOGIN -->
+  <!-- LOGIN — portail type réception staff (Transfers) : identité + formulaire simple -->
   <div id="loginPage">
-    <div class="login-box" style="width:440px; padding:32px;">
+    <button type="button" id="loginThemeBtn" class="login-theme-toggle" onclick="toggleAdminTheme()"
+      title="Tema">☀️</button>
+    <div class="login-box login-card-staff">
+      <div class="login-brand-band">
+        <div class="login-brand-title">Acesso da equipa</div>
+        <div class="login-brand-sub">Portal ERP — receção staff</div>
+      </div>
+      <div class="login-card-body">
+        <div id="loginNoApiBanner" class="login-no-api-banner" style="display:none;" role="alert">
+          <strong>URL do Web App não configurada neste ficheiro</strong>
+          <p>Edite o HTML: <code>window.ERP_API_URL_DEFAULT</code> e a linha <code>var API_URL</code> (bloco COLAR), com o URL que termina em <code>/exec</code>. Guarde, publique e recarregue. Não é pedido URL nesta página de login.</p>
+        </div>
 
-      <!--
-        URL Web App : définie dans ce fichier (ERP_API_URL_DEFAULT + ligne COLAR, puis variable API_URL).
-        Si cette URL est valide, la page de connexion affiche directement le formulaire (sans saisie d’URL).
-        Le bloc ci-dessous ne s’affiche que si aucune URL valide n’est configurée dans le code ni en localStorage.
-      -->
-      <div id="l-url-section" style="margin-bottom:20px;">
-        <div
-          style="background:rgba(201,165,61,.06);border:1px solid rgba(201,165,61,.3);border-radius:8px;padding:16px;">
-          <div
-            style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#c9a53d;margin-bottom:8px;">
-            📍 URL da API — Obrigatório</div>
-          <input type="url" id="loginApiUrl" placeholder="https://script.google.com/macros/s/AKfycb.../exec"
-            style="width:100%;padding:10px 12px;background:rgba(0,0,0,.4);border:1px solid rgba(201,165,61,.3);border-radius:6px;color:#fff;font-family:monospace;font-size:12px;outline:none;"
-            autocomplete="off">
-          <div style="font-size:11px;color:var(--text2);margin-top:8px;line-height:1.6;">
-            Cole aqui o URL do seu Apps Script.<br>
-            <em style="opacity:.8;">Google Sheets → Extensões → Apps Script → Implementar → Gerir implementações</em>
+        <div id="loginFormSection" style="display:block;">
+          <p class="login-welcome-hint" id="loginWelcomeHint">Introduza email e palavra-passe para entrar no painel.</p>
+          <h2 class="login-form-title">Iniciar sessão</h2>
+          <p class="login-sub" style="text-align:center; margin-bottom:22px;">Painel de gestão — acesso reservado</p>
+          <div class="form-group">
+            <label data-i18n-ignore>Email</label>
+            <input type="email" id="loginEmail" placeholder="admin@loja.com" value="admin@loja.com" autocomplete="username">
           </div>
-          <button onclick="testAndSaveApi()"
-            style="width:100%;margin-top:12px;padding:10px;background:#c9a53d;color:#111;border:none;border-radius:6px;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:transform .15s;">📍
-            Testar e Guardar URL</button>
+          <div class="form-group">
+            <label>Senha</label>
+            <input type="password" id="loginPass" placeholder="••••••••" value="admin123" autocomplete="current-password">
+          </div>
+          <button type="button" class="btn" id="loginSubmitBtn" onclick="doLogin()">Entrar no painel</button>
         </div>
-      </div>
-
-      <!-- NORMAL LOGIN -->
-      <div id="loginFormSection" style="display:none; padding-top:20px; border-top:1px solid var(--border);">
-        <div class="login-logo" style="text-align:center;">🏪 ERP Admin</div>
-        <p class="login-sub" style="text-align:center; margin-bottom:24px;">Painel de Gestão — Acesso Restrito</p>
-        <div class="form-group">
-          <label>Email</label>
-          <input type="email" id="loginEmail" placeholder="admin@loja.com" value="admin@loja.com">
-        </div>
-        <div class="form-group">
-          <label>Senha</label>
-          <input type="password" id="loginPass" placeholder="••••••••" value="admin123">
-        </div>
-        <button class="btn" onclick="doLogin()">Entrar no Painel</button>
-      </div>
-
-      <div id="loginApiChangeRow" style="display:none;text-align:center;margin-top:16px;">
-        <button type="button" class="btn outline sm" onclick="showApiUrlSection()"
-          style="width:auto;padding:8px 16px;font-size:12px;">Modifier l’URL de l’API</button>
-        <p style="font-size:11px;color:var(--text2);margin-top:10px;line-height:1.5;">L’URL est mémorisée dans ce
-          navigateur (actualisation incluse). Si vous ouvrez l’admin depuis un autre domaine (aperçu vs site publié),
-          collez l’URL une fois de plus.</p>
       </div>
     </div>
   </div>
@@ -4222,9 +4341,7 @@
 
   <script>
     /* ═══ ADMIN — déploiement 02-admin-erp (GitHub Pages) ═══
-       Copie alignée sur VENTE EN LIGNE TPE/admin_erp.html ; même code, seul ce bloc CONFIG diffère.
-       ERP_ADMIN_URL = index.html (racine admin). Remplacez ERP_BOUTIQUE_URL par l’URL HTTPS du dépôt
-       BOUTIQUE / BOUTIQUE_CLIENT (…/index.html) si la vitrine est sur un autre dépôt. */
+       Aligné sur VENTE EN LIGNE TPE/admin_erp.html ; URL API identique (COLAR + ce script). */
     window.ERP_API_URL_DEFAULT = 'https://script.google.com/macros/s/AKfycbztGNP_42KhnEpCQ2UQ4SJJECgbTZlAxaJCtU-0WjKaxiyBDcWdjJEvEFz9VFyg4xOv/exec';
     window.ERP_BOUTIQUE_URL = 'https://VOTRE-USER.github.io/VOTRE-REPO-BOUTIQUE/index.html';
     window.ERP_ADMIN_URL = 'index.html';
@@ -4265,7 +4382,7 @@
 ╠══════════════════════════════════════════════════════════════════╣
 ║  Passo 3: Colar abaixo OU no ERP_API_URL_DEFAULT (script acima)║
 ║  Étape 3 : Coller ci-dessous ou dans ERP_API_URL_DEFAULT       ║
-║            — priorité : URL mémorisée (localStorage / login).  ║
+║            — nenhum URL na página de login : só no ficheiro (COLAR / ERP_API_URL_DEFAULT). ║
 ╚══════════════════════════════════════════════════════════════════╝
 -->
   <script>
@@ -4291,8 +4408,8 @@
   </script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   <script>
-    // URL finale : localStorage erp_api_url (sauvé depuis l’écran de connexion / Config) n’écrase
-    // le collage ci-dessus que si l’URL est un Web App GAS valide (https://script.google.com/…/macros/…/exec).
+    // URL finale : l’URL intégrée (COLAR + ERP_API_URL_DEFAULT) prime sur localStorage ; le stockage
+    // n’est utilisé qu’en secours si aucune URL valide n’est dans le fichier.
 
     // ============================================================
     // TRADUÇÕES
@@ -6513,66 +6630,27 @@
     }
 
     // ============================================================
-    // LOGIN — URL : priorité localStorage si valide, sinon URL déjà intégrée au HTML (API_URL)
+    // LOGIN — URL : fichier (COLAR / ERP_API_URL_DEFAULT), puis localStorage — aucun champ URL sur l’écran login
     // ============================================================
     function initLoginUi() {
-      const urlSection = document.getElementById('l-url-section');
       const formSection = document.getElementById('loginFormSection');
-      const changeRow = document.getElementById('loginApiChangeRow');
-      const loginInput = document.getElementById('loginApiUrl');
+      const banner = document.getElementById('loginNoApiBanner');
       const savedRaw = localStorage.getItem('erp_api_url');
       const savedUrl = savedRaw ? String(savedRaw).trim() : '';
       const embedded = (typeof API_URL !== 'undefined' && API_URL) ? String(API_URL).trim() : '';
       const defUrl = (typeof window.ERP_API_URL_DEFAULT === 'string') ? String(window.ERP_API_URL_DEFAULT).trim() : '';
-      var resolved = parseGsWebAppUrl(savedUrl) || parseGsWebAppUrl(embedded) || parseGsWebAppUrl(defUrl) || '';
+      var resolved = parseGsWebAppUrl(embedded) || parseGsWebAppUrl(defUrl) || parseGsWebAppUrl(savedUrl) || '';
+      const loginBox = document.querySelector('#loginPage .login-box');
+      if (loginBox) loginBox.classList.toggle('login-api-configured', !!resolved);
+      if (banner) banner.style.display = resolved ? 'none' : 'block';
+      if (formSection) formSection.style.display = 'block';
       if (resolved) {
         API_URL = resolved;
         try {
-          if (!parseGsWebAppUrl(savedUrl)) localStorage.setItem('erp_api_url', resolved);
+          localStorage.setItem('erp_api_url', resolved);
         } catch (e) { }
-        if (loginInput) loginInput.value = resolved;
-        if (urlSection) urlSection.style.display = 'none';
-        if (formSection) formSection.style.display = 'block';
-        if (changeRow) changeRow.style.display = 'block';
       } else {
-        if (urlSection) urlSection.style.display = 'block';
-        if (formSection) formSection.style.display = 'none';
-        if (changeRow) changeRow.style.display = 'none';
-        if (loginInput) {
-          var pre = parseGsWebAppUrl(embedded) || parseGsWebAppUrl(defUrl) || normalizeGsWebAppUrl(embedded) || '';
-          if (pre) loginInput.value = pre;
-        }
-      }
-    }
-
-    function showApiUrlSection() {
-      const urlSection = document.getElementById('l-url-section');
-      const changeRow = document.getElementById('loginApiChangeRow');
-      if (urlSection) urlSection.style.display = 'block';
-      if (changeRow) changeRow.style.display = 'none';
-    }
-
-    async function testAndSaveApi() {
-      const raw = document.getElementById('loginApiUrl').value.trim();
-      const url = parseGsWebAppUrl(raw) || '';
-      if (!url) return alert("❌ URL inválido. Cole o URL completo do Web App (termina em /exec), p.ex. https://script.google.com/macros/s/…/exec");
-
-      try {
-        const ok = await verifyWebAppUrl(url);
-        if (ok) {
-          localStorage.setItem('erp_api_url', url);
-          API_URL = url;
-          const ls = document.getElementById('l-url-section');
-          const cr = document.getElementById('loginApiChangeRow');
-          if (ls) ls.style.display = 'none';
-          document.getElementById('loginFormSection').style.display = 'block';
-          if (cr) cr.style.display = 'block';
-          alert("✅ API Válida! Pode agora fazer o login do ERP Administrador.");
-        } else {
-          alert("❌ Ligação à API encontrou um erro. Certifique-se que fez o 'Deploy' Corretamente.");
-        }
-      } catch (e) {
-        alert("❌ Erro de conexão: Failed to fetch.\nIMPORTANT: L'API doit être déployée avec l'option 'Acesso: Qualquer Pessoa' (Anyone).\nSans cela, le navigateur bloque la requête par sécurité (CORS).");
+        API_URL = '';
       }
     }
 
@@ -7510,6 +7588,21 @@
 
     document.addEventListener('DOMContentLoaded', function () {
       initLoginUi();
+      (function wireStaffLoginHotkeys() {
+        var em = document.getElementById('loginEmail');
+        var pw = document.getElementById('loginPass');
+        if (em) em.addEventListener('keydown', function (e) {
+          if (e.key !== 'Enter') return;
+          e.preventDefault();
+          if (pw && document.getElementById('loginFormSection') && document.getElementById('loginFormSection').style.display !== 'none') pw.focus();
+          else doLogin();
+        });
+        if (pw) pw.addEventListener('keydown', function (e) {
+          if (e.key !== 'Enter') return;
+          e.preventDefault();
+          doLogin();
+        });
+      })();
       document.addEventListener('keydown', function (ev) {
         if (ev.key !== 'Escape') return;
         const p = document.getElementById('notifPanel');
@@ -7675,25 +7768,31 @@
     function toggleAdminTheme() {
       var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
       var btn = document.getElementById('adminThemeBtn');
+      var loginBtn = document.getElementById('loginThemeBtn');
+      function setPair(icon, title) {
+        if (btn) { btn.textContent = icon; btn.title = title; }
+        if (loginBtn) { loginBtn.textContent = icon; loginBtn.title = title; }
+      }
       if (isDark) {
         document.documentElement.removeAttribute('data-theme');
         try { localStorage.setItem('erp_admin_theme', 'light'); } catch (e) { }
-        if (btn) { btn.textContent = '☀️'; btn.title = 'Thème clair'; }
+        setPair('☀️', 'Modo claro');
       } else {
         document.documentElement.setAttribute('data-theme', 'dark');
         try { localStorage.setItem('erp_admin_theme', 'dark'); } catch (e) { }
-        if (btn) { btn.textContent = '🌙'; btn.title = 'Thème foncé'; }
+        setPair('🌙', 'Modo escuro');
       }
     }
     (function syncAdminThemeBtn() {
+      var dark = document.documentElement.getAttribute('data-theme') === 'dark';
       var btn = document.getElementById('adminThemeBtn');
-      if (!btn) return;
-      if (document.documentElement.getAttribute('data-theme') === 'dark') {
-        btn.textContent = '🌙';
-        btn.title = 'Thème foncé';
+      var loginBtn = document.getElementById('loginThemeBtn');
+      if (dark) {
+        if (btn) { btn.textContent = '🌙'; btn.title = 'Modo escuro'; }
+        if (loginBtn) { loginBtn.textContent = '🌙'; loginBtn.title = 'Modo escuro'; }
       } else {
-        btn.textContent = '☀️';
-        btn.title = 'Thème clair';
+        if (btn) { btn.textContent = '☀️'; btn.title = 'Modo claro'; }
+        if (loginBtn) { loginBtn.textContent = '☀️'; loginBtn.title = 'Modo claro'; }
       }
     })();
 
@@ -8138,8 +8237,10 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      const p = parseGsWebAppUrl(localStorage.getItem('erp_api_url') || '');
-      if (p) API_URL = p;
+      var pFile = parseGsWebAppUrl(API_URL) || parseGsWebAppUrl(typeof window.ERP_API_URL_DEFAULT === 'string' ? window.ERP_API_URL_DEFAULT : '');
+      var pLs = parseGsWebAppUrl(localStorage.getItem('erp_api_url') || '');
+      if (pFile) API_URL = pFile;
+      else if (pLs) API_URL = pLs;
       const savedToken = localStorage.getItem('erp_token');
       if (savedToken) { adminToken = savedToken; }
       document.querySelectorAll('.topbar .lang-btn').forEach(function (b) {
@@ -8158,16 +8259,20 @@
 
   <!--
 ================================================================================
-CONFIGURATION API : window.ERP_API_URL_DEFAULT (bloc script au-dessus du COLAR)
-+ ligne COLAR. localStorage erp_api_url (connexion / Paramètres) seulement si l’URL est valide (/exec) ;
-  sinon elle est ignorée et l’URL du fichier est utilisée.
+CONFIGURATION API : l’URL dans ERP_API_URL_DEFAULT + COLAR est prioritaire ; localStorage ne sert
+qu’en secours ou après « Tester / enregistrer » sur l’écran de connexion.
 ================================================================================
 -->
 
   <script>
     (function () {
-      var p = (typeof window._erpParseGsUrl === 'function') ? window._erpParseGsUrl(localStorage.getItem('erp_api_url') || '') : null;
-      if (p) API_URL = p;
+      var parse = (typeof window._erpParseGsUrl === 'function') ? window._erpParseGsUrl : function () { return null; };
+      var cur = (typeof API_URL !== 'undefined' && API_URL) ? API_URL : '';
+      var def = (typeof window.ERP_API_URL_DEFAULT === 'string') ? window.ERP_API_URL_DEFAULT : '';
+      var fromFile = parse(cur) || parse(def);
+      var fromLs = parse(localStorage.getItem('erp_api_url') || '');
+      if (fromFile) API_URL = fromFile;
+      else if (fromLs) API_URL = fromLs;
     })();
     var BOUTIQUE_STOREFRONT_URL = (typeof window.ERP_BOUTIQUE_URL === 'string' && window.ERP_BOUTIQUE_URL.trim()) ? window.ERP_BOUTIQUE_URL.trim() : 'boutique_client.html';
   </script>
