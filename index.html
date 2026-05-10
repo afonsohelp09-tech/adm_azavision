@@ -4455,7 +4455,8 @@
     /* ═══ ADMIN — déploiement 02-admin-erp (GitHub Pages) ═══
        Aligné sur VENTE EN LIGNE TPE/admin_erp.html ; URL API identique (COLAR + ce script). */
     window.ERP_API_URL_DEFAULT = 'https://script.google.com/macros/s/AKfycbwUEYjnXoEPzFpZKPN0NQ3HilMYQy4PEpslHyLpSVavcixzlf55Piv8nrAT_NsI441s/exec';
-    window.ERP_BOUTIQUE_URL = 'https://VOTRE-USER.github.io/VOTRE-REPO-BOUTIQUE/index.html';
+    /* Vide = détection auto (DEPLOIEMENT-GITHUB : ../01-boutique-client/index.html). Sinon URL HTTPS absolue de la vitrine. */
+    window.ERP_BOUTIQUE_URL = '';
     window.ERP_ADMIN_URL = 'index.html';
   </script>
   <script>
@@ -4769,7 +4770,40 @@
       }
     }
 
-    /** Ouvre la vitrine cliente (`boutique_client.html`) dans un nouvel onglet. URL : variable `BOUTIQUE_STOREFRONT_URL` en fin de fichier. */
+    /** Ignore les URLs modèle (README) pour ne pas ouvrir un lien cassé. */
+    function erpIsPlaceholderBoutiqueUrl(u) {
+      if (u == null || typeof u !== 'string') return true;
+      var s = u.trim();
+      if (!s) return true;
+      var L = s.toLowerCase();
+      if (L.indexOf('votre-user') !== -1 || L.indexOf('votre-repo') !== -1) return true;
+      if (L.indexOf('your-user') !== -1 || L.indexOf('your-repo') !== -1) return true;
+      if (L.indexOf('votre-repo-boutique') !== -1) return true;
+      return false;
+    }
+
+    /**
+     * URL de la vitrine : ERP_BOUTIQUE_URL si renseignée et valide ;
+     * sinon même origine que l’admin avec ../01-boutique-client/index.html (paquet DEPLOIEMENT-GITHUB) ;
+     * sinon boutique_client.html à côté de l’admin.
+     */
+    function erpResolveBoutiqueStorefrontUrl() {
+      var raw = (typeof window.ERP_BOUTIQUE_URL === 'string') ? window.ERP_BOUTIQUE_URL.trim() : '';
+      if (raw && !erpIsPlaceholderBoutiqueUrl(raw)) return raw;
+      try {
+        if (typeof location !== 'undefined' && location.href && location.pathname && location.pathname.indexOf('02-admin-erp') !== -1) {
+          return new URL('../01-boutique-client/index.html', location.href).href;
+        }
+      } catch (e1) { }
+      try {
+        return new URL('boutique_client.html', typeof location !== 'undefined' ? location.href : '').href;
+      } catch (e2) {
+        return 'boutique_client.html';
+      }
+    }
+    try { window.erpResolveBoutiqueStorefrontUrl = erpResolveBoutiqueStorefrontUrl; } catch (eW) { }
+
+    /** Ouvre la vitrine dans un nouvel onglet (voir erpResolveBoutiqueStorefrontUrl). */
     function openBoutiqueStorefront() {
       if (typeof window.innerWidth === 'number' && window.innerWidth <= 900) {
         document.querySelector('.sidebar')?.classList.remove('open');
@@ -4777,9 +4811,18 @@
         var st = document.getElementById('sidebarToggleBtn');
         if (st) st.setAttribute('aria-expanded', 'false');
       }
-      var u = (typeof BOUTIQUE_STOREFRONT_URL === 'string' && BOUTIQUE_STOREFRONT_URL.trim()) ? BOUTIQUE_STOREFRONT_URL.trim() : ((typeof window.ERP_BOUTIQUE_URL === 'string' && window.ERP_BOUTIQUE_URL.trim()) ? window.ERP_BOUTIQUE_URL.trim() : 'boutique_client.html');
+      var u = erpResolveBoutiqueStorefrontUrl();
       try {
-        window.open(u, '_blank', 'noopener,noreferrer');
+        var w = window.open(u, '_blank', 'noopener,noreferrer');
+        if (!w) {
+          var a = document.createElement('a');
+          a.href = u;
+          a.target = '_blank';
+          a.rel = 'noopener noreferrer';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+        }
       } catch (e) {
         toast('❌ ' + (e.message || 'Erro'), 'error');
       }
@@ -8486,6 +8529,7 @@
       window.setLang = setLang;
       window.doLogin = doLogin;
       window.toggleAdminTheme = toggleAdminTheme;
+      window.openBoutiqueStorefront = openBoutiqueStorefront;
     } catch (eWin) { }
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -8528,7 +8572,9 @@ CONFIGURATION API : l’URL dans <code>ERP_API_URL_DEFAULT</code> + COLAR est pr
       if (fromFile) API_URL = fromFile;
       else if (fromLs) API_URL = fromLs;
     })();
-    var BOUTIQUE_STOREFRONT_URL = (typeof window.ERP_BOUTIQUE_URL === 'string' && window.ERP_BOUTIQUE_URL.trim()) ? window.ERP_BOUTIQUE_URL.trim() : 'boutique_client.html';
+    var BOUTIQUE_STOREFRONT_URL = (typeof window.erpResolveBoutiqueStorefrontUrl === 'function')
+      ? window.erpResolveBoutiqueStorefrontUrl()
+      : 'boutique_client.html';
   </script>
 
 </body>
