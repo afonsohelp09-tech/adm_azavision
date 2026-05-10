@@ -4412,6 +4412,15 @@
         if (!n || n.indexOf('INSEREZ_VOTRE') !== -1) return null;
         if (n.indexOf('https://script.google.com/') !== 0) return null;
         if (n.indexOf('/macros/') === -1) return null;
+        if (n.indexOf('/exec') === -1 && !/\/dev(\?|#|$)/i.test(n)) {
+          var qi = n.indexOf('?');
+          var hi = n.indexOf('#');
+          var cut = qi === -1 ? hi : hi === -1 ? qi : Math.min(qi, hi);
+          var pathOnly = cut === -1 ? n : n.slice(0, cut);
+          var tail = cut === -1 ? '' : n.slice(cut);
+          pathOnly = pathOnly.replace(/\/$/, '');
+          if (/\/macros\/s\/[^/]+$/i.test(pathOnly)) n = pathOnly + '/exec' + tail;
+        }
         if (n.indexOf('/exec') === -1 && !/\/dev(\?|#|$)/i.test(n)) return null;
         return n;
       }
@@ -4560,7 +4569,7 @@
         '<h3 style="margin:22px 0 10px;font-size:16px;color:var(--accent);">7 · Lista antes de publicar</h3><ul style="margin:0;padding:0 0 8px 20px;"><li style="margin:6px 0;">API probada</li><li style="margin:6px 0;">Producto visible + imagen</li><li style="margin:6px 0;">Precios e impuestos</li><li style="margin:6px 0;">URLs legales completas</li></ul></div>'
     };
 
-    let lang = localStorage.getItem('erp_admin_lang') || 'pt';
+    let lang = String(localStorage.getItem('erp_admin_lang') || 'pt').toLowerCase();
     if (['pt', 'fr', 'en', 'es'].indexOf(lang) === -1) lang = 'pt';
     let adminToken = '';
     let currentOrderId = '';
@@ -4610,13 +4619,17 @@
     }
 
     function setLang(l, btn) {
+      l = String(l || 'pt').toLowerCase();
+      if (!langs[l]) return;
       lang = l;
-      try { localStorage.setItem('erp_admin_lang', l); } catch (e) { }
+      try { localStorage.setItem('erp_admin_lang', lang); } catch (e) { }
       try {
-        document.documentElement.lang = l === 'pt' ? 'pt-PT' : l === 'en' ? 'en' : l === 'fr' ? 'fr' : 'es';
+        document.documentElement.lang = lang === 'pt' ? 'pt-PT' : lang === 'en' ? 'en' : lang === 'fr' ? 'fr' : 'es';
       } catch (e) { }
-      document.querySelectorAll('.lang-btn').forEach(function (b) { b.classList.remove('active'); });
-      if (btn) btn.classList.add('active');
+      document.querySelectorAll('.lang-btn').forEach(function (b) {
+        var t = (b.textContent || '').trim().toLowerCase();
+        b.classList.toggle('active', t === lang);
+      });
       applyAdminI18n();
       try { if (typeof updateBulkCount === 'function') updateBulkCount(); } catch (e0) { }
       updateTopNav(currentAdminPage);
@@ -6711,6 +6724,30 @@
         } catch (e) { }
       } else {
         API_URL = '';
+      }
+      var fileEl = document.getElementById('loginFileProtocolBanner');
+      if (typeof location !== 'undefined' && location.protocol === 'file:') {
+        var fileMsg = {
+          pt: 'Aberto como ficheiro local (file://). Publique esta página em HTTPS (ex.: GitHub Pages) e use esse URL — em file:/// o navegador bloqueia a API do Google Apps Script e o início de sessão falha.',
+          fr: 'Ouvert en fichier local (file://). Hébergez cette page en HTTPS (ex. GitHub Pages) — en file:// le navigateur bloque l’API Google Apps Script et la connexion échoue.',
+          en: 'Opened as local file (file://). Host this admin on HTTPS (e.g. GitHub Pages) — browsers block Google Apps Script from file:// so sign-in will fail.',
+          es: 'Abierto como archivo local (file://). Publique en HTTPS (p. ej. GitHub Pages) — con file:// el navegador bloquea la API de Google Apps Script y el acceso falla.'
+        };
+        if (!fileEl) {
+          fileEl = document.createElement('div');
+          fileEl.id = 'loginFileProtocolBanner';
+          fileEl.className = 'login-no-api-banner';
+          fileEl.setAttribute('role', 'alert');
+          var hostFile = document.querySelector('#loginPage .login-card') || document.querySelector('#loginPage .login-box') || loginBox;
+          if (hostFile) hostFile.insertBefore(fileEl, hostFile.firstChild);
+          else if (formSection && formSection.parentNode) formSection.parentNode.insertBefore(fileEl, formSection);
+        }
+        fileEl.style.display = 'block';
+        try {
+          fileEl.innerHTML = '<strong>file://</strong><p style="margin:8px 0 0;line-height:1.45;">' + (fileMsg[lang] || fileMsg.pt) + '</p>';
+        } catch (eFile) { fileEl.textContent = fileMsg.en; }
+      } else if (fileEl) {
+        fileEl.style.display = 'none';
       }
     }
 
