@@ -34,14 +34,14 @@
    2) Exemple d’URL valide :
       https://script.google.com/macros/s/AKfycbxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx/exec
 
-   3) Connexion : écran type portail réception staff (bandeau + formulaire) ; bascule ☀️/🌙 sur la page de login.
+   3) Connexion : écran e-commerce (bandeau + formulaire), PT · FR · EN · ES sur la page de login (PT par défaut) ; ☀️/🌙 pour le thème.
    4) Téléphone : menu ☰ pour ouvrir / fermer le panneau latéral (≤900px).
-   5) Thème : mode clair par défaut (style proche du portail staff Transfers) ; 🌙/☀️ mémorisent le choix (localStorage erp_admin_theme).
+   5) Thème : mode clair par défaut (présentation professionnelle type portail interne, sans lien avec un autre projet) ; 🌙/☀️ mémorisent le choix (localStorage erp_admin_theme).
    6) Pensez « Publier » en HTTPS (Google Sites, hébergeur) pour éviter les blocages CORS.
    7) Login par défaut : admin@loja.com / admin123 (à changer côté feuille USERS).
    ============================================================ */
     :root {
-      /* Inspiré du portail staff Transfers : bleu ardoise + ambre (légèrement différent du navy/or classique). */
+      /* Charte e-commerce TPE : bleu ardoise + ambre (inspiration visuelle type portail pro, sans identité d’un autre produit). */
       --brand: #0a3349;
       --brand-mid: #0f5278;
       --brand-deep: #061a27;
@@ -117,7 +117,7 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ── Portail ERP : en-tête façon staff (bandeau foncé en mode clair), lisibilité renforcée ── */
+    /* ── Page de connexion : bandeau identité boutique (lisibilité renforcée) ── */
     html:not([data-theme="dark"]) #loginPage {
       background: linear-gradient(145deg, var(--brand-deep) 0%, var(--brand) 52%, var(--brand-mid) 100%);
       min-height: 100vh;
@@ -544,11 +544,50 @@
       border-radius: 8px;
     }
 
-    /* ── Connexion type portail staff / réception (Transfers) ── */
-    .login-theme-toggle {
+    /* ── Connexion e-commerce : barre langue + thème ── */
+    #loginPage .login-top-bar {
       position: absolute;
       top: 16px;
       right: 16px;
+      left: 16px;
+      z-index: 4;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      pointer-events: none;
+    }
+
+    #loginPage .login-top-bar > * {
+      pointer-events: auto;
+    }
+
+    html:not([data-theme="dark"]) #loginPage .login-top-bar .lang-switcher {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.22);
+    }
+
+    html:not([data-theme="dark"]) #loginPage .login-top-bar .lang-btn {
+      color: rgba(255, 255, 255, 0.88);
+      background: transparent;
+    }
+
+    html:not([data-theme="dark"]) #loginPage .login-top-bar .lang-btn.active {
+      background: var(--gold-soft);
+      color: var(--gold-light);
+      font-weight: 700;
+    }
+
+    html[data-theme="dark"] #loginPage .login-top-bar .lang-switcher {
+      background: var(--bg3);
+      border-color: var(--border-strong);
+    }
+
+    .login-theme-toggle {
+      position: relative;
+      top: auto;
+      right: auto;
       z-index: 3;
       width: 44px;
       height: 44px;
@@ -573,7 +612,7 @@
       color: var(--text);
     }
 
-    .login-card-staff {
+    .login-card-erp {
       width: 100%;
       max-width: 430px;
       padding: 0;
@@ -1875,34 +1914,44 @@
 
   <a href="#main-admin" class="skip-link">Aller au contenu principal</a>
 
-  <!-- LOGIN — portail type réception staff (Transfers) : identité + formulaire simple -->
+  <!-- LOGIN — ERP boutique en ligne TPE (identité e-commerce, 4 langues, PT par défaut) -->
   <div id="loginPage">
-    <button type="button" id="loginThemeBtn" class="login-theme-toggle" onclick="toggleAdminTheme()"
-      title="Tema">☀️</button>
-    <div class="login-box login-card-staff">
+    <div class="login-top-bar">
+      <div class="lang-switcher" role="group" data-i18n-aria-label="lang_switcher_aria"
+        aria-label="Idiomas: Português (predefinição), Français, English, Español">
+        <span class="lang-btn active" onclick="setLang('pt',this)">PT</span>
+        <span class="lang-btn" onclick="setLang('fr',this)">FR</span>
+        <span class="lang-btn" onclick="setLang('en',this)">EN</span>
+        <span class="lang-btn" onclick="setLang('es',this)">ES</span>
+      </div>
+      <button type="button" id="loginThemeBtn" class="login-theme-toggle" onclick="toggleAdminTheme()"
+        title="Modo claro">☀️</button>
+    </div>
+    <div class="login-box login-card-erp">
       <div class="login-brand-band">
-        <div class="login-brand-title">Acesso da equipa</div>
-        <div class="login-brand-sub">Portal ERP — receção staff</div>
+        <div class="login-brand-title" data-i18n="login_brand_title">ERP — Loja online</div>
+        <div class="login-brand-sub" data-i18n="login_brand_sub">Painel de gestão do comércio eletrónico</div>
       </div>
       <div class="login-card-body">
         <div id="loginNoApiBanner" class="login-no-api-banner" style="display:none;" role="alert">
-          <strong>URL do Web App não configurada neste ficheiro</strong>
-          <p>Edite o HTML: <code>window.ERP_API_URL_DEFAULT</code> e a linha <code>var API_URL</code> (bloco COLAR), com o URL que termina em <code>/exec</code>. Guarde, publique e recarregue. Não é pedido URL nesta página de login.</p>
+          <strong data-i18n="login_no_api_title">URL do Web App não configurada neste ficheiro</strong>
+          <p data-i18n="login_no_api_text" data-i18n-html="1">Edite o HTML: defina <code>window.ERP_API_URL_DEFAULT</code> e <code>var API_URL</code> (bloco COLAR) com o URL que termina em <code>/exec</code>. Guarde, publique e recarregue. Neste ecrã só e-mail e palavra-passe — sem campo de URL.</p>
         </div>
 
         <div id="loginFormSection" style="display:block;">
-          <p class="login-welcome-hint" id="loginWelcomeHint">Introduza email e palavra-passe para entrar no painel.</p>
-          <h2 class="login-form-title">Iniciar sessão</h2>
-          <p class="login-sub" style="text-align:center; margin-bottom:22px;">Painel de gestão — acesso reservado</p>
+          <p class="login-welcome-hint" id="loginWelcomeHint" data-i18n="login_welcome_hint">Introduza o e-mail e a palavra-passe para aceder ao painel.</p>
+          <h2 class="login-form-title" data-i18n="login_form_title">Iniciar sessão</h2>
+          <p class="login-sub" style="text-align:center; margin-bottom:22px;" data-i18n="login_sub">Acesso reservado à equipa da loja</p>
           <div class="form-group">
-            <label data-i18n-ignore>Email</label>
+            <label data-i18n="login_label_email">E-mail</label>
             <input type="email" id="loginEmail" placeholder="admin@loja.com" value="admin@loja.com" autocomplete="username">
           </div>
           <div class="form-group">
-            <label>Senha</label>
-            <input type="password" id="loginPass" placeholder="••••••••" value="admin123" autocomplete="current-password">
+            <label data-i18n="login_label_password">Palavra-passe</label>
+            <input type="password" id="loginPass" placeholder="••••••••" value="admin123" autocomplete="current-password"
+              data-i18n-placeholder="login_pass_placeholder">
           </div>
-          <button type="button" class="btn" id="loginSubmitBtn" onclick="doLogin()">Entrar no painel</button>
+          <button type="button" class="btn" id="loginSubmitBtn" onclick="doLogin()" data-i18n="login_submit">Entrar no painel</button>
         </div>
       </div>
     </div>
@@ -2056,6 +2105,8 @@
                   aria-hidden="true">📂</span> <span data-i18n="categorias">Categorias</span></button>
               <button type="button" class="quick-nav-btn" data-quick="stock" onclick="showPage('stock')"><span
                   aria-hidden="true">📦</span> <span data-i18n="stock">Stock</span></button>
+              <button type="button" class="quick-nav-btn" data-quick="mediatheque" onclick="showPage('mediatheque')"><span
+                  aria-hidden="true">🖼️</span> <span data-i18n="mediatheque">Médiathèque</span></button>
               <button type="button" class="quick-nav-btn" data-quick="marcas" onclick="showPage('marcas')"><span
                   aria-hidden="true">🏷</span> <span data-i18n="marcas">Marcas</span></button>
               <button type="button" class="quick-nav-btn" data-quick="cupons" onclick="showPage('cupons')"><span
@@ -4422,10 +4473,10 @@
     };
     (function mergeAdminExtraI18n() {
       var X = {
-        pt: { bulk_selected: '{n} selecionado(s)', lbl_selection: 'Seleção:', btn_bulk_bar_activate: '✅ Ativar', btn_bulk_bar_deactivate: '⏸ Desativar', btn_bulk_bar_delete: '🗑 Remover', btn_bulk_bar_clear: '✖ Limpar', dash_recent_activity: '📋 Atividade recente', mediatheque_page_blurb: 'Imagens da pasta ERP_Boutique_Images. Copie o URL ou abra um produto para associar.', nav_boutique_title: 'Abrir a vitrine num novo separador', btn_import_csv: '📥 Importar CSV', btn_catalog_refresh: '🔄 Catálogo', catalog_refresh_title: 'Recarrega categorias, lista de catálogo e produtos', modal_close: 'Fechar', client_modal_title: '👤 Ficha do cliente', btn_preview_email: '👁 Pré-visualizar', card_email_preview: '📧 Pré-visualização da mensagem', fin_revenue_sub: 'Período selecionado', fin_pay_split: '💳 Repartição por método de pagamento', fin_tx_detail: '📋 Detalhe das transações', transporteurs_title: '🚚 Transportadores configurados', dev_return_title: '↩️ Registar uma devolução', dev_return_save: '💾 Guardar devolução', dev_motive_defective: 'Produto defeituoso', dev_motive_wrong_size: 'Tamanho incorreto', dev_motive_not_desc: 'Não conforme à descrição', dev_motive_other: 'Desistência / arrependimento', dev_details_ph: 'Detalhes adicionais...', lbl_qty: 'Quantidade', inv_modal_cancel: 'Cancelar', aria_sidebar: 'Abrir ou fechar o menu lateral', global_search_ph: '🔍 Pesquisar…', fatura_opt_all: 'Todos os estados', fatura_opt_pending: 'Pendente', fatura_opt_paid: 'Paga', fatura_opt_overdue: 'Em atraso', ret_filter_all: 'Todas as devoluções', ret_stat_approved: 'Aprovado', ret_stat_received: 'Recebido', ret_stat_refunded: 'Reembolsado', ret_stat_rejected: 'Rejeitado', ret_new_btn: '+ Nova devolução', ret_card_title: '↩️ Pedidos de devolução', ret_notes_card: '📝 Notas / Política de devoluções (interno)', pay_stat_requested: 'Pedido', th_invoice: 'Nº FATURA', th_client: 'CLIENTE', th_date: 'DATA', th_total: 'TOTAL', th_status_col: 'ESTADO', th_actions_short: 'AÇÕES', ret_th_id: 'ID', ret_th_order: 'PEDIDO', ret_th_product: 'PRODUTO', ret_th_reason: 'MOTIVO', lang_opt_fr: 'Francês', lang_opt_en: 'Inglês', lang_opt_es: 'Espanhol', dash_quick_actions: '⚡ Ações rápidas', btn_stock_min_sel: '📉 Stock mín. (selecionados)', btn_physical_inv: '📋 Inventário físico', err_products: 'Erro ao carregar produtos', err_image: 'Erro de imagem', err_generic_suffix: 'Erro', err_save: 'Erro ao guardar', cfg_danger_title: '⚠️ Zona sensível', cfg_danger_intro: 'Estas ações são irreversíveis. Prossiga com cuidado.', cfg_btn_reset_sheets: '🔄 Reiniciar folhas', sheets_reset_confirm: 'ATENÇÃO: Reiniciar todas as folhas da folha de cálculo? Esta ação é irreversível.', sheets_reset_ok: 'Folhas reiniciadas', stock_inv_intro: 'Leia ou introduza as quantidades reais contadas. Os ajustes serão guardados como movimentos de stock.', login_label_email: 'Email', bulk_toast_activated: '{n} produto(s) ativado(s)', bulk_toast_deactivated: '{n} produto(s) desativado(s)', bulk_toast_deleted: '{n} produto(s) removido(s)', bulk_confirm_delete: 'Remover {n} produto(s)? Esta ação é irreversível.', inv_empty_list: 'Sem produtos', inv_no_adjustment: 'Nenhum ajustamento a aplicar', inv_confirm_apply: 'Aplicar {n} ajustamento(s) de stock?', inv_toast_applied: '{ok}/{total} ajustamento(s) aplicado(s)', sheets_reset_fail: 'Erro', session_reconnect_hint: 'Volte a iniciar sessão.' },
-        fr: { bulk_selected: '{n} sélectionné(s)', lbl_selection: 'Sélection :', btn_bulk_bar_activate: '✅ Activer', btn_bulk_bar_deactivate: '⏸ Désactiver', btn_bulk_bar_delete: '🗑 Supprimer', btn_bulk_bar_clear: '✖ Annuler', dash_recent_activity: '📋 Activité récente', mediatheque_page_blurb: 'Images du dossier ERP_Boutique_Images. Copiez l’URL ou ouvrez un produit pour l’assigner.', nav_boutique_title: 'Ouvrir la vitrine dans un nouvel onglet', btn_import_csv: '📥 Importer CSV', btn_catalog_refresh: '🔄 Catalogue', catalog_refresh_title: 'Recharge catégories, liste catalogue et produits', modal_close: 'Fermer', client_modal_title: '👤 Fiche client', btn_preview_email: '👁 Prévisualiser', card_email_preview: '📧 Prévisualisation du message', fin_revenue_sub: 'Période sélectionnée', fin_pay_split: '💳 Répartition par moyen de paiement', fin_tx_detail: '📋 Détail des transactions', transporteurs_title: '🚚 Transporteurs configurés', dev_return_title: '↩️ Enregistrer un retour', dev_return_save: '💾 Enregistrer le retour', dev_motive_defective: 'Produit défectueux', dev_motive_wrong_size: 'Taille incorrecte', dev_motive_not_desc: 'Non conforme à la description', dev_motive_other: 'Rétractation / changement d’avis', dev_details_ph: 'Détails supplémentaires...', lbl_qty: 'Quantité', inv_modal_cancel: 'Annuler', aria_sidebar: 'Ouvrir ou fermer le menu latéral', global_search_ph: '🔍 Rechercher…', fatura_opt_all: 'Tous les statuts', fatura_opt_pending: 'En attente', fatura_opt_paid: 'Payée', fatura_opt_overdue: 'En retard', ret_filter_all: 'Tous les retours', ret_stat_approved: 'Approuvé', ret_stat_received: 'Reçu', ret_stat_refunded: 'Remboursé', ret_stat_rejected: 'Rejeté', ret_new_btn: '+ Nouveau retour', ret_card_title: '↩️ Demandes de retour', ret_notes_card: '📝 Notes / Politique retours (interne)', pay_stat_requested: 'Demandé', th_invoice: 'Nº FACTURE', th_client: 'CLIENT', th_date: 'DATE', th_total: 'TOTAL', th_status_col: 'STATUT', th_actions_short: 'ACTIONS', ret_th_id: 'ID RETOUR', ret_th_order: 'COMMANDE', ret_th_product: 'PRODUIT', ret_th_reason: 'RAISON', lang_opt_fr: 'Français', lang_opt_en: 'English', lang_opt_es: 'Español', dash_quick_actions: '⚡ Actions rapides', btn_stock_min_sel: '📉 Stock min. (sélection)', btn_physical_inv: '📋 Inventaire physique', err_products: 'Erreur produits', err_image: 'Erreur image', err_generic_suffix: 'Erreur', err_save: 'Erreur de sauvegarde', cfg_danger_title: '⚠️ Zone dangereuse', cfg_danger_intro: 'Ces actions sont irréversibles. Procédez avec prudence.', cfg_btn_reset_sheets: '🔄 Réinitialiser les feuilles', sheets_reset_confirm: 'ATTENTION : réinitialiser toutes les feuilles du classeur ? Cette action est irréversible.', sheets_reset_ok: 'Feuilles réinitialisées', stock_inv_intro: 'Scannez ou saisissez les quantités réelles comptées. Les ajustements seront enregistrés comme mouvements de stock.', login_label_email: 'Email', bulk_toast_activated: '{n} produit(s) activé(s)', bulk_toast_deactivated: '{n} produit(s) désactivé(s)', bulk_toast_deleted: '{n} produit(s) supprimé(s)', bulk_confirm_delete: 'Supprimer {n} produit(s) ? Cette action est irréversible.', inv_empty_list: 'Aucun produit', inv_no_adjustment: 'Aucun ajustement à appliquer', inv_confirm_apply: 'Appliquer {n} ajustement(s) de stock ?', inv_toast_applied: '{ok}/{total} ajustement(s) appliqué(s)', sheets_reset_fail: 'Erreur', session_reconnect_hint: 'Reconnectez-vous.' },
-        en: { bulk_selected: '{n} selected', lbl_selection: 'Selection:', btn_bulk_bar_activate: '✅ Activate', btn_bulk_bar_deactivate: '⏸ Deactivate', btn_bulk_bar_delete: '🗑 Remove', btn_bulk_bar_clear: '✖ Clear', dash_recent_activity: '📋 Recent activity', mediatheque_page_blurb: 'Images from ERP_Boutique_Images folder. Copy the URL or open a product to assign.', nav_boutique_title: 'Open storefront in new tab', btn_import_csv: '📥 Import CSV', btn_catalog_refresh: '🔄 Catalog', catalog_refresh_title: 'Reload categories, catalog list and products', modal_close: 'Close', client_modal_title: '👤 Client record', btn_preview_email: '👁 Preview', card_email_preview: '📧 Message preview', fin_revenue_sub: 'Selected period', fin_pay_split: '💳 Split by payment method', fin_tx_detail: '📋 Transaction detail', transporteurs_title: '🚚 Configured carriers', dev_return_title: '↩️ Register a return', dev_return_save: '💾 Save return', dev_motive_defective: 'Defective product', dev_motive_wrong_size: 'Wrong size', dev_motive_not_desc: 'Not as described', dev_motive_other: 'Changed mind', dev_details_ph: 'Additional details...', lbl_qty: 'Quantity', inv_modal_cancel: 'Cancel', aria_sidebar: 'Open or close sidebar', global_search_ph: '🔍 Search…', fatura_opt_all: 'All statuses', fatura_opt_pending: 'Pending', fatura_opt_paid: 'Paid', fatura_opt_overdue: 'Overdue', ret_filter_all: 'All returns', ret_stat_approved: 'Approved', ret_stat_received: 'Received', ret_stat_refunded: 'Refunded', ret_stat_rejected: 'Rejected', ret_new_btn: '+ New return', ret_card_title: '↩️ Return requests', ret_notes_card: '📝 Notes / Returns policy (internal)', pay_stat_requested: 'Requested', th_invoice: 'INVOICE #', th_client: 'CLIENT', th_date: 'DATE', th_total: 'TOTAL', th_status_col: 'STATUS', th_actions_short: 'ACTIONS', ret_th_id: 'RETURN ID', ret_th_order: 'ORDER', ret_th_product: 'PRODUCT', ret_th_reason: 'REASON', lang_opt_fr: 'French', lang_opt_en: 'English', lang_opt_es: 'Spanish', dash_quick_actions: '⚡ Quick actions', btn_stock_min_sel: '📉 Min. stock (selected)', btn_physical_inv: '📋 Physical inventory', err_products: 'Error loading products', err_image: 'Image error', err_generic_suffix: 'Error', err_save: 'Save error', cfg_danger_title: '⚠️ Danger zone', cfg_danger_intro: 'These actions cannot be undone. Proceed with care.', cfg_btn_reset_sheets: '🔄 Reset spreadsheet sheets', sheets_reset_confirm: 'WARNING: Reset all spreadsheet tabs? This cannot be undone.', sheets_reset_ok: 'Sheets reset', stock_inv_intro: 'Scan or enter counted quantities. Adjustments are saved as stock movements.', login_label_email: 'Email', bulk_toast_activated: '{n} product(s) activated', bulk_toast_deactivated: '{n} product(s) deactivated', bulk_toast_deleted: '{n} product(s) removed', bulk_confirm_delete: 'Remove {n} product(s)? This cannot be undone.', inv_empty_list: 'No products', inv_no_adjustment: 'No adjustments to apply', inv_confirm_apply: 'Apply {n} stock adjustment(s)?', inv_toast_applied: '{ok}/{total} adjustment(s) applied', sheets_reset_fail: 'Error', session_reconnect_hint: 'Please sign in again.' },
-        es: { bulk_selected: '{n} seleccionado(s)', lbl_selection: 'Selección:', btn_bulk_bar_activate: '✅ Activar', btn_bulk_bar_deactivate: '⏸ Desactivar', btn_bulk_bar_delete: '🗑 Eliminar', btn_bulk_bar_clear: '✖ Limpiar', dash_recent_activity: '📋 Actividad reciente', mediatheque_page_blurb: 'Imágenes de la carpeta ERP_Boutique_Images. Copie la URL o abra un producto para asignar.', nav_boutique_title: 'Abrir la tienda en una pestaña nueva', btn_import_csv: '📥 Importar CSV', btn_catalog_refresh: '🔄 Catálogo', catalog_refresh_title: 'Recarga categorías, lista de catálogo y productos', modal_close: 'Cerrar', client_modal_title: '👤 Ficha del cliente', btn_preview_email: '👁 Vista previa', card_email_preview: '📧 Vista previa del mensaje', fin_revenue_sub: 'Período seleccionado', fin_pay_split: '💳 Reparto por método de pago', fin_tx_detail: '📋 Detalle de transacciones', transporteurs_title: '🚚 Transportistas configurados', dev_return_title: '↩️ Registrar una devolución', dev_return_save: '💾 Guardar devolución', dev_motive_defective: 'Producto defectuoso', dev_motive_wrong_size: 'Talla incorrecta', dev_motive_not_desc: 'No coincide con la descripción', dev_motive_other: 'Arrepentimiento / desistimiento', dev_details_ph: 'Detalles adicionales...', lbl_qty: 'Cantidad', inv_modal_cancel: 'Cancelar', aria_sidebar: 'Abrir o cerrar el menú lateral', global_search_ph: '🔍 Buscar…', fatura_opt_all: 'Todos los estados', fatura_opt_pending: 'Pendiente', fatura_opt_paid: 'Pagada', fatura_opt_overdue: 'Vencida', ret_filter_all: 'Todas las devoluciones', ret_stat_approved: 'Aprobado', ret_stat_received: 'Recibido', ret_stat_refunded: 'Reembolsado', ret_stat_rejected: 'Rechazado', ret_new_btn: '+ Nueva devolución', ret_card_title: '↩️ Solicitudes de devolución', ret_notes_card: '📝 Notas / Política de devoluciones (interno)', pay_stat_requested: 'Solicitado', th_invoice: 'Nº FACTURA', th_client: 'CLIENTE', th_date: 'FECHA', th_total: 'TOTAL', th_status_col: 'ESTADO', th_actions_short: 'ACCIONES', ret_th_id: 'ID', ret_th_order: 'PEDIDO', ret_th_product: 'PRODUCTO', ret_th_reason: 'MOTIVO', lang_opt_fr: 'Francés', lang_opt_en: 'Inglés', lang_opt_es: 'Español', dash_quick_actions: '⚡ Acciones rápidas', btn_stock_min_sel: '📉 Stock mín. (selección)', btn_physical_inv: '📋 Inventario físico', err_products: 'Error al cargar productos', err_image: 'Error de imagen', err_generic_suffix: 'Error', err_save: 'Error al guardar', cfg_danger_title: '⚠️ Zona peligrosa', cfg_danger_intro: 'Estas acciones son irreversibles. Actúe con cuidado.', cfg_btn_reset_sheets: '🔄 Restablecer hojas', sheets_reset_confirm: 'ATENCIÓN: ¿Restablecer todas las hojas? Esta acción no se puede deshacer.', sheets_reset_ok: 'Hojas reiniciadas', stock_inv_intro: 'Escanee o introduzca las cantidades contadas. Los ajustes se guardan como movimientos de stock.', login_label_email: 'Email', bulk_toast_activated: '{n} producto(s) activado(s)', bulk_toast_deactivated: '{n} producto(s) desactivado(s)', bulk_toast_deleted: '{n} producto(s) eliminado(s)', bulk_confirm_delete: '¿Eliminar {n} producto(s)? Esta acción no se puede deshacer.', inv_empty_list: 'Sin productos', inv_no_adjustment: 'No hay ajustes que aplicar', inv_confirm_apply: '¿Aplicar {n} ajuste(s) de stock?', inv_toast_applied: '{ok}/{total} ajuste(s) aplicado(s)', sheets_reset_fail: 'Error', session_reconnect_hint: 'Vuelva a iniciar sesión.' }
+        pt: { bulk_selected: '{n} selecionado(s)', lbl_selection: 'Seleção:', btn_bulk_bar_activate: '✅ Ativar', btn_bulk_bar_deactivate: '⏸ Desativar', btn_bulk_bar_delete: '🗑 Remover', btn_bulk_bar_clear: '✖ Limpar', dash_recent_activity: '📋 Atividade recente', mediatheque_page_blurb: 'Imagens da pasta ERP_Boutique_Images. Copie o URL ou abra um produto para associar.', nav_boutique_title: 'Abrir a vitrine num novo separador', btn_import_csv: '📥 Importar CSV', btn_catalog_refresh: '🔄 Catálogo', catalog_refresh_title: 'Recarrega categorias, lista de catálogo e produtos', modal_close: 'Fechar', client_modal_title: '👤 Ficha do cliente', btn_preview_email: '👁 Pré-visualizar', card_email_preview: '📧 Pré-visualização da mensagem', fin_revenue_sub: 'Período selecionado', fin_pay_split: '💳 Repartição por método de pagamento', fin_tx_detail: '📋 Detalhe das transações', transporteurs_title: '🚚 Transportadores configurados', dev_return_title: '↩️ Registar uma devolução', dev_return_save: '💾 Guardar devolução', dev_motive_defective: 'Produto defeituoso', dev_motive_wrong_size: 'Tamanho incorreto', dev_motive_not_desc: 'Não conforme à descrição', dev_motive_other: 'Desistência / arrependimento', dev_details_ph: 'Detalhes adicionais...', lbl_qty: 'Quantidade', inv_modal_cancel: 'Cancelar', aria_sidebar: 'Abrir ou fechar o menu lateral', global_search_ph: '🔍 Pesquisar…', fatura_opt_all: 'Todos os estados', fatura_opt_pending: 'Pendente', fatura_opt_paid: 'Paga', fatura_opt_overdue: 'Em atraso', ret_filter_all: 'Todas as devoluções', ret_stat_approved: 'Aprovado', ret_stat_received: 'Recebido', ret_stat_refunded: 'Reembolsado', ret_stat_rejected: 'Rejeitado', ret_new_btn: '+ Nova devolução', ret_card_title: '↩️ Pedidos de devolução', ret_notes_card: '📝 Notas / Política de devoluções (interno)', pay_stat_requested: 'Pedido', th_invoice: 'Nº FATURA', th_client: 'CLIENTE', th_date: 'DATA', th_total: 'TOTAL', th_status_col: 'ESTADO', th_actions_short: 'AÇÕES', ret_th_id: 'ID', ret_th_order: 'PEDIDO', ret_th_product: 'PRODUTO', ret_th_reason: 'MOTIVO', lang_opt_fr: 'Francês', lang_opt_en: 'Inglês', lang_opt_es: 'Espanhol', dash_quick_actions: '⚡ Ações rápidas', btn_stock_min_sel: '📉 Stock mín. (selecionados)', btn_physical_inv: '📋 Inventário físico', err_products: 'Erro ao carregar produtos', err_image: 'Erro de imagem', err_generic_suffix: 'Erro', err_save: 'Erro ao guardar', cfg_danger_title: '⚠️ Zona sensível', cfg_danger_intro: 'Estas ações são irreversíveis. Prossiga com cuidado.', cfg_btn_reset_sheets: '🔄 Reiniciar folhas', sheets_reset_confirm: 'ATENÇÃO: Reiniciar todas as folhas da folha de cálculo? Esta ação é irreversível.', sheets_reset_ok: 'Folhas reiniciadas', stock_inv_intro: 'Leia ou introduza as quantidades reais contadas. Os ajustes serão guardados como movimentos de stock.', login_label_email: 'E-mail', login_brand_title: 'ERP — Loja online', login_brand_sub: 'Painel de gestão do comércio eletrónico (vestuário e acessórios)', login_welcome_hint: 'Introduza o e-mail e a palavra-passe. Português (PT) é a língua por defeito do painel.', login_form_title: 'Iniciar sessão', login_sub: 'Acesso reservado à equipa da loja', login_label_password: 'Palavra-passe', login_pass_placeholder: '••••••••', login_submit: 'Entrar no painel', login_no_api_title: 'URL do Web App não configurada neste ficheiro', login_no_api_text: 'Edite o HTML: defina <code>window.ERP_API_URL_DEFAULT</code> e <code>var API_URL</code> (bloco COLAR) com o URL que termina em <code>/exec</code>. Guarde, publique e recarregue. Neste ecrã só e-mail e palavra-passe — sem campo de URL.', login_theme_light: 'Modo claro', login_theme_dark: 'Modo escuro', api_missing_url_toast: '⚠️ Defina o URL da API no ficheiro HTML (<code>ERP_API_URL_DEFAULT</code> / COLAR) ou em Configurações.', btn_new: '+ Marca', bulk_toast_activated: '{n} produto(s) ativado(s)', bulk_toast_deactivated: '{n} produto(s) desativado(s)', bulk_toast_deleted: '{n} produto(s) removido(s)', bulk_confirm_delete: 'Remover {n} produto(s)? Esta ação é irreversível.', inv_empty_list: 'Sem produtos', inv_no_adjustment: 'Nenhum ajustamento a aplicar', inv_confirm_apply: 'Aplicar {n} ajustamento(s) de stock?', inv_toast_applied: '{ok}/{total} ajustamento(s) aplicado(s)', sheets_reset_fail: 'Erro', session_reconnect_hint: 'Volte a iniciar sessão.' },
+        fr: { bulk_selected: '{n} sélectionné(s)', lbl_selection: 'Sélection :', btn_bulk_bar_activate: '✅ Activer', btn_bulk_bar_deactivate: '⏸ Désactiver', btn_bulk_bar_delete: '🗑 Supprimer', btn_bulk_bar_clear: '✖ Annuler', dash_recent_activity: '📋 Activité récente', mediatheque_page_blurb: 'Images du dossier ERP_Boutique_Images. Copiez l’URL ou ouvrez un produit pour l’assigner.', nav_boutique_title: 'Ouvrir la vitrine dans un nouvel onglet', btn_import_csv: '📥 Importer CSV', btn_catalog_refresh: '🔄 Catalogue', catalog_refresh_title: 'Recharge catégories, liste catalogue et produits', modal_close: 'Fermer', client_modal_title: '👤 Fiche client', btn_preview_email: '👁 Prévisualiser', card_email_preview: '📧 Prévisualisation du message', fin_revenue_sub: 'Période sélectionnée', fin_pay_split: '💳 Répartition par moyen de paiement', fin_tx_detail: '📋 Détail des transactions', transporteurs_title: '🚚 Transporteurs configurés', dev_return_title: '↩️ Enregistrer un retour', dev_return_save: '💾 Enregistrer le retour', dev_motive_defective: 'Produit défectueux', dev_motive_wrong_size: 'Taille incorrecte', dev_motive_not_desc: 'Non conforme à la description', dev_motive_other: 'Rétractation / changement d’avis', dev_details_ph: 'Détails supplémentaires...', lbl_qty: 'Quantité', inv_modal_cancel: 'Annuler', aria_sidebar: 'Ouvrir ou fermer le menu latéral', global_search_ph: '🔍 Rechercher…', fatura_opt_all: 'Tous les statuts', fatura_opt_pending: 'En attente', fatura_opt_paid: 'Payée', fatura_opt_overdue: 'En retard', ret_filter_all: 'Tous les retours', ret_stat_approved: 'Approuvé', ret_stat_received: 'Reçu', ret_stat_refunded: 'Remboursé', ret_stat_rejected: 'Rejeté', ret_new_btn: '+ Nouveau retour', ret_card_title: '↩️ Demandes de retour', ret_notes_card: '📝 Notes / Politique retours (interne)', pay_stat_requested: 'Demandé', th_invoice: 'Nº FACTURE', th_client: 'CLIENT', th_date: 'DATE', th_total: 'TOTAL', th_status_col: 'STATUT', th_actions_short: 'ACTIONS', ret_th_id: 'ID RETOUR', ret_th_order: 'COMMANDE', ret_th_product: 'PRODUIT', ret_th_reason: 'RAISON', lang_opt_fr: 'Français', lang_opt_en: 'English', lang_opt_es: 'Español', dash_quick_actions: '⚡ Actions rapides', btn_stock_min_sel: '📉 Stock min. (sélection)', btn_physical_inv: '📋 Inventaire physique', err_products: 'Erreur produits', err_image: 'Erreur image', err_generic_suffix: 'Erreur', err_save: 'Erreur de sauvegarde', cfg_danger_title: '⚠️ Zone dangereuse', cfg_danger_intro: 'Ces actions sont irréversibles. Procédez avec prudence.', cfg_btn_reset_sheets: '🔄 Réinitialiser les feuilles', sheets_reset_confirm: 'ATTENTION : réinitialiser toutes les feuilles du classeur ? Cette action est irréversible.', sheets_reset_ok: 'Feuilles réinitialisées', stock_inv_intro: 'Scannez ou saisissez les quantités réelles comptées. Les ajustements seront enregistrés comme mouvements de stock.', login_label_email: 'E-mail', login_brand_title: 'ERP — Boutique en ligne', login_brand_sub: 'Panneau de gestion e-commerce (prêt-à-porter et accessoires)', login_welcome_hint: 'Saisissez e-mail et mot de passe. Le portugais (PT) est la langue par défaut du panneau.', login_form_title: 'Connexion', login_sub: 'Accès réservé à l’équipe de la boutique', login_label_password: 'Mot de passe', login_pass_placeholder: '••••••••', login_submit: 'Ouvrir le panneau', login_no_api_title: 'URL du Web App non configurée dans ce fichier', login_no_api_text: 'Modifiez le HTML : renseignez <code>window.ERP_API_URL_DEFAULT</code> et <code>var API_URL</code> (bloc COLAR) avec l’URL se terminant par <code>/exec</code>. Enregistrez, publiez et rechargez. Cet écran ne demande que l’e-mail et le mot de passe — pas d’URL.', login_theme_light: 'Mode clair', login_theme_dark: 'Mode sombre', api_missing_url_toast: '⚠️ Définissez l’URL de l’API dans le fichier HTML (<code>ERP_API_URL_DEFAULT</code> / COLAR) ou dans Paramètres.', btn_new: '+ Marque', bulk_toast_activated: '{n} produit(s) activé(s)', bulk_toast_deactivated: '{n} produit(s) désactivé(s)', bulk_toast_deleted: '{n} produit(s) supprimé(s)', bulk_confirm_delete: 'Supprimer {n} produit(s) ? Cette action est irréversible.', inv_empty_list: 'Aucun produit', inv_no_adjustment: 'Aucun ajustement à appliquer', inv_confirm_apply: 'Appliquer {n} ajustement(s) de stock ?', inv_toast_applied: '{ok}/{total} ajustement(s) appliqué(s)', sheets_reset_fail: 'Erreur', session_reconnect_hint: 'Reconnectez-vous.' },
+        en: { bulk_selected: '{n} selected', lbl_selection: 'Selection:', btn_bulk_bar_activate: '✅ Activate', btn_bulk_bar_deactivate: '⏸ Deactivate', btn_bulk_bar_delete: '🗑 Remove', btn_bulk_bar_clear: '✖ Clear', dash_recent_activity: '📋 Recent activity', mediatheque_page_blurb: 'Images from ERP_Boutique_Images folder. Copy the URL or open a product to assign.', nav_boutique_title: 'Open storefront in new tab', btn_import_csv: '📥 Import CSV', btn_catalog_refresh: '🔄 Catalog', catalog_refresh_title: 'Reload categories, catalog list and products', modal_close: 'Close', client_modal_title: '👤 Client record', btn_preview_email: '👁 Preview', card_email_preview: '📧 Message preview', fin_revenue_sub: 'Selected period', fin_pay_split: '💳 Split by payment method', fin_tx_detail: '📋 Transaction detail', transporteurs_title: '🚚 Configured carriers', dev_return_title: '↩️ Register a return', dev_return_save: '💾 Save return', dev_motive_defective: 'Defective product', dev_motive_wrong_size: 'Wrong size', dev_motive_not_desc: 'Not as described', dev_motive_other: 'Changed mind', dev_details_ph: 'Additional details...', lbl_qty: 'Quantity', inv_modal_cancel: 'Cancel', aria_sidebar: 'Open or close sidebar', global_search_ph: '🔍 Search…', fatura_opt_all: 'All statuses', fatura_opt_pending: 'Pending', fatura_opt_paid: 'Paid', fatura_opt_overdue: 'Overdue', ret_filter_all: 'All returns', ret_stat_approved: 'Approved', ret_stat_received: 'Received', ret_stat_refunded: 'Refunded', ret_stat_rejected: 'Rejected', ret_new_btn: '+ New return', ret_card_title: '↩️ Return requests', ret_notes_card: '📝 Notes / Returns policy (internal)', pay_stat_requested: 'Requested', th_invoice: 'INVOICE #', th_client: 'CLIENT', th_date: 'DATE', th_total: 'TOTAL', th_status_col: 'STATUS', th_actions_short: 'ACTIONS', ret_th_id: 'RETURN ID', ret_th_order: 'ORDER', ret_th_product: 'PRODUCT', ret_th_reason: 'REASON', lang_opt_fr: 'French', lang_opt_en: 'English', lang_opt_es: 'Spanish', dash_quick_actions: '⚡ Quick actions', btn_stock_min_sel: '📉 Min. stock (selected)', btn_physical_inv: '📋 Physical inventory', err_products: 'Error loading products', err_image: 'Image error', err_generic_suffix: 'Error', err_save: 'Save error', cfg_danger_title: '⚠️ Danger zone', cfg_danger_intro: 'These actions cannot be undone. Proceed with care.', cfg_btn_reset_sheets: '🔄 Reset spreadsheet sheets', sheets_reset_confirm: 'WARNING: Reset all spreadsheet tabs? This cannot be undone.', sheets_reset_ok: 'Sheets reset', stock_inv_intro: 'Scan or enter counted quantities. Adjustments are saved as stock movements.', login_label_email: 'Email', login_brand_title: 'ERP — Online store', login_brand_sub: 'Management panel for your e-commerce (apparel and accessories)', login_welcome_hint: 'Enter your email and password. Portuguese (PT) is the panel default language.', login_form_title: 'Sign in', login_sub: 'Team access to your store', login_label_password: 'Password', login_pass_placeholder: '••••••••', login_submit: 'Open admin panel', login_no_api_title: 'Web App URL not set in this file', login_no_api_text: 'Edit the HTML: set <code>window.ERP_API_URL_DEFAULT</code> and <code>var API_URL</code> (COLAR block) to the URL ending in <code>/exec</code>. Save, publish, and reload. This screen only asks for email and password — no URL field.', login_theme_light: 'Light mode', login_theme_dark: 'Dark mode', api_missing_url_toast: '⚠️ Set the API URL in the HTML file (<code>ERP_API_URL_DEFAULT</code> / COLAR) or in Settings.', btn_new: '+ Brand', bulk_toast_activated: '{n} product(s) activated', bulk_toast_deactivated: '{n} product(s) deactivated', bulk_toast_deleted: '{n} product(s) removed', bulk_confirm_delete: 'Remove {n} product(s)? This cannot be undone.', inv_empty_list: 'No products', inv_no_adjustment: 'No adjustments to apply', inv_confirm_apply: 'Apply {n} stock adjustment(s)?', inv_toast_applied: '{ok}/{total} adjustment(s) applied', sheets_reset_fail: 'Error', session_reconnect_hint: 'Please sign in again.' },
+        es: { bulk_selected: '{n} seleccionado(s)', lbl_selection: 'Selección:', btn_bulk_bar_activate: '✅ Activar', btn_bulk_bar_deactivate: '⏸ Desactivar', btn_bulk_bar_delete: '🗑 Eliminar', btn_bulk_bar_clear: '✖ Limpiar', dash_recent_activity: '📋 Actividad reciente', mediatheque_page_blurb: 'Imágenes de la carpeta ERP_Boutique_Images. Copie la URL o abra un producto para asignar.', nav_boutique_title: 'Abrir la tienda en una pestaña nueva', btn_import_csv: '📥 Importar CSV', btn_catalog_refresh: '🔄 Catálogo', catalog_refresh_title: 'Recarga categorías, lista de catálogo y productos', modal_close: 'Cerrar', client_modal_title: '👤 Ficha del cliente', btn_preview_email: '👁 Vista previa', card_email_preview: '📧 Vista previa del mensaje', fin_revenue_sub: 'Período seleccionado', fin_pay_split: '💳 Reparto por método de pago', fin_tx_detail: '📋 Detalle de transacciones', transporteurs_title: '🚚 Transportistas configurados', dev_return_title: '↩️ Registrar una devolución', dev_return_save: '💾 Guardar devolución', dev_motive_defective: 'Producto defectuoso', dev_motive_wrong_size: 'Talla incorrecta', dev_motive_not_desc: 'No coincide con la descripción', dev_motive_other: 'Arrepentimiento / desistimiento', dev_details_ph: 'Detalles adicionales...', lbl_qty: 'Cantidad', inv_modal_cancel: 'Cancelar', aria_sidebar: 'Abrir o cerrar el menú lateral', global_search_ph: '🔍 Buscar…', fatura_opt_all: 'Todos los estados', fatura_opt_pending: 'Pendiente', fatura_opt_paid: 'Pagada', fatura_opt_overdue: 'Vencida', ret_filter_all: 'Todas las devoluciones', ret_stat_approved: 'Aprobado', ret_stat_received: 'Recibido', ret_stat_refunded: 'Reembolsado', ret_stat_rejected: 'Rechazado', ret_new_btn: '+ Nueva devolución', ret_card_title: '↩️ Solicitudes de devolución', ret_notes_card: '📝 Notas / Política de devoluciones (interno)', pay_stat_requested: 'Solicitado', th_invoice: 'Nº FACTURA', th_client: 'CLIENTE', th_date: 'FECHA', th_total: 'TOTAL', th_status_col: 'ESTADO', th_actions_short: 'ACCIONES', ret_th_id: 'ID', ret_th_order: 'PEDIDO', ret_th_product: 'PRODUCTO', ret_th_reason: 'MOTIVO', lang_opt_fr: 'Francés', lang_opt_en: 'Inglés', lang_opt_es: 'Español', dash_quick_actions: '⚡ Acciones rápidas', btn_stock_min_sel: '📉 Stock mín. (selección)', btn_physical_inv: '📋 Inventario físico', err_products: 'Error al cargar productos', err_image: 'Error de imagen', err_generic_suffix: 'Error', err_save: 'Error al guardar', cfg_danger_title: '⚠️ Zona peligrosa', cfg_danger_intro: 'Estas acciones son irreversibles. Actúe con cuidado.', cfg_btn_reset_sheets: '🔄 Restablecer hojas', sheets_reset_confirm: 'ATENCIÓN: ¿Restablecer todas las hojas? Esta acción no se puede deshacer.', sheets_reset_ok: 'Hojas reiniciadas', stock_inv_intro: 'Escanee o introduzca las cantidades contadas. Los ajustes se guardan como movimientos de stock.', login_label_email: 'Correo electrónico', login_brand_title: 'ERP — Tienda online', login_brand_sub: 'Panel de gestión del comercio electrónico (textil y accesorios)', login_welcome_hint: 'Introduzca correo y contraseña. El portugués (PT) es el idioma por defecto del panel.', login_form_title: 'Iniciar sesión', login_sub: 'Acceso reservado al equipo de la tienda', login_label_password: 'Contraseña', login_pass_placeholder: '••••••••', login_submit: 'Entrar al panel', login_no_api_title: 'URL del Web App no configurada en este archivo', login_no_api_text: 'Edite el HTML: defina <code>window.ERP_API_URL_DEFAULT</code> y <code>var API_URL</code> (bloque COLAR) con la URL que termina en <code>/exec</code>. Guarde, publique y recargue. En esta pantalla solo correo y contraseña — sin campo de URL.', login_theme_light: 'Modo claro', login_theme_dark: 'Modo oscuro', api_missing_url_toast: '⚠️ Configure la URL de la API en el HTML (<code>ERP_API_URL_DEFAULT</code> / COLAR) o en Ajustes.', btn_new: '+ Marca', bulk_toast_activated: '{n} producto(s) activado(s)', bulk_toast_deactivated: '{n} producto(s) desactivado(s)', bulk_toast_deleted: '{n} producto(s) eliminado(s)', bulk_confirm_delete: '¿Eliminar {n} producto(s)? Esta acción no se puede deshacer.', inv_empty_list: 'Sin productos', inv_no_adjustment: 'No hay ajustes que aplicar', inv_confirm_apply: '¿Aplicar {n} ajuste(s) de stock?', inv_toast_applied: '{ok}/{total} ajuste(s) aplicado(s)', sheets_reset_fail: 'Error', session_reconnect_hint: 'Vuelva a iniciar sesión.' }
       };
       Object.keys(X).forEach(function (k) { if (langs[k]) Object.assign(langs[k], X[k]); });
     })();
@@ -4434,7 +4485,7 @@
       pt: '<div style="max-width:920px;line-height:1.65;font-size:14px;color:var(--text);">' +
         '<p style="margin:0 0 16px;padding:12px 14px;background:var(--bg3);border-radius:8px;border:1px solid var(--border);"><strong>Português de Portugal (PT-PT)</strong> é a língua por defeito deste painel e recomendada para a vitrine. Use <strong>PT · FR · EN · ES</strong> no topo para ler este guia noutro idioma; na loja, o cliente pode alternar o mesmo conjunto para ver textos e SEO coerentes.</p>' +
         '<h3 style="margin:22px 0 10px;font-size:16px;color:var(--accent);">1 · Ligação e primeiro acesso</h3><ol style="margin:0 0 8px 20px;padding:0;">' +
-        '<li style="margin:6px 0;">No ecrã de login, confirme o URL do <em>Web App</em> (Google Apps Script). Se o URL já estiver no ficheiro HTML, basta iniciar sessão.</li>' +
+        '<li style="margin:6px 0;">Defina o URL do Web App no ficheiro HTML (<code>ERP_API_URL_DEFAULT</code> / COLAR). No ecrã de login use só e-mail e palavra-passe; o idioma do painel (português por defeito) é PT · FR · EN · ES no canto superior.</li>' +
         '<li style="margin:6px 0;">Em <strong>Configurações</strong>, use « Testar ligação API » se a loja ou o painel não carregarem dados.</li></ol>' +
         '<h3 style="margin:22px 0 10px;font-size:16px;color:var(--accent);">2 · Publicar um produto (passo a passo)</h3><ol style="margin:0 0 8px 20px;padding:0;">' +
         '<li style="margin:6px 0;"><strong>Categorias</strong>: crie primeiro a árvore (ex.: <code style="background:var(--bg);padding:2px 6px;border-radius:4px;">Vestuário</code> → <code style="background:var(--bg);padding:2px 6px;border-radius:4px;">Camisolas</code>). Cada produto deve pertencer a uma categoria.</li>' +
@@ -4456,7 +4507,7 @@
       fr: '<div style="max-width:920px;line-height:1.65;font-size:14px;color:var(--text);">' +
         '<p style="margin:0 0 16px;padding:12px 14px;background:var(--bg3);border-radius:8px;border:1px solid var(--border);"><strong>Le portugais d’Europe (PT-PT)</strong> est la langue par défaut de ce panneau et celle recommandée pour la vitrine. Le sélecteur <strong>PT · FR · EN · ES</strong> en haut traduit ce guide ; sur la boutique, le client bascule les mêmes langues pour des textes cohérents.</p>' +
         '<h3 style="margin:22px 0 10px;font-size:16px;color:var(--accent);">1 · Connexion et premier accès</h3><ol style="margin:0 0 8px 20px;padding:0;">' +
-        '<li style="margin:6px 0;">Sur l’écran de connexion, vérifiez l’URL du <em>Web App</em> (Google Apps Script). Si l’URL est déjà dans le fichier, connectez-vous directement.</li>' +
+        '<li style="margin:6px 0;">Définissez l’URL du Web App dans le fichier HTML (<code>ERP_API_URL_DEFAULT</code> / COLAR). L’écran de connexion ne demande que l’e-mail et le mot de passe ; la langue du panneau (portugais par défaut) : PT · FR · EN · ES en haut à droite.</li>' +
         '<li style="margin:6px 0;">Dans <strong>Paramètres</strong>, utilisez « Tester l’API » si les données ne chargent pas.</li></ol>' +
         '<h3 style="margin:22px 0 10px;font-size:16px;color:var(--accent);">2 · Publier un produit</h3><ol style="margin:0 0 8px 20px;padding:0;">' +
         '<li style="margin:6px 0;"><strong>Catégories</strong> : créez l’arborescence d’abord (ex. <code style="background:var(--bg);padding:2px 6px;border-radius:4px;">Vêtements</code> → <code style="background:var(--bg);padding:2px 6px;border-radius:4px;">Pulls</code>).</li>' +
@@ -4474,7 +4525,7 @@
       en: '<div style="max-width:920px;line-height:1.65;font-size:14px;color:var(--text);">' +
         '<p style="margin:0 0 16px;padding:12px 14px;background:var(--bg3);border-radius:8px;border:1px solid var(--border);"><strong>European Portuguese (PT-PT)</strong> is the default for this admin UI and the recommended storefront default. Use <strong>PT · FR · EN · ES</strong> at the top to read this guide in another language; customers can switch the same four languages on the storefront.</p>' +
         '<h3 style="margin:22px 0 10px;font-size:16px;color:var(--accent);">1 · Connection</h3><ol style="margin:0 0 8px 20px;padding:0;">' +
-        '<li style="margin:6px 0;">On the login screen, confirm the Apps Script <em>Web App</em> URL (or sign in if it is already embedded in the HTML file).</li>' +
+        '<li style="margin:6px 0;">Set the Web App URL in the HTML file (<code>ERP_API_URL_DEFAULT</code> / COLAR). The login screen only asks for email and password; panel language (Portuguese default) is PT · FR · EN · ES at the top.</li>' +
         '<li style="margin:6px 0;">In <strong>Settings</strong>, run « Test API » if lists stay empty.</li></ol>' +
         '<h3 style="margin:22px 0 10px;font-size:16px;color:var(--accent);">2 · Publishing a product</h3><ol style="margin:0 0 8px 20px;padding:0;">' +
         '<li style="margin:6px 0;"><strong>Categories</strong> first (e.g. <code style="background:var(--bg);padding:2px 6px;border-radius:4px;">Apparel</code> → <code style="background:var(--bg);padding:2px 6px;border-radius:4px;">Knitwear</code>).</li>' +
@@ -4492,7 +4543,7 @@
       es: '<div style="max-width:920px;line-height:1.65;font-size:14px;color:var(--text);">' +
         '<p style="margin:0 0 16px;padding:12px 14px;background:var(--bg3);border-radius:8px;border:1px solid var(--border);"><strong>Portugués de Portugal (PT-PT)</strong> es el idioma predeterminado de este panel y el recomendado para la vitrina. Use <strong>PT · FR · EN · ES</strong> arriba para leer la guía; en la tienda el cliente alterna las mismas lenguas.</p>' +
         '<h3 style="margin:22px 0 10px;font-size:16px;color:var(--accent);">1 · Conexión y primer acceso</h3><ol style="margin:0 0 8px 20px;padding:0;">' +
-        '<li style="margin:6px 0;">Confirme la URL del <em>Web App</em> (Google Apps Script) en el login. Si ya está en el HTML, inicie sesión.</li>' +
+        '<li style="margin:6px 0;">Configure la URL del Web App en el HTML (<code>ERP_API_URL_DEFAULT</code> / COLAR). La pantalla de acceso solo pide correo y contraseña; el idioma del panel (portugués por defecto) es PT · FR · EN · ES arriba.</li>' +
         '<li style="margin:6px 0;">En <strong>Configuración</strong>, use « Probar API » si no hay datos.</li></ol>' +
         '<h3 style="margin:22px 0 10px;font-size:16px;color:var(--accent);">2 · Publicar un producto</h3><ol style="margin:0 0 8px 20px;padding:0;">' +
         '<li style="margin:6px 0;"><strong>Categorías</strong> primero (ej. <code style="background:var(--bg);padding:2px 6px;border-radius:4px;">Ropa</code> → <code style="background:var(--bg);padding:2px 6px;border-radius:4px;">Jerseis</code>).</li>' +
@@ -4547,6 +4598,15 @@
         var v = (langs[lang] && langs[lang][k]) || (langs.pt && langs.pt[k]);
         if (k && v) el.setAttribute('title', v);
       });
+      try {
+        var darkNow = document.documentElement.getAttribute('data-theme') === 'dark';
+        var icon = darkNow ? '🌙' : '☀️';
+        var thi = darkNow ? t('login_theme_dark') : t('login_theme_light');
+        var admB = document.getElementById('adminThemeBtn');
+        var logB = document.getElementById('loginThemeBtn');
+        if (admB) { admB.textContent = icon; admB.title = thi; }
+        if (logB) { logB.textContent = icon; logB.title = thi; }
+      } catch (eTh) { }
     }
 
     function setLang(l, btn) {
@@ -4583,7 +4643,7 @@
 
     async function api(action, data = {}) {
       if (!API_URL || API_URL.includes('INSEREZ_VOTRE')) {
-        toast('⚠️ Configure o URL da API nas Configurações!', 'error'); return null;
+        toast((typeof t === 'function' ? t('api_missing_url_toast') : '⚠️ API URL missing'), 'error'); return null;
       }
       try {
         // Ne pas mettre Content-Type: application/json : cela déclenche un préflight OPTIONS
@@ -4690,17 +4750,17 @@
         document.getElementById('userInitial').textContent = r.user.nome[0];
         document.getElementById('loginPage').style.display = 'none';
         document.getElementById('app').style.display = 'flex';
+        updateTopNav('dashboard');
         await loadDashboard();
         loadConfig();
         loadAvaliacoesBadge();
         loadDashCharts();
         loadNotifications();
         applyAdminI18n();
-        updateTopNav('dashboard');
         startAdminSessionKeepAlive();
         toast('✅ Bem-vindo, ' + r.user.nome + '!', 'success');
       } else {
-        toast('❌ ' + (r?.error || 'Erro de login'), 'error');
+        toast('❌ ' + (r?.error || (typeof t === 'function' ? t('error') : 'Erro')), 'error');
       }
     }
 
@@ -4727,13 +4787,13 @@
         document.getElementById('app').style.display = 'flex';
         document.getElementById('userName').textContent = nome;
         document.getElementById('userInitial').textContent = nome.charAt(0).toUpperCase();
+        updateTopNav('dashboard');
         await loadDashboard();
         loadConfig();
         loadAvaliacoesBadge();
         loadDashCharts();
         loadNotifications();
         applyAdminI18n();
-        updateTopNav('dashboard');
         startAdminSessionKeepAlive();
       }
     }
@@ -4796,9 +4856,9 @@
       if (pg) pg.classList.add('active');
       var nav = document.querySelector('.nav-item[data-nav="' + name + '"]');
       if (nav) nav.classList.add('active');
+      updateTopNav(name);
       if (pageLoaders[name]) pageLoaders[name]();
       applyAdminI18n();
-      updateTopNav(name);
       if (typeof window.innerWidth === 'number' && window.innerWidth <= 900) {
         document.querySelector('.sidebar')?.classList.remove('open');
         document.getElementById('sidebarOverlay')?.classList.remove('open');
@@ -4834,9 +4894,9 @@
       var elM = document.getElementById('kpiOrdersMonth');
       if (elM) elM.textContent = k.pedidos_mes != null ? k.pedidos_mes : 0;
       if (!r.recent_orders?.length) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text2);padding:20px;">Sem pedidos</td></tr>';
+        if (tbody) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text2);padding:20px;">Sem pedidos</td></tr>';
       } else {
-        tbody.innerHTML = r.recent_orders.map(o => `
+        if (tbody) tbody.innerHTML = r.recent_orders.map(o => `
     <tr>
       <td><span style="font-family:var(--mono); color:var(--accent); font-size:12px;">${o.pedido_id}</span></td>
       <td>${o.email || o.cliente_id}</td>
@@ -7587,8 +7647,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-      initLoginUi();
-      (function wireStaffLoginHotkeys() {
+      (function wireLoginHotkeys() {
         var em = document.getElementById('loginEmail');
         var pw = document.getElementById('loginPass');
         if (em) em.addEventListener('keydown', function (e) {
@@ -7776,23 +7835,25 @@
       if (isDark) {
         document.documentElement.removeAttribute('data-theme');
         try { localStorage.setItem('erp_admin_theme', 'light'); } catch (e) { }
-        setPair('☀️', 'Modo claro');
+        setPair('☀️', typeof t === 'function' ? t('login_theme_light') : 'Light');
       } else {
         document.documentElement.setAttribute('data-theme', 'dark');
         try { localStorage.setItem('erp_admin_theme', 'dark'); } catch (e) { }
-        setPair('🌙', 'Modo escuro');
+        setPair('🌙', typeof t === 'function' ? t('login_theme_dark') : 'Dark');
       }
     }
     (function syncAdminThemeBtn() {
       var dark = document.documentElement.getAttribute('data-theme') === 'dark';
       var btn = document.getElementById('adminThemeBtn');
       var loginBtn = document.getElementById('loginThemeBtn');
+      var tl = (typeof t === 'function') ? t('login_theme_light') : 'Light';
+      var td = (typeof t === 'function') ? t('login_theme_dark') : 'Dark';
       if (dark) {
-        if (btn) { btn.textContent = '🌙'; btn.title = 'Modo escuro'; }
-        if (loginBtn) { loginBtn.textContent = '🌙'; loginBtn.title = 'Modo escuro'; }
+        if (btn) { btn.textContent = '🌙'; btn.title = td; }
+        if (loginBtn) { loginBtn.textContent = '🌙'; loginBtn.title = td; }
       } else {
-        if (btn) { btn.textContent = '☀️'; btn.title = 'Modo claro'; }
-        if (loginBtn) { loginBtn.textContent = '☀️'; loginBtn.title = 'Modo claro'; }
+        if (btn) { btn.textContent = '☀️'; btn.title = tl; }
+        if (loginBtn) { loginBtn.textContent = '☀️'; loginBtn.title = tl; }
       }
     })();
 
@@ -8243,13 +8304,14 @@
       else if (pLs) API_URL = pLs;
       const savedToken = localStorage.getItem('erp_token');
       if (savedToken) { adminToken = savedToken; }
-      document.querySelectorAll('.topbar .lang-btn').forEach(function (b) {
+      document.querySelectorAll('#loginPage .lang-switcher .lang-btn, .topbar .lang-switcher .lang-btn').forEach(function (b) {
         b.classList.toggle('active', b.textContent.trim().toLowerCase() === lang);
       });
       try {
         document.documentElement.lang = lang === 'pt' ? 'pt-PT' : lang === 'en' ? 'en' : lang === 'fr' ? 'fr' : 'es';
       } catch (e) { }
       applyAdminI18n();
+      initLoginUi();
       try { if (typeof updateBulkCount === 'function') updateBulkCount(); } catch (e1) { }
       updateTopNav(currentAdminPage);
       startDashAutoRefresh();
@@ -8259,8 +8321,7 @@
 
   <!--
 ================================================================================
-CONFIGURATION API : l’URL dans ERP_API_URL_DEFAULT + COLAR est prioritaire ; localStorage ne sert
-qu’en secours ou après « Tester / enregistrer » sur l’écran de connexion.
+CONFIGURATION API : l’URL dans <code>ERP_API_URL_DEFAULT</code> + COLAR est prioritaire ; <code>localStorage</code> sert de secours si valide. Aucun champ URL sur l’écran de connexion.
 ================================================================================
 -->
 
