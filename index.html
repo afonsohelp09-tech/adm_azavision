@@ -563,6 +563,11 @@
       pointer-events: auto;
     }
 
+    #loginPage .login-top-bar .lang-switcher,
+    #loginPage .login-top-bar .lang-switcher * {
+      pointer-events: auto;
+    }
+
     html:not([data-theme="dark"]) #loginPage .login-top-bar .lang-switcher {
       background: rgba(255, 255, 255, 0.12);
       border-color: rgba(255, 255, 255, 0.22);
@@ -1919,12 +1924,12 @@
     <div class="login-top-bar">
       <div class="lang-switcher" role="group" data-i18n-aria-label="lang_switcher_aria"
         aria-label="Idiomas: Português (predefinição), Français, English, Español">
-        <span class="lang-btn active" onclick="setLang('pt',this)">PT</span>
-        <span class="lang-btn" onclick="setLang('fr',this)">FR</span>
-        <span class="lang-btn" onclick="setLang('en',this)">EN</span>
-        <span class="lang-btn" onclick="setLang('es',this)">ES</span>
+        <span class="lang-btn active" data-lang="pt" role="button" tabindex="0">PT</span>
+        <span class="lang-btn" data-lang="fr" role="button" tabindex="0">FR</span>
+        <span class="lang-btn" data-lang="en" role="button" tabindex="0">EN</span>
+        <span class="lang-btn" data-lang="es" role="button" tabindex="0">ES</span>
       </div>
-      <button type="button" id="loginThemeBtn" class="login-theme-toggle" onclick="toggleAdminTheme()"
+      <button type="button" id="loginThemeBtn" class="login-theme-toggle"
         title="Modo claro">☀️</button>
     </div>
     <div class="login-box login-card-erp">
@@ -1951,7 +1956,7 @@
             <input type="password" id="loginPass" placeholder="••••••••" value="admin123" autocomplete="current-password"
               data-i18n-placeholder="login_pass_placeholder">
           </div>
-          <button type="button" class="btn" id="loginSubmitBtn" onclick="doLogin()" data-i18n="login_submit">Entrar no painel</button>
+          <button type="button" class="btn" id="loginSubmitBtn" data-i18n="login_submit">Entrar no painel</button>
         </div>
       </div>
     </div>
@@ -2077,15 +2082,15 @@
             <span class="badge green" id="statusBadge">● Online</span>
             <div class="lang-switcher" role="group" data-i18n-aria-label="lang_switcher_aria"
               aria-label="Idiomas: Português (predefinição), Français, English, Español">
-              <span class="lang-btn active" onclick="setLang('pt',this)">PT</span>
-              <span class="lang-btn" onclick="setLang('fr',this)">FR</span>
-              <span class="lang-btn" onclick="setLang('en',this)">EN</span>
-              <span class="lang-btn" onclick="setLang('es',this)">ES</span>
+              <span class="lang-btn active" data-lang="pt" role="button" tabindex="0">PT</span>
+              <span class="lang-btn" data-lang="fr" role="button" tabindex="0">FR</span>
+              <span class="lang-btn" data-lang="en" role="button" tabindex="0">EN</span>
+              <span class="lang-btn" data-lang="es" role="button" tabindex="0">ES</span>
             </div>
             <button type="button" class="btn sm outline" id="btnTopbarLogout" onclick="doLogout()"
               data-i18n-aria-label="btn_logout" style="font-size:13px;padding:6px 12px;white-space:nowrap;">🚪 <span
                 data-i18n="btn_logout">Terminar sessão</span></button>
-            <button type="button" class="btn sm outline" onclick="toggleAdminTheme()" id="adminThemeBtn"
+            <button type="button" class="btn sm outline" id="adminThemeBtn"
               title="Thème clair ou sombre" aria-label="Basculer le thème clair ou sombre"
               style="font-size:16px;padding:6px 10px;">🌙</button>
           </div>
@@ -4412,6 +4417,15 @@
         if (!n || n.indexOf('INSEREZ_VOTRE') !== -1) return null;
         if (n.indexOf('https://script.google.com/') !== 0) return null;
         if (n.indexOf('/macros/') === -1) return null;
+        if (n.indexOf('/exec') === -1 && !/\/dev(\?|#|$)/i.test(n)) {
+          var qi = n.indexOf('?');
+          var hi = n.indexOf('#');
+          var cut = qi === -1 ? hi : hi === -1 ? qi : Math.min(qi, hi);
+          var pathOnly = cut === -1 ? n : n.slice(0, cut);
+          var tail = cut === -1 ? '' : n.slice(cut);
+          pathOnly = pathOnly.replace(/\/$/, '');
+          if (/\/macros\/s\/[^/]+$/i.test(pathOnly)) n = pathOnly + '/exec' + tail;
+        }
         if (n.indexOf('/exec') === -1 && !/\/dev(\?|#|$)/i.test(n)) return null;
         return n;
       }
@@ -4560,7 +4574,7 @@
         '<h3 style="margin:22px 0 10px;font-size:16px;color:var(--accent);">7 · Lista antes de publicar</h3><ul style="margin:0;padding:0 0 8px 20px;"><li style="margin:6px 0;">API probada</li><li style="margin:6px 0;">Producto visible + imagen</li><li style="margin:6px 0;">Precios e impuestos</li><li style="margin:6px 0;">URLs legales completas</li></ul></div>'
     };
 
-    let lang = localStorage.getItem('erp_admin_lang') || 'pt';
+    let lang = String(localStorage.getItem('erp_admin_lang') || 'pt').toLowerCase();
     if (['pt', 'fr', 'en', 'es'].indexOf(lang) === -1) lang = 'pt';
     let adminToken = '';
     let currentOrderId = '';
@@ -4610,13 +4624,17 @@
     }
 
     function setLang(l, btn) {
+      l = String(l || 'pt').toLowerCase();
+      if (!langs[l]) return;
       lang = l;
-      try { localStorage.setItem('erp_admin_lang', l); } catch (e) { }
+      try { localStorage.setItem('erp_admin_lang', lang); } catch (e) { }
       try {
-        document.documentElement.lang = l === 'pt' ? 'pt-PT' : l === 'en' ? 'en' : l === 'fr' ? 'fr' : 'es';
+        document.documentElement.lang = lang === 'pt' ? 'pt-PT' : lang === 'en' ? 'en' : lang === 'fr' ? 'fr' : 'es';
       } catch (e) { }
-      document.querySelectorAll('.lang-btn').forEach(function (b) { b.classList.remove('active'); });
-      if (btn) btn.classList.add('active');
+      document.querySelectorAll('.lang-btn').forEach(function (b) {
+        var c = (b.getAttribute('data-lang') || String(b.textContent || '').trim()).toLowerCase();
+        b.classList.toggle('active', c === lang);
+      });
       applyAdminI18n();
       try { if (typeof updateBulkCount === 'function') updateBulkCount(); } catch (e0) { }
       updateTopNav(currentAdminPage);
@@ -6712,6 +6730,30 @@
       } else {
         API_URL = '';
       }
+      var fileEl = document.getElementById('loginFileProtocolBanner');
+      if (typeof location !== 'undefined' && location.protocol === 'file:') {
+        var fileMsg = {
+          pt: 'Aberto como ficheiro local (file://). Publique esta página em HTTPS (ex.: GitHub Pages) e use esse URL — em file:/// o navegador bloqueia a API do Google Apps Script e o início de sessão falha.',
+          fr: 'Ouvert en fichier local (file://). Hébergez cette page en HTTPS (ex. GitHub Pages) — en file:// le navigateur bloque l’API Google Apps Script et la connexion échoue.',
+          en: 'Opened as local file (file://). Host this admin on HTTPS (e.g. GitHub Pages) — browsers block Google Apps Script from file:// so sign-in will fail.',
+          es: 'Abierto como archivo local (file://). Publique en HTTPS (p. ej. GitHub Pages) — con file:// el navegador bloquea la API de Google Apps Script y el acceso falla.'
+        };
+        if (!fileEl) {
+          fileEl = document.createElement('div');
+          fileEl.id = 'loginFileProtocolBanner';
+          fileEl.className = 'login-no-api-banner';
+          fileEl.setAttribute('role', 'alert');
+          var hostFile = document.querySelector('#loginPage .login-card') || document.querySelector('#loginPage .login-box') || loginBox;
+          if (hostFile) hostFile.insertBefore(fileEl, hostFile.firstChild);
+          else if (formSection && formSection.parentNode) formSection.parentNode.insertBefore(fileEl, formSection);
+        }
+        fileEl.style.display = 'block';
+        try {
+          fileEl.innerHTML = '<strong>file://</strong><p style="margin:8px 0 0;line-height:1.45;">' + (fileMsg[lang] || fileMsg.pt) + '</p>';
+        } catch (eFile) { fileEl.textContent = fileMsg.en; }
+      } else if (fileEl) {
+        fileEl.style.display = 'none';
+      }
     }
 
 
@@ -8297,6 +8339,61 @@
       });
     }
 
+    function erpWireAdminUiHandlers() {
+      if (window._erpAdminUiWired) return;
+      window._erpAdminUiWired = true;
+      document.addEventListener('click', function (erpUiEv) {
+        var t = erpUiEv.target;
+        if (!t || typeof t.closest !== 'function') return;
+        var lb = t.closest('.lang-switcher .lang-btn');
+        if (!lb) return;
+        erpUiEv.preventDefault();
+        var code = (lb.getAttribute('data-lang') || String(lb.textContent || '').trim()).toLowerCase();
+        if (!/^(pt|fr|en|es)$/.test(code)) return;
+        if (typeof setLang === 'function') setLang(code, lb);
+      }, false);
+      document.addEventListener('keydown', function (e) {
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+        var el = e.target;
+        if (!el || !el.classList || !el.classList.contains('lang-btn')) return;
+        if (!el.closest || !el.closest('.lang-switcher')) return;
+        e.preventDefault();
+        var code = (el.getAttribute('data-lang') || String(el.textContent || '').trim()).toLowerCase();
+        if (!/^(pt|fr|en|es)$/.test(code)) return;
+        if (typeof setLang === 'function') setLang(code, el);
+      }, false);
+      var sub = document.getElementById('loginSubmitBtn');
+      if (sub && !sub._erpWired) {
+        sub._erpWired = true;
+        sub.addEventListener('click', function (e) {
+          e.preventDefault();
+          if (typeof doLogin === 'function') void doLogin();
+        });
+      }
+      var lt = document.getElementById('loginThemeBtn');
+      if (lt && !lt._erpWired) {
+        lt._erpWired = true;
+        lt.addEventListener('click', function (e) {
+          e.preventDefault();
+          if (typeof toggleAdminTheme === 'function') toggleAdminTheme();
+        });
+      }
+      var at = document.getElementById('adminThemeBtn');
+      if (at && !at._erpWired) {
+        at._erpWired = true;
+        at.addEventListener('click', function (e) {
+          e.preventDefault();
+          if (typeof toggleAdminTheme === 'function') toggleAdminTheme();
+        });
+      }
+    }
+    erpWireAdminUiHandlers();
+    try {
+      window.setLang = setLang;
+      window.doLogin = doLogin;
+      window.toggleAdminTheme = toggleAdminTheme;
+    } catch (eWin) { }
+
     document.addEventListener('DOMContentLoaded', () => {
       var pFile = parseGsWebAppUrl(API_URL) || parseGsWebAppUrl(typeof window.ERP_API_URL_DEFAULT === 'string' ? window.ERP_API_URL_DEFAULT : '');
       var pLs = parseGsWebAppUrl(localStorage.getItem('erp_api_url') || '');
@@ -8305,7 +8402,8 @@
       const savedToken = localStorage.getItem('erp_token');
       if (savedToken) { adminToken = savedToken; }
       document.querySelectorAll('#loginPage .lang-switcher .lang-btn, .topbar .lang-switcher .lang-btn').forEach(function (b) {
-        b.classList.toggle('active', b.textContent.trim().toLowerCase() === lang);
+        var c = (b.getAttribute('data-lang') || String(b.textContent || '').trim()).toLowerCase();
+        b.classList.toggle('active', c === lang);
       });
       try {
         document.documentElement.lang = lang === 'pt' ? 'pt-PT' : lang === 'en' ? 'en' : lang === 'fr' ? 'fr' : 'es';
