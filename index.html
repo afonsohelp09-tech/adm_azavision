@@ -4659,6 +4659,21 @@
       });
     }
 
+    function _parseApiJsonBody(raw, res) {
+      var text = raw == null ? '' : String(raw);
+      if (!text.trim()) {
+        toast('❌ API: réponse vide (HTTP ' + (res && res.status ? res.status : '?') + '). Vérifiez l’URL /exec et redéployez le script si besoin.', 'error');
+        return null;
+      }
+      try {
+        return JSON.parse(text);
+      } catch (e) {
+        var prev = text.replace(/\s+/g, ' ').trim().slice(0, 200);
+        toast('❌ API: réponse non-JSON (HTTP ' + (res && res.status ? res.status : '?') + '). Ouvrez la page en HTTPS (pas file://) et contrôlez l’URL du déploiement. Extrait : ' + prev, 'error');
+        return null;
+      }
+    }
+
     async function api(action, data = {}) {
       if (!API_URL || API_URL.includes('INSEREZ_VOTRE')) {
         toast((typeof t === 'function' ? t('api_missing_url_toast') : '⚠️ API URL missing'), 'error'); return null;
@@ -4670,13 +4685,21 @@
           method: 'POST',
           body: JSON.stringify({ action, data, token: adminToken })
         });
-        const r = await res.json();
+        const raw = await res.text();
+        const r = _parseApiJsonBody(raw, res);
+        if (r == null) return null;
+        if (!res.ok && r.success !== false) {
+          toast('❌ HTTP ' + res.status + (r.error ? ': ' + r.error : ''), 'error');
+        }
         if (r && r.success === false && r.code === 'NO_AUTH' && action !== 'adminLogin') {
           handleAdminSessionExpired();
         }
         return r;
       } catch (e) {
-        toast('❌ Erro de conexão: ' + e.message, 'error'); return null;
+        var hint = (typeof location !== 'undefined' && location.protocol === 'file:')
+          ? ' (page ouverte en file:// — hébergez en HTTPS)'
+          : '';
+        toast('❌ Erro de conexão: ' + e.message + hint, 'error'); return null;
       }
     }
 
@@ -4703,8 +4726,10 @@
         method: 'POST',
         body: JSON.stringify({ action: 'ping', data: {}, token: '' })
       });
-      const j = await res.json();
-      return !!(j && j.success && (j.message === 'pong' || j.ts));
+      try {
+        const j = JSON.parse(await res.text());
+        return !!(j && j.success && (j.message === 'pong' || j.ts));
+      } catch (e) { return false; }
     }
 
     /** Valide l’URL du Web App : `ping` si présent, sinon repli sur `getStoreData` (anciens scripts). */
@@ -4716,7 +4741,7 @@
           method: 'POST',
           body: JSON.stringify({ action: 'getStoreData' })
         });
-        const j = await res.json();
+        const j = JSON.parse(await res.text());
         return !!(j && j.success);
       } catch (e) {
         return false;
@@ -4778,7 +4803,14 @@
         startAdminSessionKeepAlive();
         toast('✅ Bem-vindo, ' + r.user.nome + '!', 'success');
       } else {
-        toast('❌ ' + (r?.error || (typeof t === 'function' ? t('error') : 'Erro')), 'error');
+        var errMsg = r?.error || (typeof t === 'function' ? t('error') : 'Erro');
+        if (errMsg && /ERP:\s*(ouvrez|liaison)|enregistrer la liaison|spreadsheet|feuille Google Sheets|ERP_SPREADSHEET_ID/i.test(String(errMsg))) {
+          errMsg += ' → Dans Google Sheets : menu « ERP Vente en ligne » → « Enregistrer la liaison avec ce classeur », puis réessayez.';
+        }
+        if (errMsg && /Credenciais inválidas|invalid/i.test(String(errMsg))) {
+          errMsg += ' (compte par défaut après init. : admin@loja.com / admin123 si la feuille USERS est vide)';
+        }
+        toast('❌ ' + errMsg, 'error');
       }
     }
 
