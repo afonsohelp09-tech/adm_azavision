@@ -4229,6 +4229,28 @@
     window.ERP_BOUTIQUE_URL = 'https://VOTRE-USER.github.io/VOTRE-REPO-BOUTIQUE/index.html';
     window.ERP_ADMIN_URL = 'index.html';
   </script>
+  <script>
+    (function () {
+      function normalizeGsWebAppUrl(u) {
+        if (u == null || u === '') return '';
+        u = String(u).trim().replace(/^[\s\uFEFF'"]+|[\s'"]+$/g, '');
+        if (!u) return '';
+        if (u.indexOf('http://script.google.com') === 0) u = 'https://' + u.slice(7);
+        if (/\/exe(\?|#|$)/i.test(u) && !/\/exec(\?|#|$)/i.test(u)) u = u.replace(/\/exe(\?|#|$)/i, '/exec$1');
+        return u;
+      }
+      function parseGsWebAppUrl(u) {
+        var n = normalizeGsWebAppUrl(u);
+        if (!n || n.indexOf('INSEREZ_VOTRE') !== -1) return null;
+        if (n.indexOf('https://script.google.com/') !== 0) return null;
+        if (n.indexOf('/macros/') === -1) return null;
+        if (n.indexOf('/exec') === -1 && !/\/dev(\?|#|$)/i.test(n)) return null;
+        return n;
+      }
+      window._erpNormalizeGsUrl = normalizeGsWebAppUrl;
+      window._erpParseGsUrl = parseGsWebAppUrl;
+    })();
+  </script>
   <!--
 ╔══════════════════════════════════════════════════════════════════╗
 ║  CONFIGURAÇÃO — ALTERAR O URL DO WEB APP                        ║
@@ -4253,9 +4275,14 @@
   </script>
   <script>
     (function () {
-      var inline = (typeof API_URL !== 'undefined' && API_URL) ? String(API_URL).trim() : '';
-      var def = (typeof window.ERP_API_URL_DEFAULT === 'string') ? String(window.ERP_API_URL_DEFAULT).trim() : '';
-      if (!inline || inline.indexOf('INSEREZ_VOTRE') !== -1) {
+      var norm = (typeof window._erpNormalizeGsUrl === 'function') ? window._erpNormalizeGsUrl : function (x) { return String(x == null ? '' : x).trim(); };
+      var parse = (typeof window._erpParseGsUrl === 'function') ? window._erpParseGsUrl : function () { return null; };
+      var inline = (typeof API_URL !== 'undefined' && API_URL) ? norm(API_URL) : '';
+      var def = (typeof window.ERP_API_URL_DEFAULT === 'string') ? norm(window.ERP_API_URL_DEFAULT) : '';
+      var chosen = parse(inline) || parse(def);
+      if (chosen) {
+        API_URL = chosen;
+      } else if (!inline || inline.indexOf('INSEREZ_VOTRE') !== -1) {
         API_URL = def || '';
       } else {
         API_URL = inline;
@@ -4265,7 +4292,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   <script>
     // URL finale : localStorage erp_api_url (sauvé depuis l’écran de connexion / Config) n’écrase
-    // le collage ci-dessus que si l’URL est un Web App GAS valide (…/macros/s/…/exec).
+    // le collage ci-dessus que si l’URL est un Web App GAS valide (https://script.google.com/…/macros/…/exec).
 
     // ============================================================
     // TRADUÇÕES
@@ -6475,10 +6502,14 @@
       } else toast('❌ ' + (r?.error || t('error')), 'error');
     }
 
+    function normalizeGsWebAppUrl(u) {
+      return (typeof window._erpNormalizeGsUrl === 'function') ? window._erpNormalizeGsUrl(u) : String(u == null ? '' : u).trim();
+    }
+    function parseGsWebAppUrl(u) {
+      return (typeof window._erpParseGsUrl === 'function') ? window._erpParseGsUrl(u) : null;
+    }
     function isValidGsWebAppUrl(u) {
-      if (u == null || u === '') return false;
-      u = String(u).trim();
-      return u.indexOf('https://script.google.com/macros/s/') === 0 && u.indexOf('/exec') !== -1 && u.indexOf('INSEREZ_VOTRE') === -1;
+      return parseGsWebAppUrl(u) !== null;
     }
 
     // ============================================================
@@ -6493,14 +6524,11 @@
       const savedUrl = savedRaw ? String(savedRaw).trim() : '';
       const embedded = (typeof API_URL !== 'undefined' && API_URL) ? String(API_URL).trim() : '';
       const defUrl = (typeof window.ERP_API_URL_DEFAULT === 'string') ? String(window.ERP_API_URL_DEFAULT).trim() : '';
-      var resolved = '';
-      if (isValidGsWebAppUrl(savedUrl)) resolved = savedUrl;
-      else if (isValidGsWebAppUrl(embedded)) resolved = embedded;
-      else if (isValidGsWebAppUrl(defUrl)) resolved = defUrl;
+      var resolved = parseGsWebAppUrl(savedUrl) || parseGsWebAppUrl(embedded) || parseGsWebAppUrl(defUrl) || '';
       if (resolved) {
         API_URL = resolved;
         try {
-          if (!isValidGsWebAppUrl(savedUrl)) localStorage.setItem('erp_api_url', resolved);
+          if (!parseGsWebAppUrl(savedUrl)) localStorage.setItem('erp_api_url', resolved);
         } catch (e) { }
         if (loginInput) loginInput.value = resolved;
         if (urlSection) urlSection.style.display = 'none';
@@ -6510,7 +6538,10 @@
         if (urlSection) urlSection.style.display = 'block';
         if (formSection) formSection.style.display = 'none';
         if (changeRow) changeRow.style.display = 'none';
-        if (loginInput && embedded && !isValidGsWebAppUrl(embedded)) loginInput.value = embedded;
+        if (loginInput) {
+          var pre = parseGsWebAppUrl(embedded) || parseGsWebAppUrl(defUrl) || normalizeGsWebAppUrl(embedded) || '';
+          if (pre) loginInput.value = pre;
+        }
       }
     }
 
@@ -6522,8 +6553,9 @@
     }
 
     async function testAndSaveApi() {
-      const url = document.getElementById('loginApiUrl').value.trim();
-      if (!url.startsWith('https://script.google.com')) return alert("❌ URL inválido. Deve começar com https://script.google.com/macros/s/...");
+      const raw = document.getElementById('loginApiUrl').value.trim();
+      const url = parseGsWebAppUrl(raw) || '';
+      if (!url) return alert("❌ URL inválido. Cole o URL completo do Web App (termina em /exec), p.ex. https://script.google.com/macros/s/…/exec");
 
       try {
         const ok = await verifyWebAppUrl(url);
@@ -7189,7 +7221,7 @@
         document.getElementById('cfg_website').value = e.website || '';
         document.getElementById('lojaNome').textContent = e.nome || 'Minha Loja';
       }
-      document.getElementById('apiUrlInput').value = (!API_URL || API_URL.includes('INSEREZ_VOTRE')) ? '' : API_URL;
+      document.getElementById('apiUrlInput').value = parseGsWebAppUrl(API_URL) || '';
       const cfg = await api('getConfig', {});
       if (cfg && cfg.success && cfg.config) {
         fillBoutiqueConfigFields(cfg.config);
@@ -7391,16 +7423,17 @@
     }
 
     function saveApiUrl() {
-      const url = document.getElementById('apiUrlInput').value.trim();
-      if (!url) { toast('❌ URL vazio!', 'error'); return; }
+      const url = parseGsWebAppUrl(document.getElementById('apiUrlInput').value) || '';
+      if (!url) { toast('❌ URL inválido (use …/exec)', 'error'); return; }
       API_URL = url;
       localStorage.setItem('erp_api_url', url);
       toast('✅ URL guardado! Tente o login novamente.', 'success');
     }
 
     async function testApiPing() {
-      const raw = (document.getElementById('apiUrlInput') && document.getElementById('apiUrlInput').value.trim()) || API_URL || '';
-      if (!raw || raw.includes('INSEREZ_VOTRE')) {
+      const rawIn = (document.getElementById('apiUrlInput') && document.getElementById('apiUrlInput').value.trim()) || '';
+      const raw = parseGsWebAppUrl(rawIn) || parseGsWebAppUrl(API_URL) || '';
+      if (!raw) {
         toast('⚠️ Configure o URL da API nas Configurações!', 'error');
         return;
       }
@@ -8105,9 +8138,8 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      const savedUrl = localStorage.getItem('erp_api_url');
-      const su = savedUrl ? String(savedUrl).trim() : '';
-      if (su && isValidGsWebAppUrl(su)) API_URL = su;
+      const p = parseGsWebAppUrl(localStorage.getItem('erp_api_url') || '');
+      if (p) API_URL = p;
       const savedToken = localStorage.getItem('erp_token');
       if (savedToken) { adminToken = savedToken; }
       document.querySelectorAll('.topbar .lang-btn').forEach(function (b) {
@@ -8134,11 +8166,8 @@ CONFIGURATION API : window.ERP_API_URL_DEFAULT (bloc script au-dessus du COLAR)
 
   <script>
     (function () {
-      var saved = localStorage.getItem('erp_api_url');
-      var s = saved ? String(saved).trim() : '';
-      if (s && typeof isValidGsWebAppUrl === 'function' && isValidGsWebAppUrl(s)) {
-        API_URL = s;
-      }
+      var p = (typeof window._erpParseGsUrl === 'function') ? window._erpParseGsUrl(localStorage.getItem('erp_api_url') || '') : null;
+      if (p) API_URL = p;
     })();
     var BOUTIQUE_STOREFRONT_URL = (typeof window.ERP_BOUTIQUE_URL === 'string' && window.ERP_BOUTIQUE_URL.trim()) ? window.ERP_BOUTIQUE_URL.trim() : 'boutique_client.html';
   </script>
