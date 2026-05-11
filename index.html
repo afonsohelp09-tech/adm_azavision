@@ -55,10 +55,10 @@
       --bg3: #f1f5f9;
       --border: #c9d6e4;
       --border-strong: #b0c4d8;
-      --text: #0f172a;
-      --text-mid: #334155;
-      --text2: #475569;
-      --text-muted: #64748b;
+      --text: #0b1220;
+      --text-mid: #1e293b;
+      --text2: #334155;
+      --text-muted: #54657e;
       --accent: var(--brand-mid);
       --accent2: #c2410c;
       --green: #059669;
@@ -83,10 +83,10 @@
       --bg3: #1c2530;
       --border: #2f3a4a;
       --border-strong: #3d4d62;
-      --text: #e8eef6;
-      --text-mid: #cbd5e1;
-      --text2: #94a3b8;
-      --text-muted: #8896aa;
+      --text: #f8fafc;
+      --text-mid: #e8edf5;
+      --text2: #cbd5e1;
+      --text-muted: #a8b6ca;
       --accent: #7eb3e0;
       --accent2: #fb923c;
       --green: #34d399;
@@ -102,6 +102,50 @@
       color-scheme: dark;
     }
 
+    html[data-theme="dark"] .btn.outline {
+      color: var(--text-mid);
+      border-color: var(--border-strong);
+      font-weight: 600;
+    }
+
+    html[data-theme="dark"] .btn.outline:hover {
+      color: var(--text);
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    html[data-theme="dark"] .nav-toolbar-title {
+      opacity: 1;
+      color: var(--text-mid);
+    }
+
+    html[data-theme="dark"] .breadcrumb {
+      color: var(--text-mid);
+    }
+
+    html[data-theme="dark"] .lang-switcher .lang-btn {
+      font-weight: 600;
+      color: var(--text-mid);
+    }
+
+    html[data-theme="dark"] .lang-switcher .lang-btn.active {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    html[data-theme="dark"] .sidebar-logo small {
+      color: var(--text-muted);
+    }
+
+    html[data-theme="dark"] .user-info small {
+      color: var(--text-muted);
+    }
+
+    html[data-theme="dark"] th {
+      color: var(--text-mid);
+      font-weight: 700;
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -115,6 +159,7 @@
       min-height: 100vh;
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
     }
 
     /* ── Page de connexion : bandeau identité boutique (lisibilité renforcée) ── */
@@ -218,18 +263,35 @@
     }
 
     html:not([data-theme="dark"]) .topbar .lang-switcher {
-      background: rgba(255, 255, 255, 0.12);
-      border-color: rgba(255, 255, 255, 0.22);
+      background: rgba(255, 255, 255, 0.96);
+      border: 1px solid rgba(255, 255, 255, 0.75);
+      box-shadow: 0 2px 10px rgba(6, 26, 39, 0.28);
     }
 
-    html:not([data-theme="dark"]) .topbar .lang-btn {
-      color: rgba(255, 255, 255, 0.88);
-    }
-
-    html:not([data-theme="dark"]) .topbar .lang-btn.active {
-      background: var(--gold-soft);
-      color: var(--gold-light);
+    html:not([data-theme="dark"]) .topbar .lang-switcher .lang-btn {
+      color: #061a27;
       font-weight: 700;
+      letter-spacing: 0.04em;
+      background: #ffffff;
+      border: 1px solid rgba(6, 26, 39, 0.28);
+      box-shadow: 0 1px 2px rgba(6, 26, 39, 0.12);
+      -webkit-text-fill-color: #061a27;
+    }
+
+    html:not([data-theme="dark"]) .topbar .lang-switcher .lang-btn:hover {
+      background: #eef6fc;
+      color: #061a27;
+      border-color: rgba(15, 82, 120, 0.42);
+      -webkit-text-fill-color: #061a27;
+    }
+
+    html:not([data-theme="dark"]) .topbar .lang-switcher .lang-btn.active {
+      background: linear-gradient(180deg, var(--gold-light) 0%, var(--gold) 100%);
+      color: #061a27;
+      font-weight: 800;
+      border-color: rgba(184, 137, 46, 0.65);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 0 0 1px rgba(184, 137, 46, 0.55);
+      -webkit-text-fill-color: #061a27;
     }
 
     html:not([data-theme="dark"]) .topbar .btn.outline {
@@ -310,11 +372,11 @@
 
     html:not([data-theme="dark"]) th {
       background: var(--brand);
-      color: var(--gold-light);
+      color: #fcefb8;
       font-weight: 700;
       letter-spacing: 0.06em;
       text-transform: uppercase;
-      font-size: 11px;
+      font-size: 12px;
     }
 
     html:not([data-theme="dark"]) td {
@@ -511,9 +573,9 @@
     .form-group label {
       display: block;
       font-size: 13px;
-      color: var(--text2);
+      color: var(--text-mid);
       margin-bottom: 8px;
-      font-weight: 500;
+      font-weight: 600;
     }
 
     .form-group input,
@@ -547,7 +609,8 @@
       color: #fff;
       font-family: var(--font);
       font-size: 15px;
-      font-weight: 600;
+      font-weight: 700;
+      letter-spacing: .02em;
       cursor: pointer;
       transition: .2s;
     }
@@ -569,6 +632,7 @@
       background: transparent;
       border: 1px solid var(--border);
       color: var(--text2);
+      font-weight: 600;
     }
 
     .btn.outline:hover {
@@ -579,7 +643,8 @@
     .btn.sm {
       padding: 8px 16px;
       width: auto;
-      font-size: 13px;
+      font-size: 14px;
+      font-weight: 600;
       border-radius: 8px;
     }
 
@@ -608,19 +673,35 @@
     }
 
     html:not([data-theme="dark"]) #loginPage .login-top-bar .lang-switcher {
-      background: rgba(255, 255, 255, 0.12);
-      border-color: rgba(255, 255, 255, 0.22);
+      background: rgba(255, 255, 255, 0.96);
+      border: 1px solid rgba(255, 255, 255, 0.65);
+      box-shadow: 0 2px 12px rgba(6, 26, 39, 0.35);
     }
 
-    html:not([data-theme="dark"]) #loginPage .login-top-bar .lang-btn {
-      color: rgba(255, 255, 255, 0.88);
-      background: transparent;
-    }
-
-    html:not([data-theme="dark"]) #loginPage .login-top-bar .lang-btn.active {
-      background: var(--gold-soft);
-      color: var(--gold-light);
+    html:not([data-theme="dark"]) #loginPage .login-top-bar .lang-switcher .lang-btn {
+      color: #061a27;
       font-weight: 700;
+      letter-spacing: 0.04em;
+      background: #ffffff;
+      border: 1px solid rgba(6, 26, 39, 0.28);
+      box-shadow: 0 1px 2px rgba(6, 26, 39, 0.12);
+      -webkit-text-fill-color: #061a27;
+    }
+
+    html:not([data-theme="dark"]) #loginPage .login-top-bar .lang-switcher .lang-btn:hover {
+      background: #eef6fc;
+      color: #061a27;
+      border-color: rgba(15, 82, 120, 0.42);
+      -webkit-text-fill-color: #061a27;
+    }
+
+    html:not([data-theme="dark"]) #loginPage .login-top-bar .lang-switcher .lang-btn.active {
+      background: linear-gradient(180deg, var(--gold-light) 0%, var(--gold) 100%);
+      color: #061a27;
+      font-weight: 800;
+      border-color: rgba(184, 137, 46, 0.65);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 0 0 1px rgba(184, 137, 46, 0.55);
+      -webkit-text-fill-color: #061a27;
     }
 
     html[data-theme="dark"] #loginPage .login-top-bar .lang-switcher {
@@ -1101,7 +1182,7 @@
       letter-spacing: 1.6px;
       font-weight: 700;
       text-transform: uppercase;
-      opacity: .92;
+      opacity: 1;
     }
 
     .nav-item {
@@ -1115,7 +1196,7 @@
       cursor: pointer;
       transition: background .15s, color .15s, border-color .15s;
       font-size: 14px;
-      font-weight: 500;
+      font-weight: 600;
       border-left: 3px solid transparent;
     }
 
@@ -1143,6 +1224,7 @@
       padding-left: 32px;
       font-size: 13px;
       color: var(--text2);
+      font-weight: 600;
     }
 
     .nav-item.nav-sub:hover {
@@ -1255,9 +1337,9 @@
     }
 
     .bc-sep {
-      opacity: .35;
+      opacity: .45;
       user-select: none;
-      font-weight: 300;
+      font-weight: 500;
       font-size: 12px;
     }
 
@@ -1266,7 +1348,7 @@
     }
 
     .bc-part:not(.bc-current) {
-      opacity: .88;
+      opacity: .96;
     }
 
     .bc-current {
@@ -1306,6 +1388,8 @@
       border: none;
       border-radius: 7px;
       padding: 6px 12px;
+      font-weight: 600;
+      letter-spacing: .02em;
     }
 
     .lang-switcher .lang-btn.active {
@@ -1327,7 +1411,7 @@
       letter-spacing: 1.4px;
       text-transform: uppercase;
       color: var(--text2);
-      opacity: .75;
+      opacity: .95;
       max-width: 72px;
       line-height: 1.25;
     }
@@ -1651,17 +1735,19 @@
 
     th {
       padding: 12px 16px;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text2);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-mid);
       text-align: left;
       background: var(--bg3);
-      letter-spacing: .5px;
+      letter-spacing: .4px;
     }
 
     td {
       padding: 12px 16px;
-      font-size: 13px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
       border-top: 1px solid var(--border);
     }
 
@@ -4537,10 +4623,10 @@
     // TRADUÇÕES
     // ============================================================
     const langs = {
-      pt: { dashboard: 'Dashboard', guia: 'Guia rápido', guia_page_intro: 'Instruções resumidas, exemplos e lembrete sobre os quatro idiomas da vitrine (PT por defeito).', navBoutiquePreview: 'Ver a minha loja', produtos: 'Produtos', categorias: 'Categorias', stock: 'Stock', pedidos: 'Pedidos', entregas: 'Envios', clientes: 'Clientes', pagamentos: 'Pagamentos', cupons: 'Cupões', avaliacoes: 'Avaliações', newsletter: 'Newsletter', financeiro: 'Financeiro', audit: 'Audit / Logs', configuracoes: 'Configurações', atendimento: 'Atendimento', relatorios: 'Relatórios', loading: 'A carregar...', saved: 'Guardado com sucesso!', error: 'Erro', sessionExpired: 'Sessão expirada', btn_logout: 'Terminar sessão', mediatheque: 'Mediateca (Drive)', mediathequeHint: 'Ficheiros na pasta ERP_Boutique_Images. Clique para copiar o URL; em Produtos use « Biblioteca Drive » para aplicar.', nodata: 'Sem dados', nav_principal: 'PRINCIPAL', nav_catalogo: 'CATÁLOGO', nav_vendas: 'VENDAS', nav_marketing: 'MARKETING', nav_sistema: 'SISTEMA', nav_shortcuts: 'ATALHOS', nav_shortcuts_hint: 'Mesma ordem do menu lateral', nav_toolbar_modules: 'Módulos', bc_home_title: 'Início (Dashboard)', ph_search_prod: '🔍 Pesquisar produtos...', ph_search_cat: '🔍 Pesquisar categoria...', ph_search_stock: '🔍 Produto, variante, SKU...', btn_refresh: '🔄 Atualizar', btn_export_csv: '⬇ CSV', btn_add_product: '+ Produto', btn_new_category: '+ Categoria', btn_bulk_stock: 'Inventário (selecionados)', btn_alerts: 'Alertas', btn_send_email: 'Enviar email', btn_open_wa: 'Abrir WhatsApp', btn_apply: 'Aplicar', btn_cancel: 'Cancelar', select_all: 'Selecionar visíveis', all_categories: 'Todas as categorias', th_img: 'IMG', th_product: 'PRODUTO', th_category: 'CATEGORIA', th_price: 'PREÇO', th_stock: 'STOCK', th_status: 'ESTADO', th_actions: 'AÇÕES', th_name: 'NOME', th_parent: 'CATEGORIA PAI', th_variant: 'VARIANTE', th_size: 'TAMANHO', th_color: 'COR', th_min: 'MÍN.', catalog_products_title: 'Catálogo — produtos', catalog_categories_title: 'Categorias — definição', stock_inventory_title: 'Inventário & stock por variante', stock_movements_title: 'Movimentos de stock (recentes)', stockPageHint: 'COR é a cor da variante. Tamanho e cor definem-se em Produtos → editar; nesta grelha altere só quantidades e stock mínimo (📦). Formato das linhas: tamanho:cor:stock.', prodDescLabel: 'Descrição do produto', prodDescHint: 'Este texto aparece na ficha do produto na loja (abaixo do preço). Descreva materiais, cuidados, corte, etc.', atendimento_title: 'Atendimento — Email & WhatsApp', atendimento_intro: 'Envie e-mails (Gmail do script) ou abra o WhatsApp com texto gerado. Preencha nome, pedido, totais.', lbl_template: 'Modelo', lbl_msg_lang: 'Idioma do texto', bulk_stock_title: 'Inventário em lote', bulk_stock_desc: 'Define a mesma quantidade para as linhas selecionadas (contagem física).', lbl_new_qty: 'Nova quantidade', th_check: '', btn_edit_selection: '✏️ Editar seleção', modal_cat_new: '📂 Nova categoria', modal_cat_edit: '📂 Editar categoria', kpi_avg_ticket: 'TICKET MÉDIO', kpi_avg_ticket_sub: 'Valor médio por pedido', kpi_orders_month: 'PEDIDOS (MÊS)', kpi_orders_month_sub: 'No mês corrente', ph_search_orders: '🔍 ID pedido ou email...', btn_export_orders: '⬇ CSV pedidos', legal_urls_title: '🔗 Ligações legais (vitrine)', legal_urls_hint: 'URLs no rodapé da loja.', lbl_legal_terms: 'Termos (URL)', lbl_legal_privacy: 'Privacidade (URL)', lbl_legal_returns: 'Devoluções (URL)', lbl_cookie_banner: 'Banner de cookies (RGPD)', marcas: 'Marcas', faturas: 'Faturas & PDF', devolucoes: 'Devoluções', nav_promo_cupons: 'Cupões & promoções', marcas_title: '🏷 Marcas & fornecedores', marcas_intro: 'Uma marca por linha. Texto de apoio à vitrine.', marcas_list_label: 'Lista de marcas', btn_save: 'Guardar', faturas_intro: 'Acesso rápido a PDFs por pedido.', faturas_goto_orders: 'Ir para Pedidos', faturas_table_title: 'Documentos por pedido', th_order: 'PEDIDO', devolucoes_title: 'Política de devoluções', devolucoes_intro: 'Notas internas; o cliente vê o URL legal na vitrine.', devolucoes_notes_label: 'Notas da equipa', devolucoes_recent: 'Pedidos cancelados', btn_view_order: 'Ver', dash_charts_title: 'Desempenho', dash_chart_revenue: 'Evolução Receita', dash_chart_top: 'Top Produtos', dash_chart_payments: 'Repartição Pagamentos', dash_chart_orders_status: 'Pedidos por Estado', btn_test_api: '🔌 Testar ligação API', api_ping_ok: 'API acessível e a responder.', lang_policy_intro: 'Este painel e a vitrine usam português de Portugal (PT) como língua por defeito. O seletor no topo (PT · FR · EN · ES) e o da loja oferecem sempre francês, inglês e espanhol para clientes internacionais.', lang_switcher_aria: 'Idiomas do painel: Português de Portugal (predefinição), Français, English, Español', lang_boutique_card_title: '🌐 Idioma e moeda (vitrine)', lang_boutique_default_hint: 'Primeira visita na loja: aplica o idioma escolhido abaixo (recomendado: português de Portugal). No cabeçalho da vitrine o cliente pode alternar sempre entre PT, FR, EN e ES.', lang_boutique_default_label: 'Idioma por defeito da vitrine', api_ping_fail: 'API não respondeu como esperado.' },
-      fr: { dashboard: 'Tableau de bord', guia: 'Guide rapide', guia_page_intro: 'Instructions courtes, exemples et rappel sur les quatre langues de la vitrine (PT par défaut).', navBoutiquePreview: 'Voir ma boutique', produtos: 'Produits', categorias: 'Catégories', stock: 'Stock', pedidos: 'Commandes', entregas: 'Livraisons', clientes: 'Clients', pagamentos: 'Paiements', cupons: 'Coupons', avaliacoes: 'Avis clients', newsletter: 'Newsletter', financeiro: 'Finance', audit: 'Audit / Journaux', configuracoes: 'Paramètres', atendimento: 'Service client', relatorios: 'Rapports', loading: 'Chargement...', saved: 'Sauvegardé !', error: 'Erreur', sessionExpired: 'Session expirée', btn_logout: 'Déconnexion', mediatheque: 'Médiathèque (Drive)', mediathequeHint: 'Fichiers du dossier ERP_Boutique_Images. Cliquez pour copier l’URL ; dans Produit, utilisez « Bibliothèque Drive » pour l’appliquer.', nodata: 'Aucune donnée', nav_principal: 'PRINCIPAL', nav_catalogo: 'CATALOGUE', nav_vendas: 'VENTES', nav_marketing: 'MARKETING', nav_sistema: 'SYSTÈME', nav_shortcuts: 'RACCOURCIS', nav_shortcuts_hint: 'Même ordre que le menu', nav_toolbar_modules: 'Modules', bc_home_title: 'Accueil (tableau de bord)', ph_search_prod: '🔍 Rechercher des produits...', ph_search_cat: '🔍 Rechercher une catégorie...', ph_search_stock: '🔍 Produit, variante, SKU...', btn_refresh: '🔄 Actualiser', btn_export_csv: '⬇ CSV', btn_add_product: '+ Produit', btn_new_category: '+ Catégorie', btn_bulk_stock: 'Inventaire (sélection)', btn_alerts: 'Alertes', btn_send_email: 'Envoyer e-mail', btn_open_wa: 'Ouvrir WhatsApp', btn_apply: 'Appliquer', btn_cancel: 'Annuler', select_all: 'Sélectionner visibles', all_categories: 'Toutes catégories', th_img: 'IMG', th_product: 'PRODUIT', th_category: 'CATÉGORIE', th_price: 'PRIX', th_stock: 'STOCK', th_status: 'STATUT', th_actions: 'ACTIONS', th_name: 'NOM', th_parent: 'CATÉGORIE PARENT', th_variant: 'VARIANTE', th_size: 'TAILLE', th_color: 'COULEUR', th_min: 'MIN.', catalog_products_title: 'Catalogue — produits', catalog_categories_title: 'Catégories', stock_inventory_title: 'Inventaire & stock (variantes)', stock_movements_title: 'Mouvements de stock', stockPageHint: 'COR est l’abréviation portugaise de « cor » = couleur. Taille et couleur définissent la variante ; elles se modifient dans Produits (éditer le produit → variantes), pas dans ce tableau. Ici vous réglez seulement les quantités et le seuil minimum (bouton 📦).', prodDescLabel: 'Description du produit', prodDescHint: 'Ce texte apparaît sur la fiche article de la boutique (sous le prix). Décrivez matière, entretien, coupe, etc.', atendimento_title: 'Service client — Email & WhatsApp', atendimento_intro: 'Envoyez des e-mails (Gmail du compte script) ou ouvrez WhatsApp avec un texte généré.', lbl_template: 'Modèle', lbl_msg_lang: 'Langue', bulk_stock_title: 'Inventaire par lot', bulk_stock_desc: 'Définir la même quantité pour les lignes sélectionnées.', lbl_new_qty: 'Nouvelle quantité', th_check: '', btn_edit_selection: '✏️ Éditer la sélection', modal_cat_new: '📂 Nouvelle catégorie', modal_cat_edit: '📂 Modifier la catégorie', kpi_avg_ticket: 'PANIER MOYEN', kpi_avg_ticket_sub: 'Montant moyen par commande', kpi_orders_month: 'COMMANDES (MOIS)', kpi_orders_month_sub: 'Mois en cours', ph_search_orders: '🔍 N° commande ou e-mail...', btn_export_orders: '⬇ CSV commandes', legal_urls_title: '🔗 Liens légaux (vitrine)', legal_urls_hint: 'URLs affichées en pied de page.', lbl_legal_terms: 'CGV (URL)', lbl_legal_privacy: 'Confidentialité (URL)', lbl_legal_returns: 'Retours (URL)', lbl_cookie_banner: 'Bannière cookies (RGPD)', marcas: 'Marques', faturas: 'Factures & PDF', devolucoes: 'Retours', nav_promo_cupons: 'Coupons & promos', marcas_title: '🏷 Marques', marcas_intro: 'Une marque par ligne.', marcas_list_label: 'Liste des marques', btn_save: 'Enregistrer', faturas_intro: 'Accès rapide aux PDF par commande.', faturas_goto_orders: 'Aller aux commandes', faturas_table_title: 'Documents par commande', th_order: 'COMMANDE', devolucoes_title: 'Politique de retours', devolucoes_intro: 'Notes internes.', devolucoes_notes_label: 'Notes équipe', devolucoes_recent: 'Commandes annulées', btn_view_order: 'Voir', dash_charts_title: 'Performance', dash_chart_revenue: 'Évolution CA', dash_chart_top: 'Top Produits', dash_chart_payments: 'Répartition Paiements', dash_chart_orders_status: 'Commandes par statut', btn_test_api: '🔌 Tester l’API', api_ping_ok: 'API joignable et opérationnelle.', lang_policy_intro: 'La majorité des utilisateurs parlent portugais : le portugais est la langue par défaut de ce panneau et de la boutique. Les sélecteurs PT · FR · EN · ES (en haut et sur la vitrine) incluent toujours le français, l\'anglais et l\'espagnol — essentiel pour les clients internationaux.', lang_switcher_aria: 'Langues du panneau : Portugais (par défaut), Français, Anglais, Espagnol', lang_boutique_card_title: '🌐 Langue et devise (vitrine)', lang_boutique_default_hint: 'Première visite : applique la langue ci-dessous (recommandé : portugais). L\'en-tête de la vitrine permet de passer à tout moment à PT, FR, EN ou ES.', lang_boutique_default_label: 'Langue par défaut de la vitrine', api_ping_fail: 'Réponse API inattendue ou erreur.' },
-      en: { dashboard: 'Dashboard', guia: 'Quick guide', guia_page_intro: 'Short how-to, examples, and a reminder about the four storefront languages (PT default).', navBoutiquePreview: 'View storefront', produtos: 'Products', categorias: 'Categories', stock: 'Stock', pedidos: 'Orders', entregas: 'Shipping', clientes: 'Customers', pagamentos: 'Payments', cupons: 'Coupons', avaliacoes: 'Reviews', newsletter: 'Newsletter', financeiro: 'Finance', audit: 'Audit / Logs', configuracoes: 'Settings', atendimento: 'Customer care', relatorios: 'Reports', loading: 'Loading...', saved: 'Saved!', error: 'Error', sessionExpired: 'Session expired', btn_logout: 'Log out', mediatheque: 'Media library (Drive)', mediathequeHint: 'Files in the ERP_Boutique_Images folder. Click to copy URL; in Products use « Drive library » to apply.', nodata: 'No data', nav_principal: 'MAIN', nav_catalogo: 'CATALOG', nav_vendas: 'SALES', nav_marketing: 'MARKETING', nav_sistema: 'SYSTEM', nav_shortcuts: 'SHORTCUTS', nav_shortcuts_hint: 'Same order as the sidebar', nav_toolbar_modules: 'Modules', bc_home_title: 'Home (dashboard)', ph_search_prod: '🔍 Search products...', ph_search_cat: '🔍 Search category...', ph_search_stock: '🔍 Product, variant, SKU...', btn_refresh: '🔄 Refresh', btn_export_csv: '⬇ CSV', btn_add_product: '+ Product', btn_new_category: '+ Category', btn_bulk_stock: 'Inventory (selected)', btn_alerts: 'Alerts', btn_send_email: 'Send email', btn_open_wa: 'Open WhatsApp', btn_apply: 'Apply', btn_cancel: 'Cancel', select_all: 'Select visible', all_categories: 'All categories', th_img: 'IMG', th_product: 'PRODUCT', th_category: 'CATEGORY', th_price: 'PRICE', th_stock: 'STOCK', th_status: 'STATUS', th_actions: 'ACTIONS', th_name: 'NAME', th_parent: 'PARENT', th_variant: 'VARIANT', th_size: 'SIZE', th_color: 'COLOR', th_min: 'MIN.', catalog_products_title: 'Catalog — products', catalog_categories_title: 'Categories', stock_inventory_title: 'Inventory & stock by variant', stock_movements_title: 'Stock movements', stockPageHint: 'COR means color (Portuguese cor). Size and color are set on each product variant under Products → edit product. This screen only changes stock quantity and minimum (📦).', prodDescLabel: 'Product description', prodDescHint: 'Shown on the product page under the price. Describe materials, care, fit, etc.', atendimento_title: 'Customer care — Email & WhatsApp', atendimento_intro: 'Send emails (script Gmail) or open WhatsApp with generated text.', lbl_template: 'Template', lbl_msg_lang: 'Language', bulk_stock_title: 'Bulk inventory', bulk_stock_desc: 'Set the same quantity for selected rows (physical count).', lbl_new_qty: 'New quantity', th_check: '', btn_edit_selection: '✏️ Edit selection', modal_cat_new: '📂 New category', modal_cat_edit: '📂 Edit category', kpi_avg_ticket: 'AVG. ORDER VALUE', kpi_avg_ticket_sub: 'Average per order', kpi_orders_month: 'ORDERS (MONTH)', kpi_orders_month_sub: 'Current month', ph_search_orders: '🔍 Order ID or email...', btn_export_orders: '⬇ Export CSV', legal_urls_title: '🔗 Legal links (storefront)', legal_urls_hint: 'Footer URLs: terms, privacy, returns.', lbl_legal_terms: 'Terms (URL)', lbl_legal_privacy: 'Privacy (URL)', lbl_legal_returns: 'Returns (URL)', lbl_cookie_banner: 'Cookie banner (GDPR)', marcas: 'Brands', faturas: 'Invoices & PDF', devolucoes: 'Returns', nav_promo_cupons: 'Coupons & deals', marcas_title: '🏷 Brands', marcas_intro: 'One brand per line.', marcas_list_label: 'Brand list', btn_save: 'Save', faturas_intro: 'Quick access to order PDFs.', faturas_goto_orders: 'Go to orders', faturas_table_title: 'Documents per order', th_order: 'ORDER', devolucoes_title: 'Returns policy', devolucoes_intro: 'Internal notes.', devolucoes_notes_label: 'Team notes', devolucoes_recent: 'Cancelled orders', btn_view_order: 'View', dash_charts_title: 'Performance', dash_chart_revenue: 'Revenue Trend', dash_chart_top: 'Top Products', dash_chart_payments: 'Payments Breakdown', dash_chart_orders_status: 'Orders by Status', btn_test_api: '🔌 Test API', api_ping_ok: 'API is reachable and responding.', lang_policy_intro: 'European Portuguese (Portugal) is the default language for this admin panel and the storefront. The PT · FR · EN · ES switchers always include French, English, and Spanish — essential for international customers.', lang_switcher_aria: 'Admin languages: Portuguese (Portugal, default), French, English, Spanish', lang_boutique_card_title: '🌐 Language & currency (storefront)', lang_boutique_default_hint: 'First visit uses the language below (recommended: European Portuguese). The storefront header always lets customers switch between PT, FR, EN, and ES.', lang_boutique_default_label: 'Default storefront language', api_ping_fail: 'Unexpected API response or error.' },
-      es: { dashboard: 'Panel', guia: 'Guía rápida', guia_page_intro: 'Instrucciones breves, ejemplos y recuerdo de los cuatro idiomas de la vitrina (PT por defecto).', navBoutiquePreview: 'Ver la tienda', produtos: 'Productos', categorias: 'Categorías', stock: 'Stock', pedidos: 'Pedidos', entregas: 'Envíos', clientes: 'Clientes', pagamentos: 'Pagos', cupons: 'Cupones', avaliacoes: 'Valoraciones', newsletter: 'Newsletter', financeiro: 'Finanzas', audit: 'Auditoría', configuracoes: 'Configuración', atendimento: 'Atención', relatorios: 'Informes', loading: 'Cargando...', saved: '¡Guardado!', error: 'Error', sessionExpired: 'Sesión expirada', btn_logout: 'Cerrar sesión', mediatheque: 'Mediateca (Drive)', mediathequeHint: 'Archivos en la carpeta ERP_Boutique_Images. Clic para copiar URL.', nodata: 'Sin datos', nav_principal: 'PRINCIPAL', nav_catalogo: 'CATÁLOGO', nav_vendas: 'VENTAS', nav_marketing: 'MARKETING', nav_sistema: 'SISTEMA', nav_shortcuts: 'ATAJOS', nav_shortcuts_hint: 'Mismo orden que el menú lateral', nav_toolbar_modules: 'Módulos', bc_home_title: 'Inicio (panel)', ph_search_prod: '🔍 Buscar productos...', ph_search_cat: '🔍 Buscar categoría...', ph_search_stock: '🔍 Producto, variante...', btn_refresh: '🔄 Actualizar', btn_export_csv: '⬇ CSV', btn_add_product: '+ Producto', btn_new_category: '+ Categoría', btn_bulk_stock: 'Inventario (selección)', btn_alerts: 'Alertas', btn_send_email: 'Enviar email', btn_open_wa: 'Abrir WhatsApp', btn_apply: 'Aplicar', btn_cancel: 'Cancelar', select_all: 'Seleccionar visibles', all_categories: 'Todas las categorías', th_img: 'IMG', th_product: 'PRODUCTO', th_category: 'CATEGORÍA', th_price: 'PRECIO', th_stock: 'STOCK', th_status: 'ESTADO', th_actions: 'ACCIONES', th_name: 'NOMBRE', th_parent: 'CATEGORÍA PADRE', th_variant: 'VARIANTE', th_size: 'TALLA', th_color: 'COLOR', th_min: 'MÍN.', catalog_products_title: 'Catálogo — productos', catalog_categories_title: 'Categorías', stock_inventory_title: 'Inventario y stock', stock_movements_title: 'Movimientos de stock', stockPageHint: 'COR = color (portugués). Talla y color son de la variante en Productos → editar. Aquí solo cantidades y mínimo (📦).', prodDescLabel: 'Descripción del producto', prodDescHint: 'Se muestra en la ficha del producto bajo el precio. Materiales, cuidados, tallaje, etc.', atendimento_title: 'Atención — Email y WhatsApp', atendimento_intro: 'Envíe correos (Gmail del script) o abra WhatsApp con texto generado.', lbl_template: 'Plantilla', lbl_msg_lang: 'Idioma', bulk_stock_title: 'Inventario en lote', bulk_stock_desc: 'Define la misma cantidad para las filas seleccionadas.', lbl_new_qty: 'Nueva cantidad', th_check: '', btn_edit_selection: '✏️ Editar selección', modal_cat_new: '📂 Nueva categoría', modal_cat_edit: '📂 Editar categoría', kpi_avg_ticket: 'TICKET MEDIO', kpi_avg_ticket_sub: 'Importe medio por pedido', kpi_orders_month: 'PEDIDOS (MES)', kpi_orders_month_sub: 'Mes en curso', ph_search_orders: '🔍 ID pedido o email...', btn_export_orders: '⬇ CSV pedidos', legal_urls_title: '🔗 Enlaces legales (tienda)', legal_urls_hint: 'URLs en el pie: términos, privacidad, devoluciones.', lbl_legal_terms: 'Términos (URL)', lbl_legal_privacy: 'Privacidad (URL)', lbl_legal_returns: 'Devoluciones (URL)', lbl_cookie_banner: 'Banner de cookies (RGPD)', marcas: 'Marcas', faturas: 'Facturas y PDF', devolucoes: 'Devoluciones', nav_promo_cupons: 'Cupones y promos', marcas_title: '🏷 Marcas', marcas_intro: 'Una marca por línea.', marcas_list_label: 'Lista de marcas', btn_save: 'Guardar', faturas_intro: 'Acceso rápido a PDF por pedido.', faturas_goto_orders: 'Ir a pedidos', faturas_table_title: 'Documentos por pedido', th_order: 'PEDIDO', devolucoes_title: 'Política de devoluciones', devolucoes_intro: 'Notas internas.', devolucoes_notes_label: 'Notas del equipo', devolucoes_recent: 'Pedidos cancelados', btn_view_order: 'Ver', dash_charts_title: 'Rendimiento', dash_chart_revenue: 'Evolución Ingresos', dash_chart_top: 'Top Productos', dash_chart_payments: 'Distribución Pagos', dash_chart_orders_status: 'Pedidos por Estado', btn_test_api: '🔌 Probar API', api_ping_ok: 'API accesible y operativa.', lang_policy_intro: 'La mayoría habla portugués: el portugués (PT) es el idioma por defecto del panel y de la tienda. Los selectores PT · FR · EN · ES incluyen siempre francés, inglés y español — imprescindible para clientes internacionales.', lang_switcher_aria: 'Idiomas del panel: Portugués (predeterminado), Francés, Inglés, Español', lang_boutique_card_title: '🌐 Idioma y moneda (vitrina)', lang_boutique_default_hint: 'Primera visita: usa el idioma de abajo (recomendado: portugués). En la cabecera de la tienda el cliente puede cambiar en todo momento entre PT, FR, EN y ES.', lang_boutique_default_label: 'Idioma por defecto de la vitrina', api_ping_fail: 'La API no respondió como se esperaba.' }
+      pt: { dashboard: 'Dashboard', guia: 'Guia rápido', guia_page_intro: 'Instruções resumidas, exemplos e lembrete sobre os quatro idiomas da vitrine (PT por defeito).', navBoutiquePreview: 'Ver a minha loja', produtos: 'Produtos', categorias: 'Categorias', stock: 'Stock', pedidos: 'Pedidos', entregas: 'Envios', clientes: 'Clientes', pagamentos: 'Pagamentos', cupons: 'Cupões', avaliacoes: 'Avaliações', newsletter: 'Newsletter', financeiro: 'Financeiro', audit: 'Audit / Logs', configuracoes: 'Configurações', atendimento: 'Atendimento', relatorios: 'Relatórios', loading: 'A carregar...', saved: 'Guardado com sucesso!', error: 'Erro', sessionExpired: 'Sessão expirada', btn_logout: 'Terminar sessão', mediatheque: 'Mediateca (Drive)', mediathequeHint: 'Ficheiros na pasta ERP_Boutique_Images. Clique para copiar o URL; em Produtos use « Biblioteca Drive » para aplicar.', nodata: 'Sem dados', nav_principal: 'PRINCIPAL', nav_catalogo: 'CATÁLOGO', nav_vendas: 'VENDAS', nav_marketing: 'MARKETING', nav_sistema: 'SISTEMA', nav_shortcuts: 'ATALHOS', nav_shortcuts_hint: 'Mesma ordem do menu lateral', nav_toolbar_modules: 'Módulos', bc_home_title: 'Início (Dashboard)', ph_search_prod: '🔍 Pesquisar produtos...', ph_search_cat: '🔍 Pesquisar categoria...', ph_search_stock: '🔍 Produto, variante, SKU...', btn_refresh: '🔄 Atualizar', btn_export_csv: '⬇ CSV', btn_add_product: '+ Produto', btn_new_category: '+ Categoria', btn_bulk_stock: 'Inventário (selecionados)', btn_alerts: 'Alertas', btn_send_email: 'Enviar email', btn_open_wa: 'Abrir WhatsApp', btn_apply: 'Aplicar', btn_cancel: 'Cancelar', select_all: 'Selecionar visíveis', all_categories: 'Todas as categorias', th_img: 'IMG', th_product: 'PRODUTO', th_category: 'CATEGORIA', th_price: 'PREÇO', th_stock: 'STOCK', th_status: 'ESTADO', th_actions: 'AÇÕES', th_name: 'NOME', th_parent: 'CATEGORIA PAI', th_variant: 'VARIANTE', th_size: 'TAMANHO', th_color: 'COR', th_min: 'MÍN.', catalog_products_title: 'Catálogo — produtos', catalog_categories_title: 'Categorias — definição', stock_inventory_title: 'Inventário & stock por variante', stock_movements_title: 'Movimentos de stock (recentes)', stockPageHint: 'COR é a cor da variante. Tamanho e cor definem-se em Produtos → editar; nesta grelha altere só quantidades e stock mínimo (📦). Formato das linhas: tamanho:cor:stock.', prodDescLabel: 'Descrição do produto', prodDescHint: 'Este texto aparece na ficha do produto na loja (abaixo do preço). Descreva materiais, cuidados, corte, etc.', atendimento_title: 'Atendimento — Email & WhatsApp', atendimento_intro: 'Envie e-mails (Gmail do script) ou abra o WhatsApp com texto gerado. Preencha nome, pedido, totais.', lbl_template: 'Modelo', lbl_msg_lang: 'Idioma do texto', bulk_stock_title: 'Inventário em lote', bulk_stock_desc: 'Define a mesma quantidade para as linhas selecionadas (contagem física).', lbl_new_qty: 'Nova quantidade', th_check: '', btn_edit_selection: '✏️ Editar seleção', modal_cat_new: '📂 Nova categoria', modal_cat_edit: '📂 Editar categoria', kpi_avg_ticket: 'TICKET MÉDIO', kpi_avg_ticket_sub: 'Valor médio por pedido', kpi_orders_month: 'PEDIDOS (MÊS)', kpi_orders_month_sub: 'No mês corrente', ph_search_orders: '🔍 ID pedido ou email...', btn_export_orders: '⬇ CSV pedidos', legal_urls_title: '🔗 Ligações legais (vitrine)', legal_urls_hint: 'URLs no rodapé da loja.', lbl_legal_terms: 'Termos (URL)', lbl_legal_privacy: 'Privacidade (URL)', lbl_legal_returns: 'Devoluções (URL)', lbl_cookie_banner: 'Banner de cookies (RGPD)', marcas: 'Marcas', faturas: 'Faturas & PDF', devolucoes: 'Devoluções', nav_promo_cupons: 'Cupões & promoções', marcas_title: '🏷 Marcas & fornecedores', marcas_intro: 'Uma marca por linha. Texto de apoio à vitrine.', marcas_list_label: 'Lista de marcas', btn_save: 'Guardar', faturas_intro: 'Acesso rápido a PDFs por pedido.', faturas_goto_orders: 'Ir para Pedidos', faturas_table_title: 'Documentos por pedido', th_order: 'PEDIDO', devolucoes_title: 'Política de devoluções', devolucoes_intro: 'Notas internas; o cliente vê o URL legal na vitrine.', devolucoes_notes_label: 'Notas da equipa', devolucoes_recent: 'Pedidos cancelados', btn_view_order: 'Ver', dash_charts_title: 'Desempenho', dash_chart_revenue: 'Evolução Receita', dash_chart_top: 'Top Produtos', dash_chart_payments: 'Repartição Pagamentos', dash_chart_orders_status: 'Pedidos por Estado', btn_test_api: '🔌 Testar ligação API', api_ping_ok: 'API acessível e a responder.', lang_policy_intro: 'Este painel e a vitrine usam português de Portugal (PT) como língua por defeito. O seletor no topo (PT · FR · EN · ES) e o da loja oferecem sempre francês, inglês e espanhol para clientes internacionais.', lang_switcher_aria: 'Idiomas do painel: Português de Portugal (predefinição), Francês, Inglês e Espanhol', lang_boutique_card_title: '🌐 Idioma e moeda (vitrine)', lang_boutique_default_hint: 'Primeira visita na loja: aplica o idioma escolhido abaixo (recomendado: português de Portugal). No cabeçalho da vitrine o cliente pode alternar sempre entre PT, FR, EN e ES.', lang_boutique_default_label: 'Idioma por defeito da vitrine', api_ping_fail: 'API não respondeu como esperado.' },
+      fr: { dashboard: 'Tableau de bord', guia: 'Guide rapide', guia_page_intro: 'Instructions courtes, exemples et rappel sur les quatre langues de la vitrine (PT par défaut).', navBoutiquePreview: 'Voir ma boutique', produtos: 'Produits', categorias: 'Catégories', stock: 'Stock', pedidos: 'Commandes', entregas: 'Livraisons', clientes: 'Clients', pagamentos: 'Paiements', cupons: 'Coupons', avaliacoes: 'Avis clients', newsletter: 'Newsletter', financeiro: 'Finance', audit: 'Audit / Journaux', configuracoes: 'Paramètres', atendimento: 'Service client', relatorios: 'Rapports', loading: 'Chargement...', saved: 'Sauvegardé !', error: 'Erreur', sessionExpired: 'Session expirée', btn_logout: 'Déconnexion', mediatheque: 'Médiathèque (Drive)', mediathequeHint: 'Fichiers du dossier ERP_Boutique_Images. Cliquez pour copier l’URL ; dans Produit, utilisez « Bibliothèque Drive » pour l’appliquer.', nodata: 'Aucune donnée', nav_principal: 'PRINCIPAL', nav_catalogo: 'CATALOGUE', nav_vendas: 'VENTES', nav_marketing: 'MARKETING', nav_sistema: 'SYSTÈME', nav_shortcuts: 'RACCOURCIS', nav_shortcuts_hint: 'Même ordre que le menu', nav_toolbar_modules: 'Modules', bc_home_title: 'Accueil (tableau de bord)', ph_search_prod: '🔍 Rechercher des produits...', ph_search_cat: '🔍 Rechercher une catégorie...', ph_search_stock: '🔍 Produit, variante, SKU...', btn_refresh: '🔄 Actualiser', btn_export_csv: '⬇ CSV', btn_add_product: '+ Produit', btn_new_category: '+ Catégorie', btn_bulk_stock: 'Inventaire (sélection)', btn_alerts: 'Alertes', btn_send_email: 'Envoyer e-mail', btn_open_wa: 'Ouvrir WhatsApp', btn_apply: 'Appliquer', btn_cancel: 'Annuler', select_all: 'Sélectionner visibles', all_categories: 'Toutes catégories', th_img: 'IMG', th_product: 'PRODUIT', th_category: 'CATÉGORIE', th_price: 'PRIX', th_stock: 'STOCK', th_status: 'STATUT', th_actions: 'ACTIONS', th_name: 'NOM', th_parent: 'CATÉGORIE PARENT', th_variant: 'VARIANTE', th_size: 'TAILLE', th_color: 'COULEUR', th_min: 'MIN.', catalog_products_title: 'Catalogue — produits', catalog_categories_title: 'Catégories', stock_inventory_title: 'Inventaire & stock (variantes)', stock_movements_title: 'Mouvements de stock', stockPageHint: 'COR est l’abréviation portugaise de « cor » = couleur. Taille et couleur définissent la variante ; elles se modifient dans Produits (éditer le produit → variantes), pas dans ce tableau. Ici vous réglez seulement les quantités et le seuil minimum (bouton 📦).', prodDescLabel: 'Description du produit', prodDescHint: 'Ce texte apparaît sur la fiche article de la boutique (sous le prix). Décrivez matière, entretien, coupe, etc.', atendimento_title: 'Service client — Email & WhatsApp', atendimento_intro: 'Envoyez des e-mails (Gmail du compte script) ou ouvrez WhatsApp avec un texte généré.', lbl_template: 'Modèle', lbl_msg_lang: 'Langue', bulk_stock_title: 'Inventaire par lot', bulk_stock_desc: 'Définir la même quantité pour les lignes sélectionnées.', lbl_new_qty: 'Nouvelle quantité', th_check: '', btn_edit_selection: '✏️ Éditer la sélection', modal_cat_new: '📂 Nouvelle catégorie', modal_cat_edit: '📂 Modifier la catégorie', kpi_avg_ticket: 'PANIER MOYEN', kpi_avg_ticket_sub: 'Montant moyen par commande', kpi_orders_month: 'COMMANDES (MOIS)', kpi_orders_month_sub: 'Mois en cours', ph_search_orders: '🔍 N° commande ou e-mail...', btn_export_orders: '⬇ CSV commandes', legal_urls_title: '🔗 Liens légaux (vitrine)', legal_urls_hint: 'URLs affichées en pied de page.', lbl_legal_terms: 'CGV (URL)', lbl_legal_privacy: 'Confidentialité (URL)', lbl_legal_returns: 'Retours (URL)', lbl_cookie_banner: 'Bannière cookies (RGPD)', marcas: 'Marques', faturas: 'Factures & PDF', devolucoes: 'Retours', nav_promo_cupons: 'Coupons & promos', marcas_title: '🏷 Marques', marcas_intro: 'Une marque par ligne.', marcas_list_label: 'Liste des marques', btn_save: 'Enregistrer', faturas_intro: 'Accès rapide aux PDF par commande.', faturas_goto_orders: 'Aller aux commandes', faturas_table_title: 'Documents par commande', th_order: 'COMMANDE', devolucoes_title: 'Politique de retours', devolucoes_intro: 'Notes internes.', devolucoes_notes_label: 'Notes équipe', devolucoes_recent: 'Commandes annulées', btn_view_order: 'Voir', dash_charts_title: 'Performance', dash_chart_revenue: 'Évolution CA', dash_chart_top: 'Top Produits', dash_chart_payments: 'Répartition Paiements', dash_chart_orders_status: 'Commandes par statut', btn_test_api: '🔌 Tester l’API', api_ping_ok: 'API joignable et opérationnelle.', lang_policy_intro: 'La majorité des utilisateurs parlent portugais : le portugais est la langue par défaut de ce panneau et de la boutique. Les sélecteurs PT · FR · EN · ES (en haut et sur la vitrine) incluent toujours le français, l\'anglais et l\'espagnol — essentiel pour les clients internationaux.', lang_switcher_aria: 'Langues du panneau : Portugais du Portugal (par défaut), français, anglais et espagnol', lang_boutique_card_title: '🌐 Langue et devise (vitrine)', lang_boutique_default_hint: 'Première visite : applique la langue ci-dessous (recommandé : portugais). L\'en-tête de la vitrine permet de passer à tout moment à PT, FR, EN ou ES.', lang_boutique_default_label: 'Langue par défaut de la vitrine', api_ping_fail: 'Réponse API inattendue ou erreur.' },
+      en: { dashboard: 'Dashboard', guia: 'Quick guide', guia_page_intro: 'Short how-to, examples, and a reminder about the four storefront languages (PT default).', navBoutiquePreview: 'View storefront', produtos: 'Products', categorias: 'Categories', stock: 'Stock', pedidos: 'Orders', entregas: 'Shipping', clientes: 'Customers', pagamentos: 'Payments', cupons: 'Coupons', avaliacoes: 'Reviews', newsletter: 'Newsletter', financeiro: 'Finance', audit: 'Audit / Logs', configuracoes: 'Settings', atendimento: 'Customer care', relatorios: 'Reports', loading: 'Loading...', saved: 'Saved!', error: 'Error', sessionExpired: 'Session expired', btn_logout: 'Log out', mediatheque: 'Media library (Drive)', mediathequeHint: 'Files in the ERP_Boutique_Images folder. Click to copy URL; in Products use « Drive library » to apply.', nodata: 'No data', nav_principal: 'MAIN', nav_catalogo: 'CATALOG', nav_vendas: 'SALES', nav_marketing: 'MARKETING', nav_sistema: 'SYSTEM', nav_shortcuts: 'SHORTCUTS', nav_shortcuts_hint: 'Same order as the sidebar', nav_toolbar_modules: 'Modules', bc_home_title: 'Home (dashboard)', ph_search_prod: '🔍 Search products...', ph_search_cat: '🔍 Search category...', ph_search_stock: '🔍 Product, variant, SKU...', btn_refresh: '🔄 Refresh', btn_export_csv: '⬇ CSV', btn_add_product: '+ Product', btn_new_category: '+ Category', btn_bulk_stock: 'Inventory (selected)', btn_alerts: 'Alerts', btn_send_email: 'Send email', btn_open_wa: 'Open WhatsApp', btn_apply: 'Apply', btn_cancel: 'Cancel', select_all: 'Select visible', all_categories: 'All categories', th_img: 'IMG', th_product: 'PRODUCT', th_category: 'CATEGORY', th_price: 'PRICE', th_stock: 'STOCK', th_status: 'STATUS', th_actions: 'ACTIONS', th_name: 'NAME', th_parent: 'PARENT', th_variant: 'VARIANT', th_size: 'SIZE', th_color: 'COLOR', th_min: 'MIN.', catalog_products_title: 'Catalog — products', catalog_categories_title: 'Categories', stock_inventory_title: 'Inventory & stock by variant', stock_movements_title: 'Stock movements', stockPageHint: 'COR means color (Portuguese cor). Size and color are set on each product variant under Products → edit product. This screen only changes stock quantity and minimum (📦).', prodDescLabel: 'Product description', prodDescHint: 'Shown on the product page under the price. Describe materials, care, fit, etc.', atendimento_title: 'Customer care — Email & WhatsApp', atendimento_intro: 'Send emails (script Gmail) or open WhatsApp with generated text.', lbl_template: 'Template', lbl_msg_lang: 'Language', bulk_stock_title: 'Bulk inventory', bulk_stock_desc: 'Set the same quantity for selected rows (physical count).', lbl_new_qty: 'New quantity', th_check: '', btn_edit_selection: '✏️ Edit selection', modal_cat_new: '📂 New category', modal_cat_edit: '📂 Edit category', kpi_avg_ticket: 'AVG. ORDER VALUE', kpi_avg_ticket_sub: 'Average per order', kpi_orders_month: 'ORDERS (MONTH)', kpi_orders_month_sub: 'Current month', ph_search_orders: '🔍 Order ID or email...', btn_export_orders: '⬇ Export CSV', legal_urls_title: '🔗 Legal links (storefront)', legal_urls_hint: 'Footer URLs: terms, privacy, returns.', lbl_legal_terms: 'Terms (URL)', lbl_legal_privacy: 'Privacy (URL)', lbl_legal_returns: 'Returns (URL)', lbl_cookie_banner: 'Cookie banner (GDPR)', marcas: 'Brands', faturas: 'Invoices & PDF', devolucoes: 'Returns', nav_promo_cupons: 'Coupons & deals', marcas_title: '🏷 Brands', marcas_intro: 'One brand per line.', marcas_list_label: 'Brand list', btn_save: 'Save', faturas_intro: 'Quick access to order PDFs.', faturas_goto_orders: 'Go to orders', faturas_table_title: 'Documents per order', th_order: 'ORDER', devolucoes_title: 'Returns policy', devolucoes_intro: 'Internal notes.', devolucoes_notes_label: 'Team notes', devolucoes_recent: 'Cancelled orders', btn_view_order: 'View', dash_charts_title: 'Performance', dash_chart_revenue: 'Revenue Trend', dash_chart_top: 'Top Products', dash_chart_payments: 'Payments Breakdown', dash_chart_orders_status: 'Orders by Status', btn_test_api: '🔌 Test API', api_ping_ok: 'API is reachable and responding.', lang_policy_intro: 'European Portuguese (Portugal) is the default language for this admin panel and the storefront. The PT · FR · EN · ES switchers always include French, English, and Spanish — essential for international customers.', lang_switcher_aria: 'Panel languages: Portuguese (Portugal, default), French, English, and Spanish', lang_boutique_card_title: '🌐 Language & currency (storefront)', lang_boutique_default_hint: 'First visit uses the language below (recommended: European Portuguese). The storefront header always lets customers switch between PT, FR, EN, and ES.', lang_boutique_default_label: 'Default storefront language', api_ping_fail: 'Unexpected API response or error.' },
+      es: { dashboard: 'Panel', guia: 'Guía rápida', guia_page_intro: 'Instrucciones breves, ejemplos y recuerdo de los cuatro idiomas de la vitrina (PT por defecto).', navBoutiquePreview: 'Ver la tienda', produtos: 'Productos', categorias: 'Categorías', stock: 'Stock', pedidos: 'Pedidos', entregas: 'Envíos', clientes: 'Clientes', pagamentos: 'Pagos', cupons: 'Cupones', avaliacoes: 'Valoraciones', newsletter: 'Newsletter', financeiro: 'Finanzas', audit: 'Auditoría', configuracoes: 'Configuración', atendimento: 'Atención', relatorios: 'Informes', loading: 'Cargando...', saved: '¡Guardado!', error: 'Error', sessionExpired: 'Sesión expirada', btn_logout: 'Cerrar sesión', mediatheque: 'Mediateca (Drive)', mediathequeHint: 'Archivos en la carpeta ERP_Boutique_Images. Clic para copiar URL.', nodata: 'Sin datos', nav_principal: 'PRINCIPAL', nav_catalogo: 'CATÁLOGO', nav_vendas: 'VENTAS', nav_marketing: 'MARKETING', nav_sistema: 'SISTEMA', nav_shortcuts: 'ATAJOS', nav_shortcuts_hint: 'Mismo orden que el menú lateral', nav_toolbar_modules: 'Módulos', bc_home_title: 'Inicio (panel)', ph_search_prod: '🔍 Buscar productos...', ph_search_cat: '🔍 Buscar categoría...', ph_search_stock: '🔍 Producto, variante...', btn_refresh: '🔄 Actualizar', btn_export_csv: '⬇ CSV', btn_add_product: '+ Producto', btn_new_category: '+ Categoría', btn_bulk_stock: 'Inventario (selección)', btn_alerts: 'Alertas', btn_send_email: 'Enviar email', btn_open_wa: 'Abrir WhatsApp', btn_apply: 'Aplicar', btn_cancel: 'Cancelar', select_all: 'Seleccionar visibles', all_categories: 'Todas las categorías', th_img: 'IMG', th_product: 'PRODUCTO', th_category: 'CATEGORÍA', th_price: 'PRECIO', th_stock: 'STOCK', th_status: 'ESTADO', th_actions: 'ACCIONES', th_name: 'NOMBRE', th_parent: 'CATEGORÍA PADRE', th_variant: 'VARIANTE', th_size: 'TALLA', th_color: 'COLOR', th_min: 'MÍN.', catalog_products_title: 'Catálogo — productos', catalog_categories_title: 'Categorías', stock_inventory_title: 'Inventario y stock', stock_movements_title: 'Movimientos de stock', stockPageHint: 'COR = color (portugués). Talla y color son de la variante en Productos → editar. Aquí solo cantidades y mínimo (📦).', prodDescLabel: 'Descripción del producto', prodDescHint: 'Se muestra en la ficha del producto bajo el precio. Materiales, cuidados, tallaje, etc.', atendimento_title: 'Atención — Email y WhatsApp', atendimento_intro: 'Envíe correos (Gmail del script) o abra WhatsApp con texto generado.', lbl_template: 'Plantilla', lbl_msg_lang: 'Idioma', bulk_stock_title: 'Inventario en lote', bulk_stock_desc: 'Define la misma cantidad para las filas seleccionadas.', lbl_new_qty: 'Nueva cantidad', th_check: '', btn_edit_selection: '✏️ Editar selección', modal_cat_new: '📂 Nueva categoría', modal_cat_edit: '📂 Editar categoría', kpi_avg_ticket: 'TICKET MEDIO', kpi_avg_ticket_sub: 'Importe medio por pedido', kpi_orders_month: 'PEDIDOS (MES)', kpi_orders_month_sub: 'Mes en curso', ph_search_orders: '🔍 ID pedido o email...', btn_export_orders: '⬇ CSV pedidos', legal_urls_title: '🔗 Enlaces legales (tienda)', legal_urls_hint: 'URLs en el pie: términos, privacidad, devoluciones.', lbl_legal_terms: 'Términos (URL)', lbl_legal_privacy: 'Privacidad (URL)', lbl_legal_returns: 'Devoluciones (URL)', lbl_cookie_banner: 'Banner de cookies (RGPD)', marcas: 'Marcas', faturas: 'Facturas y PDF', devolucoes: 'Devoluciones', nav_promo_cupons: 'Cupones y promos', marcas_title: '🏷 Marcas', marcas_intro: 'Una marca por línea.', marcas_list_label: 'Lista de marcas', btn_save: 'Guardar', faturas_intro: 'Acceso rápido a PDF por pedido.', faturas_goto_orders: 'Ir a pedidos', faturas_table_title: 'Documentos por pedido', th_order: 'PEDIDO', devolucoes_title: 'Política de devoluciones', devolucoes_intro: 'Notas internas.', devolucoes_notes_label: 'Notas del equipo', devolucoes_recent: 'Pedidos cancelados', btn_view_order: 'Ver', dash_charts_title: 'Rendimiento', dash_chart_revenue: 'Evolución Ingresos', dash_chart_top: 'Top Productos', dash_chart_payments: 'Distribución Pagos', dash_chart_orders_status: 'Pedidos por Estado', btn_test_api: '🔌 Probar API', api_ping_ok: 'API accesible y operativa.', lang_policy_intro: 'La mayoría habla portugués: el portugués (PT) es el idioma por defecto del panel y de la tienda. Los selectores PT · FR · EN · ES incluyen siempre francés, inglés y español — imprescindible para clientes internacionales.', lang_switcher_aria: 'Idiomas del panel: portugués de Portugal (predeterminado), francés, inglés y español', lang_boutique_card_title: '🌐 Idioma y moneda (vitrina)', lang_boutique_default_hint: 'Primera visita: usa el idioma de abajo (recomendado: portugués). En la cabecera de la tienda el cliente puede cambiar en todo momento entre PT, FR, EN y ES.', lang_boutique_default_label: 'Idioma por defecto de la vitrina', api_ping_fail: 'La API no respondió como se esperaba.' }
     };
     (function mergeAdminExtraI18n() {
       var X = {
