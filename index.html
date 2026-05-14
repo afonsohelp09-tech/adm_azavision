@@ -2488,44 +2488,64 @@
           </select>
           <button type="button" class="btn sm outline" onclick="loadProdutos()" data-i18n="btn_refresh">🔄
             Atualizar</button>
-          <button type="button" class="btn sm outline" onclick="refreshAllCatalogData()"
+          <select id="produtosViewMode" title="" data-i18n-title="prod_view_mode_title"
+            onchange="setProdutosListMode(this.value)"
+            style="padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--text);min-width:160px;">
+            <option value="catalog" data-i18n="prod_view_catalog">Catálogo</option>
+            <option value="trash" data-i18n="prod_view_trash">🗑️ Lixeira</option>
+          </select>
+          <button type="button" class="btn sm outline prod-hide-in-trash" onclick="refreshAllCatalogData()"
             data-i18n-title="catalog_refresh_title" title="Recarrega categorias, lista de catálogo e produtos"
             data-i18n="btn_catalog_refresh">🔄 Catálogo</button>
-          <button type="button" class="btn sm outline" onclick="exportSelectedProductsCsv()"
+          <button type="button" class="btn sm outline prod-hide-in-trash" onclick="exportSelectedProductsCsv()"
             data-i18n="btn_export_csv">⬇ CSV</button>
-          <button type="button" class="btn sm outline" onclick="document.getElementById('csvFileInput').click()"
+          <button type="button" class="btn sm outline prod-hide-in-trash" onclick="document.getElementById('csvFileInput').click()"
             data-i18n="btn_import_csv">📥 Importar CSV</button>
           <input type="file" id="csvFileInput" accept=".csv" style="display:none;"
             onchange="handleProductCsvImport(this)">
-          <button class="btn sm" onclick="openProductModalNew()"><span data-i18n="btn_add_product">+
+          <button type="button" class="btn sm prod-hide-in-trash" onclick="openProductModalNew()"><span data-i18n="btn_add_product">+
               Produto</span></button>
         </div>
         <div class="toolbar-row" style="flex-wrap:wrap;gap:8px;margin-top:8px;">
           <span style="font-size:12px;color:var(--text2);align-self:center;margin-right:8px;font-weight:600;"
             data-i18n="lbl_selection">Seleção:</span>
-          <button type="button" class="btn sm outline" onclick="bulkProductAct('activate')">✅ Ativar</button>
-          <button type="button" class="btn sm outline" onclick="bulkProductAct('deactivate')">⏸️ Desativar</button>
-          <button type="button" class="btn sm outline" onclick="bulkProductAct('catalog_publish')">🌐 Publicar
-            vitrine</button>
-          <button type="button" class="btn sm outline" onclick="bulkProductAct('catalog_draft')">📝 Rascunho
-            vitrine</button>
-          <button type="button" class="btn sm danger" onclick="bulkProductAct('delete')">🗑️ Remover
-            selecionados</button>
+          <span id="prodBulkRowCatalog" style="display:inline-flex;flex-wrap:wrap;gap:8px;align-items:center;">
+            <button type="button" class="btn sm outline" onclick="bulkProductAct('activate')">✅ Ativar</button>
+            <button type="button" class="btn sm outline" onclick="bulkProductAct('deactivate')">⏸️ Desativar</button>
+            <button type="button" class="btn sm outline" onclick="bulkProductAct('catalog_publish')">🌐 Publicar
+              vitrine</button>
+            <button type="button" class="btn sm outline" onclick="bulkProductAct('catalog_draft')">📝 Rascunho
+              vitrine</button>
+            <button type="button" class="btn sm danger" onclick="bulkProductAct('delete')">🗑️ Remover
+              selecionados</button>
+          </span>
+          <span id="prodBulkRowTrash" style="display:none;flex-wrap:wrap;gap:8px;align-items:center;">
+            <button type="button" class="btn sm outline" onclick="bulkProductAct('restore')" data-i18n="prod_btn_bulk_restore">↩️ Restaurar selecionados</button>
+            <button type="button" class="btn sm danger" onclick="bulkProductAct('purge')" data-i18n="prod_btn_bulk_purge">⛔ Eliminar definitivamente</button>
+          </span>
         </div>
         <div id="bulkActionsBar"
           style="display:none;background:var(--accent);padding:10px 16px;border-radius:10px;margin:8px 0;align-items:center;gap:10px;flex-wrap:wrap;">
           <span style="color:#fff;font-size:13px;font-weight:600;" id="bulkSelectedCount">0 selecionado(s)</span>
-          <button type="button" class="btn sm" style="background:#fff;color:var(--accent);"
-            onclick="bulkActivateProducts()" data-i18n="btn_bulk_bar_activate">✅ Ativar</button>
-          <button type="button" class="btn sm" style="background:#fff;color:var(--orange);"
-            onclick="bulkDeactivateProducts()" data-i18n="btn_bulk_bar_deactivate">⏸ Desativar</button>
-          <button type="button" class="btn sm" style="background:#fff;color:var(--red);"
-            onclick="bulkDeleteProducts()" data-i18n="btn_bulk_bar_delete">🗑 Remover</button>
+          <span id="bulkBarCatalogBtns" style="display:inline-flex;flex-wrap:wrap;gap:10px;align-items:center;">
+            <button type="button" class="btn sm" style="background:#fff;color:var(--accent);"
+              onclick="bulkActivateProducts()" data-i18n="btn_bulk_bar_activate">✅ Ativar</button>
+            <button type="button" class="btn sm" style="background:#fff;color:var(--orange);"
+              onclick="bulkDeactivateProducts()" data-i18n="btn_bulk_bar_deactivate">⏸ Desativar</button>
+            <button type="button" class="btn sm" style="background:#fff;color:var(--red);"
+              onclick="bulkDeleteProducts()" data-i18n="btn_bulk_bar_delete">🗑 Remover</button>
+          </span>
+          <span id="bulkBarTrashBtns" style="display:none;flex-wrap:wrap;gap:10px;align-items:center;">
+            <button type="button" class="btn sm" style="background:#fff;color:var(--accent);"
+              onclick="bulkRestoreProducts()" data-i18n="btn_bulk_bar_restore">↩️ Restaurar</button>
+            <button type="button" class="btn sm" style="background:#fff;color:var(--red);"
+              onclick="bulkPurgeProducts()" data-i18n="btn_bulk_bar_purge">⛔ Supprimer déf.</button>
+          </span>
           <button type="button" class="btn sm outline" style="color:#fff;border-color:#fff;"
             onclick="clearBulkSelection()" data-i18n="btn_bulk_bar_clear">✖ Limpar</button>
         </div>
         <div class="card">
-          <div class="card-header"><span class="card-title" data-i18n="catalog_products_title">Catálogo —
+          <div class="card-header"><span class="card-title" id="produtosSectionTitle" data-i18n="catalog_products_title">Catálogo —
               produtos</span>
             <span style="font-size:12px;color:var(--text2);"><label style="cursor:pointer;"><input type="checkbox"
                   class="chkb" id="selectAllProd" onchange="toggleSelectAllProd(this.checked)"> <span
@@ -4246,84 +4266,80 @@
   <!-- MODAIS -->
   <div class="modal-overlay" id="modalProduto">
     <div class="modal">
-      <h2>👗 Adicionar/Editar Produto</h2>
+      <h2 data-i18n="modal_prod_title">👗 Produto</h2>
       <input type="hidden" id="editProdutoId">
       <div class="grid2">
-        <div class="form-group"><label>Nome do Produto *</label><input type="text" id="prodNome"
-            placeholder="T-shirt Clássica"></div>
-        <div class="form-group"><label>Categoria</label>
+        <div class="form-group"><label data-i18n="lbl_prod_name_req">Nome *</label><input type="text" id="prodNome"
+            data-i18n-placeholder="ph_prod_name" placeholder=""></div>
+        <div class="form-group"><label data-i18n="lbl_prod_category">Categoria</label>
           <input type="text" id="prodCategoria" list="listaCategoriasProdutos"
-            placeholder="Ex.: T-shirts (ou escolha na lista)" autocomplete="off">
+            data-i18n-placeholder="ph_prod_category_list" placeholder="" autocomplete="off">
           <datalist id="listaCategoriasProdutos"></datalist>
         </div>
       </div>
       <div class="form-group" style="margin-top:4px;">
-        <label for="prodDesc" style="display:block;margin-bottom:8px;"><strong data-i18n="prodDescLabel">Description du
-            produit</strong>
+        <label for="prodDesc" style="display:block;margin-bottom:8px;"><strong data-i18n="prodDescLabel">Descrição</strong>
           <span data-i18n="prodDescHint"
-            style="display:block;font-weight:400;color:var(--text2);font-size:12px;margin-top:4px;line-height:1.45;">Ce
-            texte apparaît sur la fiche article de la boutique (sous le prix). Décrivez matière, entretien, coupe,
-            etc.</span>
+            style="display:block;font-weight:400;color:var(--text2);font-size:12px;margin-top:4px;line-height:1.45;"></span>
         </label>
-        <textarea id="prodDesc" rows="12" placeholder="Ex. : 100 % coton bio, lavage 30°, coupe droite…"
+        <textarea id="prodDesc" rows="12" data-i18n-placeholder="ph_prod_desc_placeholder" placeholder=""
           style="width:100%;min-height:160px;line-height:1.55;font-size:14px;padding:12px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--text);resize:vertical;"></textarea>
       </div>
       <div class="grid2">
-        <div class="form-group"><label>Preço HT (€)</label><input type="number" id="prodPreco" step="0.01"
+        <div class="form-group"><label data-i18n="lbl_price_ht_eur">Preço (€)</label><input type="number" id="prodPreco" step="0.01"
             placeholder="20.00"></div>
-        <div class="form-group"><label>TVA (%)</label><input type="number" id="prodTva" value="23"></div>
+        <div class="form-group"><label data-i18n="lbl_vat_pct">IVA (%)</label><input type="number" id="prodTva" value="23"></div>
       </div>
       <div class="grid2">
-        <div class="form-group"><label>Visibilité catalogue (boutique)</label>
+        <div class="form-group"><label data-i18n="lbl_visibilidade_catalogo_loja">Catálogo</label>
           <select id="prodCatalogoStatus" onchange="toggleProdScheduleRow()">
-            <option value="rascunho">Brouillon (aperçu admin seulement)</option>
-            <option value="publicado">Publié</option>
-            <option value="agendado">Programmé</option>
+            <option value="rascunho" data-i18n="opt_cat_rascunho_long">Rascunho</option>
+            <option value="publicado" data-i18n="opt_cat_publicado_simple">Publicado</option>
+            <option value="agendado" data-i18n="opt_cat_agendado_simple">Agendado</option>
           </select>
         </div>
         <div class="form-group" id="prodPublicarEmWrap" style="display:none;">
-          <label>Date / heure de publication</label>
+          <label data-i18n="lbl_publish_datetime_local">Data</label>
           <input type="datetime-local" id="prodPublicarEm">
         </div>
       </div>
-      <div class="form-group"><label>Photo / image du produit</label>
+      <div class="form-group"><label data-i18n="lbl_photo_produto">Foto</label>
         <input type="file" id="prodImagemFile" accept="image/*,.heic,.heif" onchange="onProdImagemFileSelected(this)"
           style="width:100%;padding:10px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:13px;">
         <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;align-items:center;">
-          <button type="button" class="btn sm outline" style="width:auto;" onclick="uploadProdutoImagem()">Envoyer vers
-            Google Drive (dossier par catégorie)</button>
+          <button type="button" class="btn sm outline" style="width:auto;" onclick="uploadProdutoImagem()" data-i18n="btn_enviar_drive_pasta_cat">Drive</button>
           <button type="button" class="btn sm" style="width:auto;" onclick="openMediaLibraryModal()"
-            title="Choisir une image déjà sur Drive">📷 Bibliothèque Drive</button>
+            data-i18n-title="title_escolher_imagem_drive" title=""
+            data-i18n="btn_biblioteca_drive">📷</button>
         </div>
-        <p style="font-size:11px;color:var(--text2);margin-top:8px;line-height:1.5;">Crée automatiquement
-          <strong>ERP_Boutique_Images</strong> / <em>votre catégorie</em> / <em>réf. produit si déjà créé</em> dans le
-          Drive du compte Apps Script.</p>
-        <img id="prodImgPreview" alt="Aperçu"
+        <p data-i18n="prod_hint_pasta_drive"
+          style="font-size:11px;color:var(--text2);margin-top:8px;line-height:1.5;"></p>
+        <img id="prodImgPreview" alt="" data-i18n-alt="prod_alt_preview"
           style="max-width:100%;max-height:180px;margin-top:12px;border-radius:10px;border:1px solid var(--border);display:none;object-fit:contain;">
       </div>
-      <div class="form-group"><label>URL da Imagem (remplie après envoi ou saisie manuelle)</label><input type="text"
+      <div class="form-group"><label data-i18n="lbl_url_imagem_manual">URL</label><input type="text"
           id="prodImagem" placeholder="https://drive.google.com/..." oninput="onProdImagemUrlInput()"></div>
-      <div class="form-group"><label>Variantes (tamanho:cor:stock — uma por linha)</label>
+      <div class="form-group"><label data-i18n="lbl_variantes_umalinha">Variantes</label>
         <textarea id="prodVariantes" rows="4"
-          placeholder="S:Preto:20&#10;M:Preto:30&#10;L:Branco:15&#10;XL:Azul:10"></textarea>
+          data-i18n-placeholder="ph_variantes_demo" placeholder=""></textarea>
       </div>
       <div class="form-row">
-        <button class="btn success" onclick="saveProduto()">💾 Guardar</button>
-        <button class="btn outline" onclick="closeModal('modalProduto')">Cancelar</button>
+        <button type="button" class="btn success" onclick="saveProduto()" data-i18n="btn_save">💾</button>
+        <button type="button" class="btn outline" onclick="closeModal('modalProduto')" data-i18n="btn_cancel">Cancelar</button>
       </div>
     </div>
   </div>
 
   <div class="modal-overlay" id="modalMediaLibrary">
     <div class="modal" style="max-width:760px;">
-      <h2>📷 Médiathèque (Google Drive)</h2>
-      <p style="font-size:12px;color:var(--text2);margin-bottom:12px;line-height:1.5;">Images du dossier
-        <strong>ERP_Boutique_Images</strong>. Cliquez sur une vignette pour remplir l’URL du produit.</p>
+      <h2 data-i18n="modal_mediathek_h2">📷 Drive</h2>
+      <p data-i18n="modal_mediathek_intro_p"
+        style="font-size:12px;color:var(--text2);margin-bottom:12px;line-height:1.5;"></p>
       <div id="mediaLibraryGrid"
         style="display:grid;grid-template-columns:repeat(auto-fill,minmax(108px,1fr));gap:10px;max-height:440px;overflow-y:auto;min-height:100px;padding:4px;">
       </div>
       <div style="display:flex;gap:10px;margin-top:16px;justify-content:flex-end;">
-        <button type="button" class="btn outline" onclick="closeModal('modalMediaLibrary')">Fermer</button>
+        <button type="button" class="btn outline" onclick="closeModal('modalMediaLibrary')" data-i18n="modal_close">Fechar</button>
       </div>
     </div>
   </div>
@@ -4630,12 +4646,174 @@
     };
     (function mergeAdminExtraI18n() {
       var X = {
-        pt: { bulk_selected: '{n} selecionado(s)', lbl_selection: 'Seleção:', btn_bulk_bar_activate: '✅ Ativar', btn_bulk_bar_deactivate: '⏸ Desativar', btn_bulk_bar_delete: '🗑 Remover', btn_bulk_bar_clear: '✖ Limpar', dash_recent_activity: '📋 Atividade recente', mediatheque_page_blurb: 'Imagens da pasta ERP_Boutique_Images. Copie o URL ou abra um produto para associar.', nav_boutique_title: 'Abrir a vitrine num novo separador', btn_import_csv: '📥 Importar CSV', btn_catalog_refresh: '🔄 Catálogo', catalog_refresh_title: 'Recarrega categorias, lista de catálogo e produtos', modal_close: 'Fechar', client_modal_title: '👤 Ficha do cliente', btn_preview_email: '👁 Pré-visualizar', card_email_preview: '📧 Pré-visualização da mensagem', fin_revenue_sub: 'Período selecionado', fin_pay_split: '💳 Repartição por método de pagamento', fin_tx_detail: '📋 Detalhe das transações', transporteurs_title: '🚚 Transportadores configurados', dev_return_title: '↩️ Registar uma devolução', dev_return_save: '💾 Guardar devolução', dev_motive_defective: 'Produto defeituoso', dev_motive_wrong_size: 'Tamanho incorreto', dev_motive_not_desc: 'Não conforme à descrição', dev_motive_other: 'Desistência / arrependimento', dev_details_ph: 'Detalhes adicionais...', lbl_qty: 'Quantidade', inv_modal_cancel: 'Cancelar', aria_sidebar: 'Abrir ou fechar o menu lateral', global_search_ph: '🔍 Pesquisar…', fatura_opt_all: 'Todos os estados', fatura_opt_pending: 'Pendente', fatura_opt_paid: 'Paga', fatura_opt_overdue: 'Em atraso', ret_filter_all: 'Todas as devoluções', ret_stat_approved: 'Aprovado', ret_stat_received: 'Recebido', ret_stat_refunded: 'Reembolsado', ret_stat_rejected: 'Rejeitado', ret_new_btn: '+ Nova devolução', ret_card_title: '↩️ Pedidos de devolução', ret_notes_card: '📝 Notas / Política de devoluções (interno)', pay_stat_requested: 'Pedido', th_invoice: 'Nº FATURA', th_client: 'CLIENTE', th_date: 'DATA', th_total: 'TOTAL', th_status_col: 'ESTADO', th_actions_short: 'AÇÕES', ret_th_id: 'ID', ret_th_order: 'PEDIDO', ret_th_product: 'PRODUTO', ret_th_reason: 'MOTIVO', lang_opt_fr: 'Francês', lang_opt_en: 'Inglês', lang_opt_es: 'Espanhol', dash_quick_actions: '⚡ Ações rápidas', btn_stock_min_sel: '📉 Stock mín. (selecionados)', btn_physical_inv: '📋 Inventário físico', err_products: 'Erro ao carregar produtos', err_image: 'Erro de imagem', err_generic_suffix: 'Erro', err_save: 'Erro ao guardar', cfg_danger_title: '⚠️ Zona sensível', cfg_danger_intro: 'Estas ações são irreversíveis. Prossiga com cuidado.', cfg_btn_reset_sheets: '🔄 Reiniciar folhas', sheets_reset_confirm: 'ATENÇÃO: Reiniciar todas as folhas da folha de cálculo? Esta ação é irreversível.', sheets_reset_ok: 'Folhas reiniciadas', stock_inv_intro: 'Leia ou introduza as quantidades reais contadas. Os ajustes serão guardados como movimentos de stock.', login_label_email: 'E-mail', login_brand_title: 'ERP — Loja online', login_brand_sub: 'Painel de gestão do comércio eletrónico (vestuário e acessórios)', login_welcome_hint: 'Introduza o e-mail e a palavra-passe. Português (PT) é a língua por defeito do painel.', login_form_title: 'Iniciar sessão', login_sub: 'Acesso reservado à equipa da loja', login_label_password: 'Palavra-passe', login_pass_placeholder: '••••••••', login_submit: 'Entrar no painel', login_no_api_title: 'URL do Web App não configurada neste ficheiro', login_no_api_text: 'Edite o HTML: defina <code>window.ERP_API_URL_DEFAULT</code> e <code>var API_URL</code> (bloco COLAR) com o URL que termina em <code>/exec</code>. Guarde, publique e recarregue. Neste ecrã só e-mail e palavra-passe — sem campo de URL.', login_theme_light: 'Modo claro', login_theme_dark: 'Modo escuro', login_theme_go_dark: 'Ativar modo escuro', login_theme_go_light: 'Ativar modo claro', api_missing_url_toast: '⚠️ Defina o URL da API no ficheiro HTML (<code>ERP_API_URL_DEFAULT</code> / COLAR) ou em Configurações.', btn_new: '+ Marca', bulk_toast_activated: '{n} produto(s) ativado(s)', bulk_toast_deactivated: '{n} produto(s) desativado(s)', bulk_toast_deleted: '{n} produto(s) removido(s)', bulk_confirm_delete: 'Remover {n} produto(s)? Esta ação é irreversível.', inv_empty_list: 'Sem produtos', inv_no_adjustment: 'Nenhum ajustamento a aplicar', inv_confirm_apply: 'Aplicar {n} ajustamento(s) de stock?', inv_toast_applied: '{ok}/{total} ajustamento(s) aplicado(s)', sheets_reset_fail: 'Erro', session_reconnect_hint: 'Volte a iniciar sessão.' },
-        fr: { bulk_selected: '{n} sélectionné(s)', lbl_selection: 'Sélection :', btn_bulk_bar_activate: '✅ Activer', btn_bulk_bar_deactivate: '⏸ Désactiver', btn_bulk_bar_delete: '🗑 Supprimer', btn_bulk_bar_clear: '✖ Annuler', dash_recent_activity: '📋 Activité récente', mediatheque_page_blurb: 'Images du dossier ERP_Boutique_Images. Copiez l’URL ou ouvrez un produit pour l’assigner.', nav_boutique_title: 'Ouvrir la vitrine dans un nouvel onglet', btn_import_csv: '📥 Importer CSV', btn_catalog_refresh: '🔄 Catalogue', catalog_refresh_title: 'Recharge catégories, liste catalogue et produits', modal_close: 'Fermer', client_modal_title: '👤 Fiche client', btn_preview_email: '👁 Prévisualiser', card_email_preview: '📧 Prévisualisation du message', fin_revenue_sub: 'Période sélectionnée', fin_pay_split: '💳 Répartition par moyen de paiement', fin_tx_detail: '📋 Détail des transactions', transporteurs_title: '🚚 Transporteurs configurés', dev_return_title: '↩️ Enregistrer un retour', dev_return_save: '💾 Enregistrer le retour', dev_motive_defective: 'Produit défectueux', dev_motive_wrong_size: 'Taille incorrecte', dev_motive_not_desc: 'Non conforme à la description', dev_motive_other: 'Rétractation / changement d’avis', dev_details_ph: 'Détails supplémentaires...', lbl_qty: 'Quantité', inv_modal_cancel: 'Annuler', aria_sidebar: 'Ouvrir ou fermer le menu latéral', global_search_ph: '🔍 Rechercher…', fatura_opt_all: 'Tous les statuts', fatura_opt_pending: 'En attente', fatura_opt_paid: 'Payée', fatura_opt_overdue: 'En retard', ret_filter_all: 'Tous les retours', ret_stat_approved: 'Approuvé', ret_stat_received: 'Reçu', ret_stat_refunded: 'Remboursé', ret_stat_rejected: 'Rejeté', ret_new_btn: '+ Nouveau retour', ret_card_title: '↩️ Demandes de retour', ret_notes_card: '📝 Notes / Politique retours (interne)', pay_stat_requested: 'Demandé', th_invoice: 'Nº FACTURE', th_client: 'CLIENT', th_date: 'DATE', th_total: 'TOTAL', th_status_col: 'STATUT', th_actions_short: 'ACTIONS', ret_th_id: 'ID RETOUR', ret_th_order: 'COMMANDE', ret_th_product: 'PRODUIT', ret_th_reason: 'RAISON', lang_opt_fr: 'Français', lang_opt_en: 'English', lang_opt_es: 'Español', dash_quick_actions: '⚡ Actions rapides', btn_stock_min_sel: '📉 Stock min. (sélection)', btn_physical_inv: '📋 Inventaire physique', err_products: 'Erreur produits', err_image: 'Erreur image', err_generic_suffix: 'Erreur', err_save: 'Erreur de sauvegarde', cfg_danger_title: '⚠️ Zone dangereuse', cfg_danger_intro: 'Ces actions sont irréversibles. Procédez avec prudence.', cfg_btn_reset_sheets: '🔄 Réinitialiser les feuilles', sheets_reset_confirm: 'ATTENTION : réinitialiser toutes les feuilles du classeur ? Cette action est irréversible.', sheets_reset_ok: 'Feuilles réinitialisées', stock_inv_intro: 'Scannez ou saisissez les quantités réelles comptées. Les ajustements seront enregistrés comme mouvements de stock.', login_label_email: 'E-mail', login_brand_title: 'ERP — Boutique en ligne', login_brand_sub: 'Panneau de gestion e-commerce (prêt-à-porter et accessoires)', login_welcome_hint: 'Saisissez e-mail et mot de passe. Le portugais (PT) est la langue par défaut du panneau.', login_form_title: 'Connexion', login_sub: 'Accès réservé à l’équipe de la boutique', login_label_password: 'Mot de passe', login_pass_placeholder: '••••••••', login_submit: 'Ouvrir le panneau', login_no_api_title: 'URL du Web App non configurée dans ce fichier', login_no_api_text: 'Modifiez le HTML : renseignez <code>window.ERP_API_URL_DEFAULT</code> et <code>var API_URL</code> (bloc COLAR) avec l’URL se terminant par <code>/exec</code>. Enregistrez, publiez et rechargez. Cet écran ne demande que l’e-mail et le mot de passe — pas d’URL.', login_theme_light: 'Mode clair', login_theme_dark: 'Mode sombre', login_theme_go_dark: 'Passer en mode sombre', login_theme_go_light: 'Passer en mode clair', api_missing_url_toast: '⚠️ Définissez l’URL de l’API dans le fichier HTML (<code>ERP_API_URL_DEFAULT</code> / COLAR) ou dans Paramètres.', btn_new: '+ Marque', bulk_toast_activated: '{n} produit(s) activé(s)', bulk_toast_deactivated: '{n} produit(s) désactivé(s)', bulk_toast_deleted: '{n} produit(s) supprimé(s)', bulk_confirm_delete: 'Supprimer {n} produit(s) ? Cette action est irréversible.', inv_empty_list: 'Aucun produit', inv_no_adjustment: 'Aucun ajustement à appliquer', inv_confirm_apply: 'Appliquer {n} ajustement(s) de stock ?', inv_toast_applied: '{ok}/{total} ajustement(s) appliqué(s)', sheets_reset_fail: 'Erreur', session_reconnect_hint: 'Reconnectez-vous.' },
-        en: { bulk_selected: '{n} selected', lbl_selection: 'Selection:', btn_bulk_bar_activate: '✅ Activate', btn_bulk_bar_deactivate: '⏸ Deactivate', btn_bulk_bar_delete: '🗑 Remove', btn_bulk_bar_clear: '✖ Clear', dash_recent_activity: '📋 Recent activity', mediatheque_page_blurb: 'Images from ERP_Boutique_Images folder. Copy the URL or open a product to assign.', nav_boutique_title: 'Open storefront in new tab', btn_import_csv: '📥 Import CSV', btn_catalog_refresh: '🔄 Catalog', catalog_refresh_title: 'Reload categories, catalog list and products', modal_close: 'Close', client_modal_title: '👤 Client record', btn_preview_email: '👁 Preview', card_email_preview: '📧 Message preview', fin_revenue_sub: 'Selected period', fin_pay_split: '💳 Split by payment method', fin_tx_detail: '📋 Transaction detail', transporteurs_title: '🚚 Configured carriers', dev_return_title: '↩️ Register a return', dev_return_save: '💾 Save return', dev_motive_defective: 'Defective product', dev_motive_wrong_size: 'Wrong size', dev_motive_not_desc: 'Not as described', dev_motive_other: 'Changed mind', dev_details_ph: 'Additional details...', lbl_qty: 'Quantity', inv_modal_cancel: 'Cancel', aria_sidebar: 'Open or close sidebar', global_search_ph: '🔍 Search…', fatura_opt_all: 'All statuses', fatura_opt_pending: 'Pending', fatura_opt_paid: 'Paid', fatura_opt_overdue: 'Overdue', ret_filter_all: 'All returns', ret_stat_approved: 'Approved', ret_stat_received: 'Received', ret_stat_refunded: 'Refunded', ret_stat_rejected: 'Rejected', ret_new_btn: '+ New return', ret_card_title: '↩️ Return requests', ret_notes_card: '📝 Notes / Returns policy (internal)', pay_stat_requested: 'Requested', th_invoice: 'INVOICE #', th_client: 'CLIENT', th_date: 'DATE', th_total: 'TOTAL', th_status_col: 'STATUS', th_actions_short: 'ACTIONS', ret_th_id: 'RETURN ID', ret_th_order: 'ORDER', ret_th_product: 'PRODUCT', ret_th_reason: 'REASON', lang_opt_fr: 'French', lang_opt_en: 'English', lang_opt_es: 'Spanish', dash_quick_actions: '⚡ Quick actions', btn_stock_min_sel: '📉 Min. stock (selected)', btn_physical_inv: '📋 Physical inventory', err_products: 'Error loading products', err_image: 'Image error', err_generic_suffix: 'Error', err_save: 'Save error', cfg_danger_title: '⚠️ Danger zone', cfg_danger_intro: 'These actions cannot be undone. Proceed with care.', cfg_btn_reset_sheets: '🔄 Reset spreadsheet sheets', sheets_reset_confirm: 'WARNING: Reset all spreadsheet tabs? This cannot be undone.', sheets_reset_ok: 'Sheets reset', stock_inv_intro: 'Scan or enter counted quantities. Adjustments are saved as stock movements.', login_label_email: 'Email', login_brand_title: 'ERP — Online store', login_brand_sub: 'Management panel for your e-commerce (apparel and accessories)', login_welcome_hint: 'Enter your email and password. Portuguese (PT) is the panel default language.', login_form_title: 'Sign in', login_sub: 'Team access to your store', login_label_password: 'Password', login_pass_placeholder: '••••••••', login_submit: 'Open admin panel', login_no_api_title: 'Web App URL not set in this file', login_no_api_text: 'Edit the HTML: set <code>window.ERP_API_URL_DEFAULT</code> and <code>var API_URL</code> (COLAR block) to the URL ending in <code>/exec</code>. Save, publish, and reload. This screen only asks for email and password — no URL field.', login_theme_light: 'Light mode', login_theme_dark: 'Dark mode', login_theme_go_dark: 'Switch to dark mode', login_theme_go_light: 'Switch to light mode', api_missing_url_toast: '⚠️ Set the API URL in the HTML file (<code>ERP_API_URL_DEFAULT</code> / COLAR) or in Settings.', btn_new: '+ Brand', bulk_toast_activated: '{n} product(s) activated', bulk_toast_deactivated: '{n} product(s) deactivated', bulk_toast_deleted: '{n} product(s) removed', bulk_confirm_delete: 'Remove {n} product(s)? This cannot be undone.', inv_empty_list: 'No products', inv_no_adjustment: 'No adjustments to apply', inv_confirm_apply: 'Apply {n} stock adjustment(s)?', inv_toast_applied: '{ok}/{total} adjustment(s) applied', sheets_reset_fail: 'Error', session_reconnect_hint: 'Please sign in again.' },
-        es: { bulk_selected: '{n} seleccionado(s)', lbl_selection: 'Selección:', btn_bulk_bar_activate: '✅ Activar', btn_bulk_bar_deactivate: '⏸ Desactivar', btn_bulk_bar_delete: '🗑 Eliminar', btn_bulk_bar_clear: '✖ Limpiar', dash_recent_activity: '📋 Actividad reciente', mediatheque_page_blurb: 'Imágenes de la carpeta ERP_Boutique_Images. Copie la URL o abra un producto para asignar.', nav_boutique_title: 'Abrir la tienda en una pestaña nueva', btn_import_csv: '📥 Importar CSV', btn_catalog_refresh: '🔄 Catálogo', catalog_refresh_title: 'Recarga categorías, lista de catálogo y productos', modal_close: 'Cerrar', client_modal_title: '👤 Ficha del cliente', btn_preview_email: '👁 Vista previa', card_email_preview: '📧 Vista previa del mensaje', fin_revenue_sub: 'Período seleccionado', fin_pay_split: '💳 Reparto por método de pago', fin_tx_detail: '📋 Detalle de transacciones', transporteurs_title: '🚚 Transportistas configurados', dev_return_title: '↩️ Registrar una devolución', dev_return_save: '💾 Guardar devolución', dev_motive_defective: 'Producto defectuoso', dev_motive_wrong_size: 'Talla incorrecta', dev_motive_not_desc: 'No coincide con la descripción', dev_motive_other: 'Arrepentimiento / desistimiento', dev_details_ph: 'Detalles adicionales...', lbl_qty: 'Cantidad', inv_modal_cancel: 'Cancelar', aria_sidebar: 'Abrir o cerrar el menú lateral', global_search_ph: '🔍 Buscar…', fatura_opt_all: 'Todos los estados', fatura_opt_pending: 'Pendiente', fatura_opt_paid: 'Pagada', fatura_opt_overdue: 'Vencida', ret_filter_all: 'Todas las devoluciones', ret_stat_approved: 'Aprobado', ret_stat_received: 'Recibido', ret_stat_refunded: 'Reembolsado', ret_stat_rejected: 'Rechazado', ret_new_btn: '+ Nueva devolución', ret_card_title: '↩️ Solicitudes de devolución', ret_notes_card: '📝 Notas / Política de devoluciones (interno)', pay_stat_requested: 'Solicitado', th_invoice: 'Nº FACTURA', th_client: 'CLIENTE', th_date: 'FECHA', th_total: 'TOTAL', th_status_col: 'ESTADO', th_actions_short: 'ACCIONES', ret_th_id: 'ID', ret_th_order: 'PEDIDO', ret_th_product: 'PRODUCTO', ret_th_reason: 'MOTIVO', lang_opt_fr: 'Francés', lang_opt_en: 'Inglés', lang_opt_es: 'Español', dash_quick_actions: '⚡ Acciones rápidas', btn_stock_min_sel: '📉 Stock mín. (selección)', btn_physical_inv: '📋 Inventario físico', err_products: 'Error al cargar productos', err_image: 'Error de imagen', err_generic_suffix: 'Error', err_save: 'Error al guardar', cfg_danger_title: '⚠️ Zona peligrosa', cfg_danger_intro: 'Estas acciones son irreversibles. Actúe con cuidado.', cfg_btn_reset_sheets: '🔄 Restablecer hojas', sheets_reset_confirm: 'ATENCIÓN: ¿Restablecer todas las hojas? Esta acción no se puede deshacer.', sheets_reset_ok: 'Hojas reiniciadas', stock_inv_intro: 'Escanee o introduzca las cantidades contadas. Los ajustes se guardan como movimientos de stock.', login_label_email: 'Correo electrónico', login_brand_title: 'ERP — Tienda online', login_brand_sub: 'Panel de gestión del comercio electrónico (textil y accesorios)', login_welcome_hint: 'Introduzca correo y contraseña. El portugués (PT) es el idioma por defecto del panel.', login_form_title: 'Iniciar sesión', login_sub: 'Acceso reservado al equipo de la tienda', login_label_password: 'Contraseña', login_pass_placeholder: '••••••••', login_submit: 'Entrar al panel', login_no_api_title: 'URL del Web App no configurada en este archivo', login_no_api_text: 'Edite el HTML: defina <code>window.ERP_API_URL_DEFAULT</code> y <code>var API_URL</code> (bloque COLAR) con la URL que termina en <code>/exec</code>. Guarde, publique y recargue. En esta pantalla solo correo y contraseña — sin campo de URL.', login_theme_light: 'Modo claro', login_theme_dark: 'Modo oscuro', login_theme_go_dark: 'Activar modo oscuro', login_theme_go_light: 'Activar modo claro', api_missing_url_toast: '⚠️ Configure la URL de la API en el HTML (<code>ERP_API_URL_DEFAULT</code> / COLAR) o en Ajustes.', btn_new: '+ Marca', bulk_toast_activated: '{n} producto(s) activado(s)', bulk_toast_deactivated: '{n} producto(s) desactivado(s)', bulk_toast_deleted: '{n} producto(s) eliminado(s)', bulk_confirm_delete: '¿Eliminar {n} producto(s)? Esta acción no se puede deshacer.', inv_empty_list: 'Sin productos', inv_no_adjustment: 'No hay ajustes que aplicar', inv_confirm_apply: '¿Aplicar {n} ajuste(s) de stock?', inv_toast_applied: '{ok}/{total} ajuste(s) aplicado(s)', sheets_reset_fail: 'Error', session_reconnect_hint: 'Vuelva a iniciar sesión.' }
+        pt: { bulk_selected: '{n} selecionado(s)', lbl_selection: 'Seleção:', btn_bulk_bar_activate: '✅ Ativar', btn_bulk_bar_deactivate: '⏸ Desativar', btn_bulk_bar_delete: '🗑 Lixeira', btn_bulk_bar_restore: '↩️ Restaurar', btn_bulk_bar_purge: '⛔ Eliminar def.', btn_bulk_bar_clear: '✖ Limpar', prod_view_catalog: 'Catálogo', prod_view_trash: '🗑️ Lixeira', prod_view_mode_title: 'Catálogo ou lixeira', prod_btn_restore: '↩️ Restaurar', prod_btn_purge: 'Eliminar def.', prod_btn_bulk_restore: '↩️ Restaurar seleção', prod_btn_bulk_purge: '⛔ Eliminar definitivamente', prod_delete_confirm: 'Enviar este produto para a lixeira? Deixa de aparecer na loja.', prod_restore_confirm: 'Restaurar este produto da lixeira?', prod_purge_confirm: 'Apagar esta linha para sempre? Só permitido para itens na lixeira.', prod_restore_ok: 'Produto restaurado.', prod_trash_badge: 'Lixeira', prod_status_inactive: 'Inativo', prod_trash_section_title: 'Lixeira — produtos eliminados', prod_toast_moved_trash: '✅ Movido para a lixeira', bulk_confirm_delete: 'Mover {n} produto(s) para a lixeira?', bulk_confirm_purge: 'Eliminar DEFINITIVAMENTE {n} produto(s)? Não pode desfazer.', bulk_confirm_restore: 'Restaurar {n} produto(s)? Voltam inativos até reativar.', bulk_toast_deleted: '{n} enviado(s) para a lixeira', bulk_toast_restored: '{n} restaurado(s)', bulk_toast_purged: '{n} eliminado(s) definitivamente', dash_recent_activity: '📋 Atividade recente', mediatheque_page_blurb: 'Imagens da pasta ERP_Boutique_Images. Copie o URL ou abra um produto para associar.', nav_boutique_title: 'Abrir a vitrine num novo separador', btn_import_csv: '📥 Importar CSV', btn_catalog_refresh: '🔄 Catálogo', catalog_refresh_title: 'Recarrega categorias, lista de catálogo e produtos', modal_close: 'Fechar', client_modal_title: '👤 Ficha do cliente', btn_preview_email: '👁 Pré-visualizar', card_email_preview: '📧 Pré-visualização da mensagem', fin_revenue_sub: 'Período selecionado', fin_pay_split: '💳 Repartição por método de pagamento', fin_tx_detail: '📋 Detalhe das transações', transporteurs_title: '🚚 Transportadores configurados', dev_return_title: '↩️ Registar uma devolução', dev_return_save: '💾 Guardar devolução', dev_motive_defective: 'Produto defeituoso', dev_motive_wrong_size: 'Tamanho incorreto', dev_motive_not_desc: 'Não conforme à descrição', dev_motive_other: 'Desistência / arrependimento', dev_details_ph: 'Detalhes adicionais...', lbl_qty: 'Quantidade', inv_modal_cancel: 'Cancelar', aria_sidebar: 'Abrir ou fechar o menu lateral', global_search_ph: '🔍 Pesquisar…', fatura_opt_all: 'Todos os estados', fatura_opt_pending: 'Pendente', fatura_opt_paid: 'Paga', fatura_opt_overdue: 'Em atraso', ret_filter_all: 'Todas as devoluções', ret_stat_approved: 'Aprovado', ret_stat_received: 'Recebido', ret_stat_refunded: 'Reembolsado', ret_stat_rejected: 'Rejeitado', ret_new_btn: '+ Nova devolução', ret_card_title: '↩️ Pedidos de devolução', ret_notes_card: '📝 Notas / Política de devoluções (interno)', pay_stat_requested: 'Pedido', th_invoice: 'Nº FATURA', th_client: 'CLIENTE', th_date: 'DATA', th_total: 'TOTAL', th_status_col: 'ESTADO', th_actions_short: 'AÇÕES', ret_th_id: 'ID', ret_th_order: 'PEDIDO', ret_th_product: 'PRODUTO', ret_th_reason: 'MOTIVO', lang_opt_fr: 'Francês', lang_opt_en: 'Inglês', lang_opt_es: 'Espanhol', dash_quick_actions: '⚡ Ações rápidas', btn_stock_min_sel: '📉 Stock mín. (selecionados)', btn_physical_inv: '📋 Inventário físico', err_products: 'Erro ao carregar produtos', err_image: 'Erro de imagem', err_generic_suffix: 'Erro', err_save: 'Erro ao guardar', cfg_danger_title: '⚠️ Zona sensível', cfg_danger_intro: 'Estas ações são irreversíveis. Prossiga com cuidado.', cfg_btn_reset_sheets: '🔄 Reiniciar folhas', sheets_reset_confirm: 'ATENÇÃO: Reiniciar todas as folhas da folha de cálculo? Esta ação é irreversível.', sheets_reset_ok: 'Folhas reiniciadas', stock_inv_intro: 'Leia ou introduza as quantidades reais contadas. Os ajustes serão guardados como movimentos de stock.', login_label_email: 'E-mail', login_brand_title: 'ERP — Loja online', login_brand_sub: 'Painel de gestão do comércio eletrónico (vestuário e acessórios)', login_welcome_hint: 'Introduza o e-mail e a palavra-passe. Português (PT) é a língua por defeito do painel.', login_form_title: 'Iniciar sessão', login_sub: 'Acesso reservado à equipa da loja', login_label_password: 'Palavra-passe', login_pass_placeholder: '••••••••', login_submit: 'Entrar no painel', login_no_api_title: 'URL do Web App não configurada neste ficheiro', login_no_api_text: 'Edite o HTML: defina <code>window.ERP_API_URL_DEFAULT</code> e <code>var API_URL</code> (bloco COLAR) com o URL que termina em <code>/exec</code>. Guarde, publique e recarregue. Neste ecrã só e-mail e palavra-passe — sem campo de URL.', login_theme_light: 'Modo claro', login_theme_dark: 'Modo escuro', login_theme_go_dark: 'Ativar modo escuro', login_theme_go_light: 'Ativar modo claro', api_missing_url_toast: '⚠️ Defina o URL da API no ficheiro HTML (<code>ERP_API_URL_DEFAULT</code> / COLAR) ou em Configurações.', btn_new: '+ Marca', bulk_toast_activated: '{n} produto(s) ativado(s)', bulk_toast_deactivated: '{n} produto(s) desativado(s)', inv_empty_list: 'Sem produtos', inv_no_adjustment: 'Nenhum ajustamento a aplicar', inv_confirm_apply: 'Aplicar {n} ajustamento(s) de stock?', inv_toast_applied: '{ok}/{total} ajustamento(s) aplicado(s)', sheets_reset_fail: 'Erro', session_reconnect_hint: 'Volte a iniciar sessão.' },
+        fr: { bulk_selected: '{n} sélectionné(s)', lbl_selection: 'Sélection :', btn_bulk_bar_activate: '✅ Activer', btn_bulk_bar_deactivate: '⏸ Désactiver', btn_bulk_bar_delete: '🗑 Corbeille', btn_bulk_bar_restore: '↩️ Restaurer', btn_bulk_bar_purge: '⛔ Suppr. déf.', btn_bulk_bar_clear: '✖ Annuler', prod_view_catalog: 'Catalogue', prod_view_trash: '🗑️ Corbeille', prod_view_mode_title: 'Catalogue ou corbeille', prod_btn_restore: '↩️ Restaurer', prod_btn_purge: 'Suppr. déf.', prod_btn_bulk_restore: '↩️ Restaurer la sélection', prod_btn_bulk_purge: '⛔ Supprimer définitivement', prod_delete_confirm: 'Envoyer ce produit à la corbeille ? Il disparaît de la boutique.', prod_restore_confirm: 'Restaurer ce produit depuis la corbeille ?', prod_purge_confirm: 'Supprimer cette ligne définitivement ? Réservé aux articles en corbeille.', prod_restore_ok: 'Produit restauré.', prod_trash_badge: 'Corbeille', prod_status_inactive: 'Inactif', prod_trash_section_title: 'Corbeille — produits supprimés', prod_toast_moved_trash: '✅ Mis en corbeille', bulk_confirm_delete: 'Mettre {n} produit(s) à la corbeille ?', bulk_confirm_purge: 'SUPPRIMER DÉFINITIVEMENT {n} produit(s) ? Irréversible.', bulk_confirm_restore: 'Restaurer {n} produit(s) ? Ils seront inactifs jusqu\'à réactivation.', bulk_toast_deleted: '{n} mis en corbeille', bulk_toast_restored: '{n} restauré(s)', bulk_toast_purged: '{n} supprimé(s) définitivement', dash_recent_activity: '📋 Activité récente', mediatheque_page_blurb: 'Images du dossier ERP_Boutique_Images. Copiez l’URL ou ouvrez un produit pour l’assigner.', nav_boutique_title: 'Ouvrir la vitrine dans un nouvel onglet', btn_import_csv: '📥 Importer CSV', btn_catalog_refresh: '🔄 Catalogue', catalog_refresh_title: 'Recharge catégories, liste catalogue et produits', modal_close: 'Fermer', client_modal_title: '👤 Fiche client', btn_preview_email: '👁 Prévisualiser', card_email_preview: '📧 Prévisualisation du message', fin_revenue_sub: 'Période sélectionnée', fin_pay_split: '💳 Répartition par moyen de paiement', fin_tx_detail: '📋 Détail des transactions', transporteurs_title: '🚚 Transporteurs configurés', dev_return_title: '↩️ Enregistrer un retour', dev_return_save: '💾 Enregistrer le retour', dev_motive_defective: 'Produit défectueux', dev_motive_wrong_size: 'Taille incorrecte', dev_motive_not_desc: 'Non conforme à la description', dev_motive_other: 'Rétractation / changement d’avis', dev_details_ph: 'Détails supplémentaires...', lbl_qty: 'Quantité', inv_modal_cancel: 'Annuler', aria_sidebar: 'Ouvrir ou fermer le menu latéral', global_search_ph: '🔍 Rechercher…', fatura_opt_all: 'Tous les statuts', fatura_opt_pending: 'En attente', fatura_opt_paid: 'Payée', fatura_opt_overdue: 'En retard', ret_filter_all: 'Tous les retours', ret_stat_approved: 'Approuvé', ret_stat_received: 'Reçu', ret_stat_refunded: 'Remboursé', ret_stat_rejected: 'Rejeté', ret_new_btn: '+ Nouveau retour', ret_card_title: '↩️ Demandes de retour', ret_notes_card: '📝 Notes / Politique retours (interne)', pay_stat_requested: 'Demandé', th_invoice: 'Nº FACTURE', th_client: 'CLIENT', th_date: 'DATE', th_total: 'TOTAL', th_status_col: 'STATUT', th_actions_short: 'ACTIONS', ret_th_id: 'ID RETOUR', ret_th_order: 'COMMANDE', ret_th_product: 'PRODUIT', ret_th_reason: 'RAISON', lang_opt_fr: 'Français', lang_opt_en: 'English', lang_opt_es: 'Español', dash_quick_actions: '⚡ Actions rapides', btn_stock_min_sel: '📉 Stock min. (sélection)', btn_physical_inv: '📋 Inventaire physique', err_products: 'Erreur produits', err_image: 'Erreur image', err_generic_suffix: 'Erreur', err_save: 'Erreur de sauvegarde', cfg_danger_title: '⚠️ Zone dangereuse', cfg_danger_intro: 'Ces actions sont irréversibles. Procédez avec prudence.', cfg_btn_reset_sheets: '🔄 Réinitialiser les feuilles', sheets_reset_confirm: 'ATTENTION : réinitialiser toutes les feuilles du classeur ? Cette action est irréversible.', sheets_reset_ok: 'Feuilles réinitialisées', stock_inv_intro: 'Scannez ou saisissez les quantités réelles comptées. Les ajustements seront enregistrés comme mouvements de stock.', login_label_email: 'E-mail', login_brand_title: 'ERP — Boutique en ligne', login_brand_sub: 'Panneau de gestion e-commerce (prêt-à-porter et accessoires)', login_welcome_hint: 'Saisissez e-mail et mot de passe. Le portugais (PT) est la langue par défaut du panneau.', login_form_title: 'Connexion', login_sub: 'Accès réservé à l’équipe de la boutique', login_label_password: 'Mot de passe', login_pass_placeholder: '••••••••', login_submit: 'Ouvrir le panneau', login_no_api_title: 'URL du Web App non configurée dans ce fichier', login_no_api_text: 'Modifiez le HTML : renseignez <code>window.ERP_API_URL_DEFAULT</code> et <code>var API_URL</code> (bloc COLAR) avec l’URL se terminant par <code>/exec</code>. Enregistrez, publiez et rechargez. Cet écran ne demande que l’e-mail et le mot de passe — pas d’URL.', login_theme_light: 'Mode clair', login_theme_dark: 'Mode sombre', login_theme_go_dark: 'Passer en mode sombre', login_theme_go_light: 'Passer en mode clair', api_missing_url_toast: '⚠️ Définissez l’URL de l’API dans le fichier HTML (<code>ERP_API_URL_DEFAULT</code> / COLAR) ou dans Paramètres.', btn_new: '+ Marque', bulk_toast_activated: '{n} produit(s) activé(s)', bulk_toast_deactivated: '{n} produit(s) désactivé(s)', inv_empty_list: 'Aucun produit', inv_no_adjustment: 'Aucun ajustement à appliquer', inv_confirm_apply: 'Appliquer {n} ajustement(s) de stock ?', inv_toast_applied: '{ok}/{total} ajustement(s) appliqué(s)', sheets_reset_fail: 'Erreur', session_reconnect_hint: 'Reconnectez-vous.' },
+        en: { bulk_selected: '{n} selected', lbl_selection: 'Selection:', btn_bulk_bar_activate: '✅ Activate', btn_bulk_bar_deactivate: '⏸ Deactivate', btn_bulk_bar_delete: '🗑 Trash', btn_bulk_bar_restore: '↩️ Restore', btn_bulk_bar_purge: '⛔ Delete forever', btn_bulk_bar_clear: '✖ Clear', prod_view_catalog: 'Catalog', prod_view_trash: '🗑️ Trash', prod_view_mode_title: 'Catalog or trash', prod_btn_restore: '↩️ Restore', prod_btn_purge: 'Delete forever', prod_btn_bulk_restore: '↩️ Restore selection', prod_btn_bulk_purge: '⛔ Permanently delete', prod_delete_confirm: 'Move this product to trash? It will disappear from the storefront.', prod_restore_confirm: 'Restore this product from trash?', prod_purge_confirm: 'Permanently delete this row? Only allowed for items in trash.', prod_restore_ok: 'Product restored.', prod_trash_badge: 'Trash', prod_status_inactive: 'Inactive', prod_trash_section_title: 'Trash — deleted products', prod_toast_moved_trash: '✅ Moved to trash', bulk_confirm_delete: 'Move {n} product(s) to trash?', bulk_confirm_purge: 'PERMANENTLY delete {n} product(s)? This cannot be undone.', bulk_confirm_restore: 'Restore {n} product(s)? They return as inactive until you activate them.', bulk_toast_deleted: '{n} moved to trash', bulk_toast_restored: '{n} restored', bulk_toast_purged: '{n} permanently deleted', dash_recent_activity: '📋 Recent activity', mediatheque_page_blurb: 'Images from ERP_Boutique_Images folder. Copy the URL or open a product to assign.', nav_boutique_title: 'Open storefront in new tab', btn_import_csv: '📥 Import CSV', btn_catalog_refresh: '🔄 Catalog', catalog_refresh_title: 'Reload categories, catalog list and products', modal_close: 'Close', client_modal_title: '👤 Client record', btn_preview_email: '👁 Preview', card_email_preview: '📧 Message preview', fin_revenue_sub: 'Selected period', fin_pay_split: '💳 Split by payment method', fin_tx_detail: '📋 Transaction detail', transporteurs_title: '🚚 Configured carriers', dev_return_title: '↩️ Register a return', dev_return_save: '💾 Save return', dev_motive_defective: 'Defective product', dev_motive_wrong_size: 'Wrong size', dev_motive_not_desc: 'Not as described', dev_motive_other: 'Changed mind', dev_details_ph: 'Additional details...', lbl_qty: 'Quantity', inv_modal_cancel: 'Cancel', aria_sidebar: 'Open or close sidebar', global_search_ph: '🔍 Search…', fatura_opt_all: 'All statuses', fatura_opt_pending: 'Pending', fatura_opt_paid: 'Paid', fatura_opt_overdue: 'Overdue', ret_filter_all: 'All returns', ret_stat_approved: 'Approved', ret_stat_received: 'Received', ret_stat_refunded: 'Refunded', ret_stat_rejected: 'Rejected', ret_new_btn: '+ New return', ret_card_title: '↩️ Return requests', ret_notes_card: '📝 Notes / Returns policy (internal)', pay_stat_requested: 'Requested', th_invoice: 'INVOICE #', th_client: 'CLIENT', th_date: 'DATE', th_total: 'TOTAL', th_status_col: 'STATUS', th_actions_short: 'ACTIONS', ret_th_id: 'RETURN ID', ret_th_order: 'ORDER', ret_th_product: 'PRODUCT', ret_th_reason: 'REASON', lang_opt_fr: 'French', lang_opt_en: 'English', lang_opt_es: 'Spanish', dash_quick_actions: '⚡ Quick actions', btn_stock_min_sel: '📉 Min. stock (selected)', btn_physical_inv: '📋 Physical inventory', err_products: 'Error loading products', err_image: 'Image error', err_generic_suffix: 'Error', err_save: 'Save error', cfg_danger_title: '⚠️ Danger zone', cfg_danger_intro: 'These actions cannot be undone. Proceed with care.', cfg_btn_reset_sheets: '🔄 Reset spreadsheet sheets', sheets_reset_confirm: 'WARNING: Reset all spreadsheet tabs? This cannot be undone.', sheets_reset_ok: 'Sheets reset', stock_inv_intro: 'Scan or enter counted quantities. Adjustments are saved as stock movements.', login_label_email: 'Email', login_brand_title: 'ERP — Online store', login_brand_sub: 'Management panel for your e-commerce (apparel and accessories)', login_welcome_hint: 'Enter your email and password. Portuguese (PT) is the panel default language.', login_form_title: 'Sign in', login_sub: 'Team access to your store', login_label_password: 'Password', login_pass_placeholder: '••••••••', login_submit: 'Open admin panel', login_no_api_title: 'Web App URL not set in this file', login_no_api_text: 'Edit the HTML: set <code>window.ERP_API_URL_DEFAULT</code> and <code>var API_URL</code> (COLAR block) to the URL ending in <code>/exec</code>. Save, publish, and reload. This screen only asks for email and password — no URL field.', login_theme_light: 'Light mode', login_theme_dark: 'Dark mode', login_theme_go_dark: 'Switch to dark mode', login_theme_go_light: 'Switch to light mode', api_missing_url_toast: '⚠️ Set the API URL in the HTML file (<code>ERP_API_URL_DEFAULT</code> / COLAR) or in Settings.', btn_new: '+ Brand', bulk_toast_activated: '{n} product(s) activated', bulk_toast_deactivated: '{n} product(s) deactivated', inv_empty_list: 'No products', inv_no_adjustment: 'No adjustments to apply', inv_confirm_apply: 'Apply {n} stock adjustment(s)?', inv_toast_applied: '{ok}/{total} adjustment(s) applied', sheets_reset_fail: 'Error', session_reconnect_hint: 'Please sign in again.' },
+        es: { bulk_selected: '{n} seleccionado(s)', lbl_selection: 'Selección:', btn_bulk_bar_activate: '✅ Activar', btn_bulk_bar_deactivate: '⏸ Desactivar', btn_bulk_bar_delete: '🗑 Papelera', btn_bulk_bar_restore: '↩️ Restaurar', btn_bulk_bar_purge: '⛔ Borrar ya', btn_bulk_bar_clear: '✖ Limpiar', prod_view_catalog: 'Catálogo', prod_view_trash: '🗑️ Papelera', prod_view_mode_title: 'Catálogo o papelera', prod_btn_restore: '↩️ Restaurar', prod_btn_purge: 'Eliminar def.', prod_btn_bulk_restore: '↩️ Restaurar selección', prod_btn_bulk_purge: '⛔ Eliminar definitivamente', prod_delete_confirm: '¿Enviar este producto a la papelera? Dejará de verse en la tienda.', prod_restore_confirm: '¿Restaurar este producto desde la papelera?', prod_purge_confirm: '¿Eliminar esta fila para siempre? Solo desde la papelera.', prod_restore_ok: 'Producto restaurado.', prod_trash_badge: 'Papelera', prod_status_inactive: 'Inactivo', prod_trash_section_title: 'Papelera — productos eliminados', prod_toast_moved_trash: '✅ Enviado a la papelera', bulk_confirm_delete: '¿Mover {n} producto(s) a la papelera?', bulk_confirm_purge: '¿Eliminar DEFINITIVAMENTE {n} producto(s)? No se puede deshacer.', bulk_confirm_restore: '¿Restaurar {n} producto(s)? Vuelven como inactivos hasta reactivarlos.', bulk_toast_deleted: '{n} enviados a la papelera', bulk_toast_restored: '{n} restaurado(s)', bulk_toast_purged: '{n} borrados definitivamente', dash_recent_activity: '📋 Actividad reciente', mediatheque_page_blurb: 'Imágenes de la carpeta ERP_Boutique_Images. Copie la URL o abra un producto para asignar.', nav_boutique_title: 'Abrir la tienda en una pestaña nueva', btn_import_csv: '📥 Importar CSV', btn_catalog_refresh: '🔄 Catálogo', catalog_refresh_title: 'Recarga categorías, lista de catálogo y productos', modal_close: 'Cerrar', client_modal_title: '👤 Ficha del cliente', btn_preview_email: '👁 Vista previa', card_email_preview: '📧 Vista previa del mensaje', fin_revenue_sub: 'Período seleccionado', fin_pay_split: '💳 Reparto por método de pago', fin_tx_detail: '📋 Detalle de transacciones', transporteurs_title: '🚚 Transportistas configurados', dev_return_title: '↩️ Registrar una devolución', dev_return_save: '💾 Guardar devolución', dev_motive_defective: 'Producto defectuoso', dev_motive_wrong_size: 'Talla incorrecta', dev_motive_not_desc: 'No coincide con la descripción', dev_motive_other: 'Arrepentimiento / desistimiento', dev_details_ph: 'Detalles adicionales...', lbl_qty: 'Cantidad', inv_modal_cancel: 'Cancelar', aria_sidebar: 'Abrir o cerrar el menú lateral', global_search_ph: '🔍 Buscar…', fatura_opt_all: 'Todos los estados', fatura_opt_pending: 'Pendiente', fatura_opt_paid: 'Pagada', fatura_opt_overdue: 'Vencida', ret_filter_all: 'Todas las devoluciones', ret_stat_approved: 'Aprobado', ret_stat_received: 'Recibido', ret_stat_refunded: 'Reembolsado', ret_stat_rejected: 'Rechazado', ret_new_btn: '+ Nueva devolución', ret_card_title: '↩️ Solicitudes de devolución', ret_notes_card: '📝 Notas / Política de devoluciones (interno)', pay_stat_requested: 'Solicitado', th_invoice: 'Nº FACTURA', th_client: 'CLIENTE', th_date: 'FECHA', th_total: 'TOTAL', th_status_col: 'ESTADO', th_actions_short: 'ACCIONES', ret_th_id: 'ID', ret_th_order: 'PEDIDO', ret_th_product: 'PRODUCTO', ret_th_reason: 'MOTIVO', lang_opt_fr: 'Francés', lang_opt_en: 'Inglés', lang_opt_es: 'Español', dash_quick_actions: '⚡ Acciones rápidas', btn_stock_min_sel: '📉 Stock mín. (selección)', btn_physical_inv: '📋 Inventario físico', err_products: 'Error al cargar productos', err_image: 'Error de imagen', err_generic_suffix: 'Error', err_save: 'Error al guardar', cfg_danger_title: '⚠️ Zona peligrosa', cfg_danger_intro: 'Estas acciones son irreversibles. Actúe con cuidado.', cfg_btn_reset_sheets: '🔄 Restablecer hojas', sheets_reset_confirm: 'ATENCIÓN: ¿Restablecer todas las hojas? Esta acción no se puede deshacer.', sheets_reset_ok: 'Hojas reiniciadas', stock_inv_intro: 'Escanee o introduzca las cantidades contadas. Los ajustes se guardan como movimientos de stock.', login_label_email: 'Correo electrónico', login_brand_title: 'ERP — Tienda online', login_brand_sub: 'Panel de gestión del comercio electrónico (textil y accesorios)', login_welcome_hint: 'Introduzca correo y contraseña. El portugués (PT) es el idioma por defecto del panel.', login_form_title: 'Iniciar sesión', login_sub: 'Acceso reservado al equipo de la tienda', login_label_password: 'Contraseña', login_pass_placeholder: '••••••••', login_submit: 'Entrar al panel', login_no_api_title: 'URL del Web App no configurada en este archivo', login_no_api_text: 'Edite el HTML: defina <code>window.ERP_API_URL_DEFAULT</code> y <code>var API_URL</code> (bloque COLAR) con la URL que termina en <code>/exec</code>. Guarde, publique y recargue. En esta pantalla solo correo y contraseña — sin campo de URL.', login_theme_light: 'Modo claro', login_theme_dark: 'Modo oscuro', login_theme_go_dark: 'Activar modo oscuro', login_theme_go_light: 'Activar modo claro', api_missing_url_toast: '⚠️ Configure la URL de la API en el HTML (<code>ERP_API_URL_DEFAULT</code> / COLAR) o en Ajustes.', btn_new: '+ Marca', bulk_toast_activated: '{n} producto(s) activado(s)', bulk_toast_deactivated: '{n} producto(s) desactivado(s)', inv_empty_list: 'Sin productos', inv_no_adjustment: 'No hay ajustes que aplicar', inv_confirm_apply: '¿Aplicar {n} ajuste(s) de stock?', inv_toast_applied: '{ok}/{total} ajuste(s) aplicado(s)', sheets_reset_fail: 'Error', session_reconnect_hint: 'Vuelva a iniciar sesión.' }
       };
       Object.keys(X).forEach(function (k) { if (langs[k]) Object.assign(langs[k], X[k]); });
+    })();
+
+    /** Libellés produit/mediathek et badges catalogue (PT/FR/EN/ES) — éviter texte français en mode PT etc. */
+    (function mergeProdUiI18n() {
+      var P = {
+        pt: {
+          cat_badge_draft: 'Rascunho', cat_badge_published: 'Publicado', cat_badge_scheduled_prefix: 'Agend.:',
+          lbl_emdash: '\u2014', prod_status_ok: 'OK', lbl_ht_abbr: 'S/IVA',
+          toast_catalog_refreshed: 'Cat\u00e1logo atualizado (categorias + produtos).',
+          toast_schedule_datetime_required: 'Indique data e hora de publica\u00e7\u00e3o (modo agendado).',
+          modal_prod_title: '\ud83d\udc57 Adicionar / editar produto',
+          lbl_prod_name_req: 'Nome do produto *', ph_prod_name: 'Ex.: T-shirt cl\u00e1ssica',
+          lbl_prod_category: 'Categoria', ph_prod_category_list: 'Ex.: T-shirts (ou escolha na lista)',
+          lbl_price_ht_eur: 'Pre\u00e7o sem IVA (\u20ac)', lbl_vat_pct: 'IVA (%)',
+          lbl_visibilidade_catalogo_loja: 'Visibilidade no cat\u00e1logo (loja)',
+          opt_cat_rascunho_long: 'Rascunho (s\u00f3 no painel, n\u00e3o na loja)',
+          opt_cat_publicado_simple: 'Publicado', opt_cat_agendado_simple: 'Agendado',
+          lbl_publish_datetime_local: 'Data / hora de publica\u00e7\u00e3o',
+          lbl_photo_produto: 'Foto / imagem do produto',
+          btn_enviar_drive_pasta_cat: 'Enviar para o Google Drive (pasta por categoria)',
+          btn_biblioteca_drive: '\ud83d\udcf7 Biblioteca Drive', title_escolher_imagem_drive: 'Escolher imagem j\u00e1 no Drive',
+          prod_hint_pasta_drive: 'Cria a pasta ERP_Boutique_Images / sua categoria / refer\u00eancia do produto na conta Apps Script.',
+          prod_alt_preview: 'Pr\u00e9-visualiza\u00e7\u00e3o',
+          lbl_url_imagem_manual: 'URL da imagem (depois do envio ou manual)',
+          lbl_variantes_umalinha: 'Variantes (tamanho : cor : stock, uma linha cada)',
+          ph_variantes_demo: 'S:Preto:20\nM:Preto:30\nL:Branco:15\nXL:Azul:10',
+          ph_prod_desc_placeholder: 'Ex.: 100% algod\u00e3o, lavagem a 30\u00b0, corte slim\u2026',
+          csv_invalid_empty: 'Ficheiro CSV vazio ou inv\u00e1lido.',
+          csv_import_confirm: 'Importar {n} produto(s) do CSV?',
+          csv_import_result: '{ok} criados, {errors} erros.',
+          toast_csv_export_ready: 'CSV exportado.',
+          toast_select_products_table: 'Selecione produtos na tabela (caixas).',
+          bulk_processed_count: '\u2713 Processados: {ok} / {total}', bulk_errors_count: '{n} falha(s)',
+          toast_url_copied_paste_prod: 'URL copiado \u2014 cole no campo do produto.',
+          toast_img_url_applied: 'Imagem aplicada ao URL do produto.',
+          toast_choose_img_first: 'Escolha primeiro uma imagem.',
+          toast_uploading_drive: 'A enviar para o Google Drive\u2026',
+          toast_saved_drive_cat: 'Imagem guardada no Drive (pasta por categoria).',
+          toast_upload_failed: 'Falha no envio',
+          modal_mediathek_h2: '\ud83d\udcf7 Mediateca (Google Drive)',
+          modal_mediathek_intro_p: 'Imagens na pasta ERP_Boutique_Images. Clique numa miniatura para preencher o URL.',
+          toast_prod_saved: '\u2713 Produto guardado!', err_file_read_fail: 'N\u00e3o foi poss\u00edvel ler o ficheiro.', err_not_image_file: 'O ficheiro n\u00e3o parece uma imagem v\u00e1lida.'
+        },
+        fr: {
+          cat_badge_draft: 'Brouillon', cat_badge_published: 'Publi\u00e9', cat_badge_scheduled_prefix: 'Prog.:',
+          lbl_emdash: '\u2014', prod_status_ok: 'OK', lbl_ht_abbr: 'HT',
+          toast_catalog_refreshed: 'Catalogue actualis\u00e9 (cat\u00e9gories + produits).',
+          toast_schedule_datetime_required: 'Indiquez la date et l\'heure de publication (mode programm\u00e9).',
+          modal_prod_title: '\ud83d\udc57 Ajouter / modifier un produit',
+          lbl_prod_name_req: 'Nom du produit *', ph_prod_name: 'Ex. : T-shirt classique',
+          lbl_prod_category: 'Cat\u00e9gorie', ph_prod_category_list: 'Ex. : T-shirts (ou choisissez dans la liste)',
+          lbl_price_ht_eur: 'Prix HT (\u20ac)', lbl_vat_pct: 'TVA (%)',
+          lbl_visibilidade_catalogo_loja: 'Visibilit\u00e9 catalogue (boutique)',
+          opt_cat_rascunho_long: 'Brouillon (aper\u00e7u admin seulement, pas sur la boutique)',
+          opt_cat_publicado_simple: 'Publi\u00e9', opt_cat_agendado_simple: 'Programm\u00e9',
+          lbl_publish_datetime_local: 'Date / heure de publication',
+          lbl_photo_produto: 'Photo / image du produit',
+          btn_enviar_drive_pasta_cat: 'Envoyer vers Google Drive (dossier par cat\u00e9gorie)',
+          btn_biblioteca_drive: '\ud83d\udcf7 Biblioth\u00e8que Drive',
+          title_escolher_imagem_drive: 'Choisir une image d\u00e9j\u00e0 sur Drive',
+          prod_hint_pasta_drive: 'Cr\u00e9e automatiquement ERP_Boutique_Images / votre cat\u00e9gorie / r\u00e9f. produit dans le Drive du script.',
+          prod_alt_preview: 'Aper\u00e7u',
+          lbl_url_imagem_manual: 'URL image (apr\u00e8s envoi ou saisie manuelle)',
+          lbl_variantes_umalinha: 'Variantes (taille : couleur : stock, une ligne chacune)',
+          ph_variantes_demo: 'S:Noir:20\nM:Noir:30\nL:Blanc:15\nXL:Bleu:10',
+          ph_prod_desc_placeholder: 'Ex. : mati\u00e8re, entretien, coupe\u2026',
+          csv_invalid_empty: 'Fichier CSV vide ou invalide.',
+          csv_import_confirm: 'Importer {n} produit(s) depuis le CSV ?',
+          csv_import_result: '{ok} cr\u00e9\u00e9(s), {errors} erreur(s).',
+          toast_csv_export_ready: 'CSV export\u00e9.',
+          toast_select_products_table: 'S\u00e9lectionnez des produits dans le tableau.',
+          bulk_processed_count: '\u2713 Trait\u00e9s : {ok} / {total}', bulk_errors_count: '{n} erreur(s)',
+          toast_url_copied_paste_prod: 'URL copi\u00e9(e) \u2014 collez dans le champ produit.',
+          toast_img_url_applied: 'Image appliqu\u00e9e \u00e0 l\u2019URL du produit.',
+          toast_choose_img_first: 'Choisissez d\u0027abord une image.',
+          toast_uploading_drive: 'Envoi vers Google Drive\u2026',
+          toast_saved_drive_cat: 'Image enregistr\u00e9e sur Drive (dossier par cat\u00e9gorie).',
+          toast_upload_failed: '\u00c9chec de l\u2019envoi',
+          modal_mediathek_h2: '\ud83d\udcf7 M\u00e9diath\u00e8que (Google Drive)',
+          modal_mediathek_intro_p: 'Images dans le dossier ERP_Boutique_Images. Cliquez sur une vignette pour remplir l\u2019URL du produit.',
+          toast_prod_saved: '\u2713 Produit enregistr\u00e9 !', err_file_read_fail: 'Lecture du fichier impossible.', err_not_image_file: 'Fichier non reconnu comme image.'
+        },
+        en: {
+          cat_badge_draft: 'Draft', cat_badge_published: 'Published', cat_badge_scheduled_prefix: 'Sched.:',
+          lbl_emdash: '\u2014', prod_status_ok: 'OK', lbl_ht_abbr: 'ex-VAT',
+          toast_catalog_refreshed: 'Catalog refreshed (categories + products).',
+          toast_schedule_datetime_required: 'Enter the publish date and time (scheduled mode).',
+          modal_prod_title: '\ud83d\udc57 Add / edit product',
+          lbl_prod_name_req: 'Product name *', ph_prod_name: 'e.g. Classic tee',
+          lbl_prod_category: 'Category', ph_prod_category_list: 'e.g. Tees (or pick from the list)',
+          lbl_price_ht_eur: 'Net price (\u20ac)', lbl_vat_pct: 'VAT (%)',
+          lbl_visibilidade_catalogo_loja: 'Catalog visibility (storefront)',
+          opt_cat_rascunho_long: 'Draft (admin only, hidden from storefront)',
+          opt_cat_publicado_simple: 'Published', opt_cat_agendado_simple: 'Scheduled',
+          lbl_publish_datetime_local: 'Publish date / time',
+          lbl_photo_produto: 'Photo / image',
+          btn_enviar_drive_pasta_cat: 'Upload to Google Drive (folder per category)',
+          btn_biblioteca_drive: '\ud83d\udcf7 Drive library',
+          title_escolher_imagem_drive: 'Pick an image already on Drive',
+          prod_hint_pasta_drive: 'Creates ERP_Boutique_Images / category / product ID under the Apps Script account.',
+          prod_alt_preview: 'Preview',
+          lbl_url_imagem_manual: 'Image URL (after upload or paste)',
+          lbl_variantes_umalinha: 'Variants (size : color : stock, one line each)',
+          ph_variantes_demo: 'S:Black:20\nM:Black:30\nL:White:15\nXL:Blue:10',
+          ph_prod_desc_placeholder: 'e.g. material, care, fit\u2026',
+          csv_invalid_empty: 'CSV file empty or invalid.',
+          csv_import_confirm: 'Import {n} product(s) from CSV?',
+          csv_import_result: '{ok} created, {errors} errors.',
+          toast_csv_export_ready: 'CSV exported.',
+          toast_select_products_table: 'Select products in the table (checkboxes).',
+          bulk_processed_count: '\u2713 Processed: {ok} / {total}', bulk_errors_count: '{n} failure(s)',
+          toast_url_copied_paste_prod: 'URL copied \u2014 paste into product field.',
+          toast_img_url_applied: 'Image applied to product URL.',
+          toast_choose_img_first: 'Pick an image first.',
+          toast_uploading_drive: 'Uploading to Google Drive\u2026',
+          toast_saved_drive_cat: 'Image saved to Drive (folder per category).',
+          toast_upload_failed: 'Upload failed',
+          modal_mediathek_h2: '\ud83d\udcf7 Media library (Google Drive)',
+          modal_mediathek_intro_p: 'Images in ERP_Boutique_Images. Click a tile to fill the product URL.',
+          toast_prod_saved: '\u2713 Product saved!', err_file_read_fail: 'Could not read the file.', err_not_image_file: 'File does not look like an image.'
+        },
+        es: {
+          cat_badge_draft: 'Borrador', cat_badge_published: 'Publicado', cat_badge_scheduled_prefix: 'Prog.:',
+          lbl_emdash: '\u2014', prod_status_ok: 'OK', lbl_ht_abbr: 'sin IVA',
+          toast_catalog_refreshed: 'Cat\u00e1logo actualizado (categor\u00edas + productos).',
+          toast_schedule_datetime_required: 'Indique fecha y hora de publicaci\u00f3n (modo programado).',
+          modal_prod_title: '\ud83d\udc57 A\u00f1adir / editar producto',
+          lbl_prod_name_req: 'Nombre del producto *', ph_prod_name: 'Ej.: camiseta cl\u00e1sica',
+          lbl_prod_category: 'Categor\u00eda', ph_prod_category_list: 'Ej.: camisetas (o elija de la lista)',
+          lbl_price_ht_eur: 'Precio sin IVA (\u20ac)', lbl_vat_pct: 'IVA (%)',
+          lbl_visibilidade_catalogo_loja: 'Visibilidad del cat\u00e1logo (tienda)',
+          opt_cat_rascunho_long: 'Borrador (solo administraci\u00f3n)',
+          opt_cat_publicado_simple: 'Publicado', opt_cat_agendado_simple: 'Programado',
+          lbl_publish_datetime_local: 'Fecha / hora de publicaci\u00f3n',
+          lbl_photo_produto: 'Foto del producto',
+          btn_enviar_drive_pasta_cat: 'Subir a Google Drive (carpeta por categor\u00eda)',
+          btn_biblioteca_drive: '\ud83d\udcf7 Biblioteca Drive',
+          title_escolher_imagem_drive: 'Elegir imagen ya en Drive',
+          prod_hint_pasta_drive: 'Crea ERP_Boutique_Images / categor\u00eda / referencia en la cuenta del script.',
+          prod_alt_preview: 'Vista previa',
+          lbl_url_imagem_manual: 'URL imagen (tras subir o manual)',
+          lbl_variantes_umalinha: 'Variantes (talla : color : stock, una por l\u00ednea)',
+          ph_variantes_demo: 'S:Negro:20\nM:Negro:30\nL:Blanco:15\nXL:Azul:10',
+          ph_prod_desc_placeholder: 'p. ej. composici\u00f3n, cuidados, talla\u2026',
+          csv_invalid_empty: 'CSV vac\u00edo o inv\u00e1lido.',
+          csv_import_confirm: '\u00bfImportar {n} producto(s) del CSV?',
+          csv_import_result: '{ok} creados, {errors} errores.',
+          toast_csv_export_ready: 'CSV exportado.',
+          toast_select_products_table: 'Seleccione productos en la tabla (casillas).',
+          bulk_processed_count: '\u2713 Procesados: {ok} / {total}', bulk_errors_count: '{n} error(es)',
+          toast_url_copied_paste_prod: 'URL copiada \u2014 pegue en el campo del producto.',
+          toast_img_url_applied: 'Imagen aplicada a la URL del producto.',
+          toast_choose_img_first: 'Elija primero una imagen.',
+          toast_uploading_drive: 'Subiendo a Google Drive\u2026',
+          toast_saved_drive_cat: 'Imagen guardada en Drive (por categor\u00eda).',
+          toast_upload_failed: 'Error al subir',
+          modal_mediathek_h2: '\ud83d\udcf7 Mediateca (Google Drive)',
+          modal_mediathek_intro_p: 'Im\u00e1genes en ERP_Boutique_Images. Pulse una miniatura para rellenar la URL.',
+          toast_prod_saved: '\u2713 Producto guardado!', err_file_read_fail: 'No se pudo leer el archivo.', err_not_image_file: 'El archivo no parece una imagen v\u00e1lida.'
+        }
+      };
+      Object.keys(P).forEach(function (k) { if (langs[k]) Object.assign(langs[k], P[k]); });
     })();
 
     const GUIA_HTML = {
@@ -4728,6 +4906,58 @@
     let stockRowsFiltered = [];
     let selectedStockIds = new Set();
     let selectedProdIds = new Set();
+    var produtosListMode = 'catalog';
+
+    function syncBulkBarTrashMode() {
+      var trash = produtosListMode === 'trash';
+      var bc = document.getElementById('bulkBarCatalogBtns');
+      var bt = document.getElementById('bulkBarTrashBtns');
+      if (bc) bc.style.display = trash ? 'none' : 'inline-flex';
+      if (bt) bt.style.display = trash ? 'inline-flex' : 'none';
+    }
+
+    function syncProdutosToolbarMode() {
+      var trash = produtosListMode === 'trash';
+      document.querySelectorAll('.prod-hide-in-trash').forEach(function (el) {
+        el.style.display = trash ? 'none' : '';
+      });
+      var catRow = document.getElementById('prodBulkRowCatalog');
+      var trashRow = document.getElementById('prodBulkRowTrash');
+      if (catRow) catRow.style.display = trash ? 'none' : 'inline-flex';
+      if (trashRow) trashRow.style.display = trash ? 'inline-flex' : 'none';
+      var titleEl = document.getElementById('produtosSectionTitle');
+      if (titleEl) {
+        var tk = trash ? 'prod_trash_section_title' : 'catalog_products_title';
+        titleEl.setAttribute('data-i18n', tk);
+        titleEl.textContent = t(tk);
+      }
+      var svm = document.getElementById('produtosViewMode');
+      if (svm && svm.value !== produtosListMode) svm.value = produtosListMode;
+      syncBulkBarTrashMode();
+      try {
+        document.querySelectorAll('#produtosViewMode option').forEach(function (opt) {
+          var k = opt.getAttribute('data-i18n');
+          if (!k) return;
+          var v = (langs[lang] && langs[lang][k]) || (langs.pt && langs.pt[k]);
+          if (v) opt.textContent = v;
+        });
+      } catch (eOpts) { }
+    }
+
+    function setProdutosListMode(mode) {
+      produtosListMode = (mode === 'trash') ? 'trash' : 'catalog';
+      selectedProdIds.clear();
+      clearBulkSelection();
+      syncProdutosToolbarMode();
+      loadProdutos();
+    }
+
+    function productStatusBadgeHtml(p) {
+      var st = String(p.status || '').toLowerCase();
+      if (st === 'lixeira') return '<span class="badge gray">' + escHtml(t('prod_trash_badge')) + '</span>';
+      if (st === 'ativo') return '<span class="badge green">' + escHtml(t('prod_status_ok')) + '</span>';
+      return '<span class="badge red">' + escHtml(t('prod_status_inactive')) + '</span>';
+    }
 
     function t(key) { return (langs[lang] && langs[lang][key]) || (langs.pt && langs.pt[key]) || key; }
 
@@ -4754,6 +4984,11 @@
         var k = el.getAttribute('data-i18n-title');
         var v = (langs[lang] && langs[lang][k]) || (langs.pt && langs.pt[k]);
         if (k && v) el.setAttribute('title', v);
+      });
+      document.querySelectorAll('[data-i18n-alt]').forEach(function (el) {
+        var k = el.getAttribute('data-i18n-alt');
+        var v = (langs[lang] && langs[lang][k]) || (langs.pt && langs.pt[k]);
+        if (k && v) el.setAttribute('alt', v);
       });
       try {
         var darkNow = document.documentElement.getAttribute('data-theme') === 'dark';
@@ -5339,20 +5574,20 @@
 
     function catalogBadgeHtml(p) {
       var cs = p.catalogo_status || 'publicado';
-      if (cs === 'rascunho') return '<span class="badge gray">Brouillon</span>';
+      if (cs === 'rascunho') return '<span class="badge gray">' + escHtml(t('cat_badge_draft')) + '</span>';
       if (cs === 'agendado') {
         var d = p.publicar_em ? new Date(p.publicar_em) : null;
-        var txt = (d && !isNaN(d.getTime())) ? d.toLocaleString() : '—';
-        return '<span class="badge orange">Prog. ' + escHtml(txt) + '</span>';
+        var txt = (d && !isNaN(d.getTime())) ? d.toLocaleString() : t('lbl_emdash');
+        return '<span class="badge orange">' + escHtml(t('cat_badge_scheduled_prefix')) + ' ' + escHtml(txt) + '</span>';
       }
-      return '<span class="badge green">Publié</span>';
+      return '<span class="badge green">' + escHtml(t('cat_badge_published')) + '</span>';
     }
 
     async function refreshAllCatalogData() {
       await loadCategorias();
       await refreshCategoryDatalist();
       await loadProdutos();
-      toast('Catalogue actualisé (catégories + produits).', 'success');
+      toast(t('toast_catalog_refreshed'), 'success');
     }
 
     async function handleProductCsvImport(input) {
@@ -5360,7 +5595,7 @@
       if (!file) return;
       const text = await file.text();
       const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
-      if (lines.length < 2) { toast('Ficheiro CSV vazio ou inválido', 'error'); return; }
+      if (lines.length < 2) { toast(t('csv_invalid_empty'), 'error'); return; }
       const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
       const rows = [];
       for (let i = 1; i < lines.length; i++) {
@@ -5369,7 +5604,7 @@
         headers.forEach((h, idx) => { obj[h] = vals[idx] || ''; });
         rows.push(obj);
       }
-      if (!confirm('Importar ' + rows.length + ' produto(s) do CSV?')) { input.value = ''; return; }
+      if (!confirm(String(t('csv_import_confirm')).replace(/\{n\}/g, String(rows.length)))) { input.value = ''; return; }
       let ok = 0, errors = 0;
       for (const row of rows) {
         const precoHt = row.preco_ht || row.preco || row.price || row.preco_final || '0';
@@ -5382,13 +5617,15 @@
         });
         if (r?.success) ok++; else errors++;
       }
-      toast('✅ Importação: ' + ok + ' criados, ' + errors + ' erros', ok > 0 ? 'success' : 'error');
+      toast('\u2713 ' + String(t('csv_import_result')).replace(/\{ok\}/g, String(ok)).replace(/\{errors\}/g, String(errors)), ok > 0 ? 'success' : 'error');
       input.value = '';
       loadProdutos();
     }
 
     async function loadProdutos() {
-      const r = await api('getProducts', {});
+      syncProdutosToolbarMode();
+      var payload = produtosListMode === 'trash' ? { onlyTrash: true } : { excludeTrash: true };
+      const r = await api('getProducts', payload);
       if (!r) return;
       if (r.success === false) {
         toast('❌ ' + (r.error || t('err_products')), 'error');
@@ -5449,19 +5686,25 @@
       a.href = URL.createObjectURL(blob);
       a.download = 'produtos_export.csv';
       a.click();
-      toast('CSV', 'success');
+      toast(t('toast_csv_export_ready'), 'success');
     }
 
     async function bulkProductAct(action) {
       var ids = Array.from(selectedProdIds);
-      if (!ids.length) { toast('Selecione produtos na tabela (caixas).', 'error'); return; }
-      var map = { delete: 'delete', activate: 'activate', deactivate: 'deactivate', catalog_publish: 'catalog_publish', catalog_draft: 'catalog_draft' };
+      if (!ids.length) { toast(t('toast_select_products_table'), 'error'); return; }
+      var map = { delete: 'delete', activate: 'activate', deactivate: 'deactivate', catalog_publish: 'catalog_publish', catalog_draft: 'catalog_draft', restore: 'restore', purge: 'purge' };
       var act = map[action];
       if (!act) return;
-      if (act === 'delete' && !confirm('Remover ' + ids.length + ' produto(s)? Passam a inativos (não aparecem na loja).')) return;
+      if (act === 'delete' && !confirm(String(t('bulk_confirm_delete')).replace(/\{n\}/g, String(ids.length)))) return;
+      if (act === 'purge' && !confirm(String(t('bulk_confirm_purge')).replace(/\{n\}/g, String(ids.length)))) return;
+      if (act === 'restore' && !confirm(String(t('bulk_confirm_restore')).replace(/\{n\}/g, String(ids.length)))) return;
       const r = await api('bulkProductAction', { ids: ids, action: act });
       if (r && r.success) {
-        toast('✅ Processados: ' + (r.processed || 0) + ' / ' + ids.length, 'success');
+        var n = r.processed != null ? r.processed : 0;
+        var toastKey = act === 'purge' ? 'bulk_toast_purged' : act === 'restore' ? 'bulk_toast_restored' : act === 'delete' ? 'bulk_toast_deleted' : null;
+        if (toastKey) toast(String(t(toastKey)).replace(/\{n\}/g, String(n)), 'success');
+        else toast(String(t('bulk_processed_count')).replace(/\{ok\}/g, String(n)).replace(/\{total\}/g, String(ids.length)), 'success');
+        if (r.errors && r.errors.length) toast(String(t('bulk_errors_count')).replace(/\{n\}/g, String(r.errors.length)), 'error');
         selectedProdIds.clear();
         loadProdutos();
       } else toast('❌ ' + (r && r.error ? r.error : 'Erro'), 'error');
@@ -5478,12 +5721,15 @@
           '<td><div class="product-img">' + (p.imagem ? '<img src="' + escHtml(imageUrlForPreview(p.imagem)) + '" style="width:40px;height:40px;border-radius:8px;object-fit:cover;" onerror="this.parentNode.textContent=\'👗\'">' : '👗') + '</div></td>' +
           '<td><strong>' + escHtml(p.nome) + '</strong><br>' + catalogBadgeHtml(p) + '<br><small style="color:var(--text2);font-family:var(--mono);">' + escHtml(pid) + '</small></td>' +
           '<td>' + escHtml(p.categoria || '—') + '</td>' +
-          '<td><strong>€' + escHtml(p.preco_final) + '</strong><br><small style="color:var(--text2);">HT: €' + escHtml(p.preco_ht) + '</small></td>' +
+          '<td><strong>€' + escHtml(p.preco_final) + '</strong><br><small style="color:var(--text2);">' + escHtml(t('lbl_ht_abbr')) + ': €' + escHtml(p.preco_ht) + '</small></td>' +
           '<td>' + stockBar(p.stock_total) + ' ' + (p.stock_total || 0) + '</td>' +
-          '<td>' + (p.status === 'ativo' ? '<span class="badge green">OK</span>' : '<span class="badge red">—</span>') + '</td>' +
+          '<td>' + productStatusBadgeHtml(p) + '</td>' +
           '<td style="display:flex;gap:6px;flex-wrap:wrap;">' +
-          '<button class="btn sm outline" onclick="editProductById(\'' + pid.replace(/'/g, "\\'") + '\')">✏️</button>' +
-          '<button class="btn sm danger" onclick="deleteProduct(\'' + pid.replace(/'/g, "\\'") + '\')">🗑️</button>' +
+          (produtosListMode === 'trash'
+            ? '<button type="button" class="btn sm outline" onclick="restoreProductById(\'' + pid.replace(/'/g, "\\'") + '\')" title="">' + escHtml(t('prod_btn_restore')) + '</button>' +
+              '<button type="button" class="btn sm danger" onclick="permanentlyDeleteProductById(\'' + pid.replace(/'/g, "\\'") + '\')" title="">' + escHtml(t('prod_btn_purge')) + '</button>'
+            : '<button type="button" class="btn sm outline" onclick="editProductById(\'' + pid.replace(/'/g, "\\'") + '\')">✏️</button>' +
+              '<button type="button" class="btn sm danger" onclick="deleteProduct(\'' + pid.replace(/'/g, "\\'") + '\')">🗑️</button>') +
           '</td></tr>';
       }).join('');
     }
@@ -5503,7 +5749,7 @@
       var pubEm = '';
       if (cat === 'agendado') {
         var dt = document.getElementById('prodPublicarEm') && document.getElementById('prodPublicarEm').value;
-        if (!dt) { toast('Indiquez la date et l’heure de publication (mode programmé).', 'error'); return; }
+        if (!dt) { toast(t('toast_schedule_datetime_required'), 'error'); return; }
         pubEm = new Date(dt).toISOString();
       }
       const variantLines = document.getElementById('prodVariantes').value.trim().split('\n').filter(l => l.trim());
@@ -5522,7 +5768,7 @@
       var payload = id ? { ...data, produto_id: id } : data;
       if (id && variantLines.length > 0) payload.replace_variants = true;
       const r = await api(id ? 'updateProduct' : 'createProduct', payload);
-      if (r?.success) { toast('✅ Produto guardado!', 'success'); closeModal('modalProduto'); loadProdutos(); }
+      if (r?.success) { toast(t('toast_prod_saved'), 'success'); closeModal('modalProduto'); loadProdutos(); }
       else toast('❌ ' + (r?.error || 'Erro'), 'error');
     }
 
@@ -5601,11 +5847,11 @@
         fr.onload = function () {
           var r = String(fr.result || '');
           var m = r.match(/^data:([^;]*);base64,(.+)$/);
-          if (!m) { reject(new Error('Lecture du fichier impossible')); return; }
+          if (!m) { reject(new Error(t('err_file_read_fail'))); return; }
           var mime = (m[1] && m[1].length) ? m[1] : (file.type || 'application/octet-stream');
           resolve({ base64: m[2], mimeType: mime });
         };
-        fr.onerror = function () { reject(fr.error || new Error('Lecture')); };
+        fr.onerror = function () { reject(fr.error || new Error(t('err_file_read_fail'))); };
         fr.readAsDataURL(file);
       });
     }
@@ -5614,7 +5860,7 @@
       var extOk = /\.(jpe?g|png|gif|webp|bmp|svg|ico|tiff?|heic|heif)$/i.test(file.name);
       var typeOk = !file.type || file.type.startsWith('image/') || file.type === 'application/octet-stream';
       if (!typeOk && !extOk) {
-        return Promise.reject(new Error('Fichier non reconnu comme image'));
+        return Promise.reject(new Error(t('err_not_image_file')));
       }
       return new Promise(function (resolve, reject) {
         var url = URL.createObjectURL(file);
@@ -5683,7 +5929,7 @@
         const u = tile.getAttribute('data-media-url');
         if (!u) return;
         if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(u).then(function () { toast('URL copiado — cole no produto.', 'success'); }).catch(function () { toast(u, 'info'); });
+          navigator.clipboard.writeText(u).then(function () { toast(t('toast_url_copied_paste_prod'), 'success'); }).catch(function () { toast(u, 'info'); });
         } else {
           toast(u, 'info');
         }
@@ -5720,19 +5966,19 @@
         document.getElementById('prodImagem').value = u;
         setProdImagePreview(u);
         closeModal('modalMediaLibrary');
-        toast('Image appliquée à l’URL du produit', 'success');
+        toast(t('toast_img_url_applied'), 'success');
       };
     }
 
     async function uploadProdutoImagem() {
       const file = document.getElementById('prodImagemFile')?.files?.[0];
       if (!file) {
-        toast('Choisissez d’abord une image.', 'error');
+        toast(t('toast_choose_img_first'), 'error');
         return;
       }
       const categoria = document.getElementById('prodCategoria').value.trim() || 'Sans_categorie';
       const produtoId = document.getElementById('editProdutoId').value.trim();
-      toast('Envoi vers Google Drive…', 'success');
+      toast(t('toast_uploading_drive'), 'success');
       try {
         const { base64, mimeType } = await resizeImageFileToBase64(file);
         const r = await api('uploadProductImage', {
@@ -5745,9 +5991,9 @@
         if (r && r.success && r.url) {
           document.getElementById('prodImagem').value = r.url;
           setProdImagePreview(r.url);
-          toast('Image enregistrée sur Drive (dossier catégorie).', 'success');
+          toast(t('toast_saved_drive_cat'), 'success');
         } else {
-          toast('❌ ' + (r && r.error ? r.error : 'Échec envoi'), 'error');
+          toast('❌ ' + (r && r.error ? r.error : t('toast_upload_failed')), 'error');
         }
       } catch (e) {
         toast('❌ ' + (e.message || t('err_image')), 'error');
@@ -5755,9 +6001,24 @@
     }
 
     async function deleteProduct(id) {
-      if (!confirm('Remover produto?')) return;
+      if (!confirm(t('prod_delete_confirm'))) return;
       const r = await api('deleteProduct', { id });
-      if (r?.success) { toast('✅ Removido', 'success'); loadProdutos(); }
+      if (r && r.success) { toast(t('prod_toast_moved_trash'), 'success'); loadProdutos(); }
+      else if (r) toast('❌ ' + (r.error || t('error')), 'error');
+    }
+
+    async function restoreProductById(id) {
+      if (!confirm(t('prod_restore_confirm'))) return;
+      const r = await api('restoreProduct', { id });
+      if (r && r.success) { toast(t('prod_restore_ok'), 'success'); loadProdutos(); }
+      else toast('❌ ' + (r && r.error ? r.error : t('error')), 'error');
+    }
+
+    async function permanentlyDeleteProductById(id) {
+      if (!confirm(t('prod_purge_confirm'))) return;
+      const r = await api('permanentlyDeleteProduct', { id });
+      if (r && r.success) { toast(String(t('bulk_toast_purged')).replace(/\{n\}/g, '1'), 'success'); loadProdutos(); }
+      else toast('❌ ' + (r && r.error ? r.error : t('error')), 'error');
     }
 
     // ============================================================
@@ -8143,6 +8404,7 @@
       if (count) count.textContent = String(tpl).replace(/\{n\}/g, String(n));
       if (checked.length > 0) {
         if (bar) bar.style.display = 'flex';
+        if (typeof syncBulkBarTrashMode === 'function') syncBulkBarTrashMode();
       } else {
         if (bar) bar.style.display = 'none';
       }
@@ -8162,35 +8424,64 @@
     async function bulkActivateProducts() {
       var ids = getSelectedProductIds();
       if (!ids.length) return;
-      for (var i = 0; i < ids.length; i++) {
-        await api('updateProduct', { produto_id: ids[i], ativo: 'sim' });
-      }
-      toast(String(t('bulk_toast_activated')).replace(/\{n\}/g, String(ids.length)), 'ok');
-      clearBulkSelection();
-      loadProdutos();
+      var r = await api('bulkProductAction', { ids: ids, action: 'activate' });
+      if (r && r.success) {
+        var n = r.processed != null ? r.processed : ids.length;
+        toast(String(t('bulk_toast_activated')).replace(/\{n\}/g, String(n)), 'ok');
+        clearBulkSelection();
+        loadProdutos();
+      } else toast('❌ ' + (r && r.error ? r.error : t('error')), 'error');
     }
 
     async function bulkDeactivateProducts() {
       var ids = getSelectedProductIds();
       if (!ids.length) return;
-      for (var i = 0; i < ids.length; i++) {
-        await api('updateProduct', { produto_id: ids[i], ativo: 'nao' });
-      }
-      toast(String(t('bulk_toast_deactivated')).replace(/\{n\}/g, String(ids.length)), 'ok');
-      clearBulkSelection();
-      loadProdutos();
+      var r = await api('bulkProductAction', { ids: ids, action: 'deactivate' });
+      if (r && r.success) {
+        var n = r.processed != null ? r.processed : ids.length;
+        toast(String(t('bulk_toast_deactivated')).replace(/\{n\}/g, String(n)), 'ok');
+        clearBulkSelection();
+        loadProdutos();
+      } else toast('❌ ' + (r && r.error ? r.error : t('error')), 'error');
     }
 
     async function bulkDeleteProducts() {
       var ids = getSelectedProductIds();
       if (!ids.length) return;
       if (!confirm(String(t('bulk_confirm_delete')).replace(/\{n\}/g, String(ids.length)))) return;
-      for (var i = 0; i < ids.length; i++) {
-        await api('deleteProduct', { produto_id: ids[i] });
-      }
-      toast(String(t('bulk_toast_deleted')).replace(/\{n\}/g, String(ids.length)), 'ok');
-      clearBulkSelection();
-      loadProdutos();
+      var r = await api('bulkProductAction', { ids: ids, action: 'delete' });
+      if (r && r.success) {
+        var n = r.processed != null ? r.processed : ids.length;
+        toast(String(t('bulk_toast_deleted')).replace(/\{n\}/g, String(n)), 'ok');
+        clearBulkSelection();
+        loadProdutos();
+      } else toast('❌ ' + (r && r.error ? r.error : t('error')), 'error');
+    }
+
+    async function bulkRestoreProducts() {
+      var ids = getSelectedProductIds();
+      if (!ids.length) return;
+      if (!confirm(String(t('bulk_confirm_restore')).replace(/\{n\}/g, String(ids.length)))) return;
+      var r = await api('bulkProductAction', { ids: ids, action: 'restore' });
+      if (r && r.success) {
+        var n = r.processed != null ? r.processed : ids.length;
+        toast(String(t('bulk_toast_restored')).replace(/\{n\}/g, String(n)), 'ok');
+        clearBulkSelection();
+        loadProdutos();
+      } else toast('❌ ' + (r && r.error ? r.error : t('error')), 'error');
+    }
+
+    async function bulkPurgeProducts() {
+      var ids = getSelectedProductIds();
+      if (!ids.length) return;
+      if (!confirm(String(t('bulk_confirm_purge')).replace(/\{n\}/g, String(ids.length)))) return;
+      var r = await api('bulkProductAction', { ids: ids, action: 'purge' });
+      if (r && r.success) {
+        var n = r.processed != null ? r.processed : ids.length;
+        toast(String(t('bulk_toast_purged')).replace(/\{n\}/g, String(n)), 'ok');
+        clearBulkSelection();
+        loadProdutos();
+      } else toast('❌ ' + (r && r.error ? r.error : t('error')), 'error');
     }
 
     // ═══════════════════════════════════════════════════════════════
@@ -8199,7 +8490,7 @@
     var _inventoryProducts = [];
 
     async function loadInventoryProducts() {
-      var r = await api('getProducts', {});
+      var r = await api('getProducts', { excludeTrash: true });
       _inventoryProducts = (Array.isArray(r) ? r : r?.products || []);
       renderInventoryList(_inventoryProducts);
     }
