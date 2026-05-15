@@ -2094,6 +2094,83 @@
       border-left: 1px solid var(--border);
     }
 
+    /* Tableau variantes produit — colonnes alignées sous les en-têtes */
+    .prod-variants-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--bg3);
+    }
+
+    table.prod-variants-edit-table {
+      width: 100%;
+      min-width: 520px;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 13px;
+      table-layout: fixed;
+    }
+
+    table.prod-variants-edit-table thead th {
+      padding: 10px 8px 8px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: bottom;
+      text-align: left;
+      line-height: 1.3;
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: var(--text2);
+      background: var(--bg2);
+    }
+
+    table.prod-variants-edit-table thead th.pv-th-cat,
+    table.prod-variants-edit-table tbody td.pv-td-cat {
+      text-align: center;
+    }
+
+    table.prod-variants-edit-table thead th.pv-th-del,
+    table.prod-variants-edit-table tbody td.pv-td-del {
+      text-align: center;
+      width: 48px;
+    }
+
+    table.prod-variants-edit-table tbody td {
+      padding: 8px;
+      vertical-align: top;
+      border-bottom: 1px solid var(--border);
+    }
+
+    table.prod-variants-edit-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    table.prod-variants-edit-table input.input,
+    table.prod-variants-edit-table input[type="text"],
+    table.prod-variants-edit-table input[type="number"] {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      min-width: 0;
+    }
+
+    table.prod-variants-edit-table .pv-td-url input {
+      font-size: 12px;
+      word-break: break-all;
+    }
+
+    table.prod-variants-edit-table .ve-q {
+      text-align: center;
+    }
+
+    .prod-variants-help {
+      font-size: 11px;
+      color: var(--text2);
+      margin: 0 0 10px;
+      line-height: 1.5;
+    }
+
     .chkb {
       width: 18px;
       height: 18px;
@@ -4468,28 +4545,33 @@
       <div class="form-group"><label data-i18n="lbl_url_imagem_manual">URL</label><input type="text"
           id="prodImagem" placeholder="https://drive.google.com/..." oninput="onProdImagemUrlInput()"></div>
       <div class="form-group"><label data-i18n="lbl_variantes_umalinha">Variantes</label>
-        <p style="font-size:11px;color:var(--text2);margin:0 0 8px;line-height:1.45;">Une ligne par combinaison
-          taille / couleur. Colonne « Stock » : indicatif (mettre 0 partout si vous travaillez <strong>sans stock réel</strong> — activer aussi
-          <em>Boutique / sur commande</em> dans la config pour que la vitrine ignore le stock). Colonne « Photo URL » : image pour cette ligne (Drive ou HTTPS). Case « Cat. » :
-          visuel principal lorsque cette nuance est sélectionnée.</p>
-        <div style="overflow-x:auto;border:1px solid var(--border);border-radius:10px;background:var(--bg3);">
-          <table style="width:100%;border-collapse:collapse;font-size:13px;">
+        <p class="prod-variants-help" data-i18n="prod_variant_help_html" data-i18n-html="1"></p>
+        <div class="prod-variants-wrap">
+          <table class="prod-variants-edit-table">
+            <colgroup>
+              <col style="width:11%;">
+              <col style="width:13%;">
+              <col style="width:86px;">
+              <col>
+              <col style="width:68px;">
+              <col style="width:48px;">
+            </colgroup>
             <thead>
-              <tr style="background:var(--bg2);text-align:left;">
-                <th style="padding:8px;border-bottom:1px solid var(--border);">Taille</th>
-                <th style="padding:8px;border-bottom:1px solid var(--border);">Couleur</th>
-                <th style="padding:8px;border-bottom:1px solid var(--border);width:88px;">Stock (info)</th>
-                <th style="padding:8px;border-bottom:1px solid var(--border);min-width:160px;">Photo URL</th>
-                <th style="padding:8px;border-bottom:1px solid var(--border);width:76px;text-align:center;"
-                  title="Visuel principal au choix de cette nuance">Cat.</th>
-                <th style="padding:8px;border-bottom:1px solid var(--border);width:44px;"></th>
+              <tr>
+                <th data-i18n="th_var_size">Tamanho</th>
+                <th data-i18n="th_var_color">Cor</th>
+                <th data-i18n="th_var_stock_info">Stock (info)</th>
+                <th data-i18n="th_var_photo_url">URL foto</th>
+                <th class="pv-th-cat" data-i18n="th_var_cat_short" data-i18n-title="prod_variant_cat_th_title"
+                  title="">Cat.</th>
+                <th class="pv-th-del" aria-hidden="true"></th>
               </tr>
             </thead>
             <tbody id="variantsEditBody"></tbody>
           </table>
         </div>
-        <button type="button" class="btn sm outline" style="margin-top:8px;"
-          onclick="addVariantEditorRow()">＋ ligne variante</button>
+        <button type="button" class="btn sm outline" style="margin-top:8px;" onclick="addVariantEditorRow()"
+          data-i18n="btn_add_variant_row">＋ linha variante</button>
       </div>
       <div class="form-row">
         <button type="button" class="btn success" onclick="saveProduto()" data-i18n="btn_save">💾</button>
@@ -4844,6 +4926,12 @@
           prod_hint_pasta_drive: 'Cria a pasta ERP_Boutique_Images / sua categoria / refer\u00eancia do produto na conta Apps Script.',
           prod_alt_preview: 'Pr\u00e9-visualiza\u00e7\u00e3o',
           lbl_url_imagem_manual: 'URL da imagem (depois do envio ou manual)',
+          prod_variant_help_html: 'Uma linha por cada combina\u00e7\u00e3o <strong>tamanho / cor</strong>. Coluna <strong>Stock</strong>: indicativo (\u2014 use <strong>0</strong> por todo o lado sem stock real e ative <em>Loja / por encomenda</em> em Configura\u00e7\u00f5es para a vitrine ignorar o stock). Coluna <strong>URL foto</strong>: imagem desta linha (Drive ou HTTPS). Coluna <strong>Cat.</strong>: imagem principal quando esta <strong>variante</strong> est\u00e1 selecionada.',
+          th_var_size: 'Tamanho', th_var_color: 'Cor', th_var_stock_info: 'Stock (info)', th_var_photo_url: 'URL foto', th_var_cat_short: 'Cat.',
+          prod_variant_cat_th_title: 'Imagem principal desta variante quando o cliente a escolher',
+          btn_add_variant_row: '\uff0b linha variante', ph_variant_size: 'S', ph_variant_color: 'Preto\u2026', ph_variant_url: 'Drive ou https://…',
+          prod_variant_checkbox_title: 'Usar esta imagem como principal quando esta variante est\u00e1 selecionada',
+          btn_variant_row_remove: 'Remover linha de variante',
           lbl_variantes_umalinha: 'Variantes (tamanho : cor : stock, uma linha cada)',
           ph_variantes_demo: 'S:Preto:20\nM:Preto:30\nL:Branco:15\nXL:Azul:10',
           ph_prod_desc_placeholder: 'Ex.: 100% algod\u00e3o, lavagem a 30\u00b0, corte slim\u2026',
@@ -4883,6 +4971,12 @@
           prod_hint_pasta_drive: 'Cr\u00e9e automatiquement ERP_Boutique_Images / votre cat\u00e9gorie / r\u00e9f. produit dans le Drive du script.',
           prod_alt_preview: 'Aper\u00e7u',
           lbl_url_imagem_manual: 'URL image (apr\u00e8s envoi ou saisie manuelle)',
+          prod_variant_help_html: 'Une ligne par combinaison <strong>taille / couleur</strong>. Colonne <strong>Stock</strong> : indicatif (\u2014 mettez <strong>0</strong> partout sans stock r\u00e9el ; activez aussi <em>Boutique / sur commande</em> dans la configuration pour que la vitrine ignore le stock). Colonne <strong>URL photo</strong> : image pour cette ligne (Drive ou HTTPS). Case <strong>Cat.</strong> : visuel principal lorsque cette nuance est s\u00e9lectionn\u00e9e.',
+          th_var_size: 'Taille', th_var_color: 'Couleur', th_var_stock_info: 'Stock (info)', th_var_photo_url: 'URL photo', th_var_cat_short: 'Cat.',
+          prod_variant_cat_th_title: 'Visuel catalogue principal lors du choix de cette nuance',
+          btn_add_variant_row: '\uff0b ligne variante', ph_variant_size: 'S', ph_variant_color: 'Noir\u2026', ph_variant_url: 'Drive ou https://…',
+          prod_variant_checkbox_title: 'Afficher cette image comme principale pour cette nuance',
+          btn_variant_row_remove: 'Supprimer cette ligne variante',
           lbl_variantes_umalinha: 'Variantes (taille : couleur : stock, une ligne chacune)',
           ph_variantes_demo: 'S:Noir:20\nM:Noir:30\nL:Blanc:15\nXL:Bleu:10',
           ph_prod_desc_placeholder: 'Ex. : mati\u00e8re, entretien, coupe\u2026',
@@ -4922,6 +5016,12 @@
           prod_hint_pasta_drive: 'Creates ERP_Boutique_Images / category / product ID under the Apps Script account.',
           prod_alt_preview: 'Preview',
           lbl_url_imagem_manual: 'Image URL (after upload or paste)',
+          prod_variant_help_html: 'One row per <strong>size / colour</strong> combo. <strong>Stock</strong> is indicative (\u2014 use <strong>0</strong> everywhere if you have no real stock; turn on <em>store / made-to-order</em> in Settings so the storefront ignores stock). <strong>Photo URL</strong>: image for this row (Drive or HTTPS). <strong>Cat.</strong>: main image when this combination is selected.',
+          th_var_size: 'Size', th_var_color: 'Colour', th_var_stock_info: 'Stock (info)', th_var_photo_url: 'Photo URL', th_var_cat_short: 'Cat.',
+          prod_variant_cat_th_title: 'Main catalogue image when this variant is selected',
+          btn_add_variant_row: '\uff0b variant row', ph_variant_size: 'S', ph_variant_color: 'Black\u2026', ph_variant_url: 'Drive or https://…',
+          prod_variant_checkbox_title: 'Use this image as the main one when this variant is picked',
+          btn_variant_row_remove: 'Remove variant row',
           lbl_variantes_umalinha: 'Variants (size : color : stock, one line each)',
           ph_variantes_demo: 'S:Black:20\nM:Black:30\nL:White:15\nXL:Blue:10',
           ph_prod_desc_placeholder: 'e.g. material, care, fit\u2026',
@@ -4961,6 +5061,12 @@
           prod_hint_pasta_drive: 'Crea ERP_Boutique_Images / categor\u00eda / referencia en la cuenta del script.',
           prod_alt_preview: 'Vista previa',
           lbl_url_imagem_manual: 'URL imagen (tras subir o manual)',
+          prod_variant_help_html: 'Una fila por cada combinaci\u00f3n <strong>talla / color</strong>. Columna <strong>Stock</strong>: indicativo (\u2014 use <strong>0</strong> si no lleva stock real y active <em>Tienda / bajo pedido</em> en la configuraci\u00f3n para que la vitrina ignore stock). Columna <strong>URL foto</strong>: imagen de esta variante (Drive o HTTPS). Columna <strong>Cat.</strong>: imagen principal cuando se elige ese matiz.',
+          th_var_size: 'Talla', th_var_color: 'Color', th_var_stock_info: 'Stock (info)', th_var_photo_url: 'URL foto', th_var_cat_short: 'Cat.',
+          prod_variant_cat_th_title: 'Imagen principal para este mat\u00edz al seleccionar la variante',
+          btn_add_variant_row: '\uff0b fila variante', ph_variant_size: 'S', ph_variant_color: 'Negro\u2026', ph_variant_url: 'Drive o https://…',
+          prod_variant_checkbox_title: 'Mostrar esta imagen como principal al elegir esta variante',
+          btn_variant_row_remove: 'Quitar fila de variante',
           lbl_variantes_umalinha: 'Variantes (talla : color : stock, una por l\u00ednea)',
           ph_variantes_demo: 'S:Negro:20\nM:Negro:30\nL:Blanco:15\nXL:Azul:10',
           ph_prod_desc_placeholder: 'p. ej. composici\u00f3n, cuidados, talla\u2026',
@@ -5170,6 +5276,28 @@
         if (admB) { admB.textContent = icon; admB.title = thi; }
         if (logB) { logB.textContent = icon; logB.title = thi; }
       } catch (eTh) { }
+      try { syncVariantEditorRowI18n(); } catch (eVarI18n) { }
+    }
+
+    /** Placeholders/titulos das linhas do editor de variantes (mudança de idioma com modal aberto). */
+    function syncVariantEditorRowI18n() {
+      var tb = document.getElementById('variantsEditBody');
+      if (!tb || typeof t !== 'function') return;
+      tb.querySelectorAll('tr').forEach(function (tr) { applyVariantRowI18n(tr); });
+    }
+
+    function applyVariantRowI18n(tr) {
+      if (!tr || typeof t !== 'function') return;
+      var tIn = tr.querySelector('.ve-t');
+      var cIn = tr.querySelector('.ve-c');
+      var uIn = tr.querySelector('.ve-i');
+      var vis = tr.querySelector('.ve-vis');
+      var del = tr.querySelector('.ve-del');
+      if (tIn) { tIn.placeholder = t('ph_variant_size'); }
+      if (cIn) { cIn.placeholder = t('ph_variant_color'); }
+      if (uIn) { uIn.placeholder = t('ph_variant_url'); }
+      if (vis) { vis.title = t('prod_variant_checkbox_title'); }
+      if (del) { del.setAttribute('aria-label', t('btn_variant_row_remove')); }
     }
 
     function setLang(l, btn) {
@@ -5929,18 +6057,19 @@
       if (!tb) return;
       var tr = document.createElement('tr');
       tr.innerHTML =
-        '<td style="padding:6px;"><input type="text" class="ve-t input" placeholder="S" style="width:100%;min-width:56px;"></td>' +
-        '<td style="padding:6px;"><input type="text" class="ve-c input" placeholder="" style="width:100%;min-width:72px;"></td>' +
-        '<td style="padding:6px;"><input type="number" class="ve-q input" min="0" step="1" style="width:100%;"></td>' +
-        '<td style="padding:6px;"><input type="text" class="ve-i input" placeholder="https://" style="width:100%;font-size:12px;"></td>' +
-        '<td style="padding:6px;text-align:center;"><input type="checkbox" class="ve-vis" title="Visuel catalogue"></td>' +
-        '<td style="padding:6px;"><button type="button" class="btn sm danger ve-del">−</button></td>';
+        '<td class="pv-td-size"><input type="text" class="ve-t input"></td>' +
+        '<td class="pv-td-color"><input type="text" class="ve-c input"></td>' +
+        '<td class="pv-td-stock ve-q-cell"><input type="number" class="ve-q input" min="0" step="1"></td>' +
+        '<td class="pv-td-url"><input type="text" class="ve-i input"></td>' +
+        '<td class="pv-td-cat"><input type="checkbox" class="ve-vis"></td>' +
+        '<td class="pv-td-del"><button type="button" class="btn sm danger ve-del">\u2212</button></td>';
       tr.querySelector('.ve-t').value = row.tamanho != null ? row.tamanho : '';
       tr.querySelector('.ve-c').value = row.cor != null ? row.cor : '';
       tr.querySelector('.ve-q').value = row.stock != null ? row.stock : 0;
       tr.querySelector('.ve-i').value = row.imagem_variante != null ? row.imagem_variante : '';
       var vc = row.visuel_catalogue != null ? row.visuel_catalogue : row.visuel_catalogo;
       tr.querySelector('.ve-vis').checked = vc === true || vc === '1' || vc === 'true';
+      applyVariantRowI18n(tr);
       tr.querySelector('.ve-del').onclick = function () {
         tr.remove();
         if (!tb.querySelector('tr')) addVariantEditorRow({});
