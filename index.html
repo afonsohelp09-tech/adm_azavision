@@ -4568,6 +4568,24 @@
           <input type="datetime-local" id="prodPublicarEm">
         </div>
       </div>
+      <div class="grid2" style="margin-top:12px;">
+        <div class="form-group">
+          <label for="prodGerirStockSel" data-i18n="lbl_prod_stock_mode">Stock (ERP)</label>
+          <select id="prodGerirStockSel">
+            <option value="" data-i18n="opt_prod_stock_auto">Automatic</option>
+            <option value="1" data-i18n="opt_prod_stock_on">Stock on</option>
+            <option value="0" data-i18n="opt_prod_stock_off">Made to order</option>
+          </select>
+          <small style="color:var(--text2);font-size:11px;display:block;margin-top:4px;line-height:1.4;"
+            data-i18n="hint_prod_stock_mode"></small>
+        </div>
+        <div class="form-group">
+          <label for="prodPrazoEntrega" data-i18n="lbl_prod_lead_days">Estimated delivery days</label>
+          <input type="number" id="prodPrazoEntrega" min="0" max="730" step="1" placeholder="14">
+          <small style="color:var(--text2);font-size:11px;display:block;margin-top:4px;line-height:1.4;"
+            data-i18n="hint_prod_lead_days"></small>
+        </div>
+      </div>
       <div class="form-group"><label data-i18n="lbl_photo_produto">Foto</label>
         <input type="file" id="prodImagemFile" accept="image/*,.heic,.heif" onchange="onProdImagemFileSelected(this)"
           style="width:100%;padding:10px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:13px;">
@@ -4961,6 +4979,13 @@
           lbl_prod_name_req: 'Nome do produto *', ph_prod_name: 'Ex.: T-shirt cl\u00e1ssica',
           lbl_prod_category: 'Categoria', ph_prod_category_list: 'Ex.: T-shirts (ou escolha na lista)',
           lbl_price_ht_eur: 'Pre\u00e7o sem IVA (\u20ac)', lbl_vat_pct: 'IVA (%)',
+          lbl_prod_stock_mode: 'Stock no ERP',
+          opt_prod_stock_auto: 'Autom\u00e1tico',
+          opt_prod_stock_on: 'Com stock ERP (bloqueia + decrementa)',
+          opt_prod_stock_off: 'Por encomenda (sem bloqueio stock)',
+          hint_prod_stock_mode: 'Automático = segue o global « boutique sur commande » (Config). Ligado = usa quantidades ERP. Desligado = à encomenda.',
+          lbl_prod_lead_days: 'Prazo entrega previsto (dias corridos)',
+          hint_prod_lead_days: 'Indicativo na ficha cliente e ETA do pedido (m\u00eax. das linhas). Vazio = usa valor em CONFIG (prazo_entrega_padrao_dias, p.ex. 14).',
           lbl_visibilidade_catalogo_loja: 'Visibilidade no cat\u00e1logo (loja)',
           opt_cat_rascunho_long: 'Rascunho (s\u00f3 no painel, n\u00e3o na loja)',
           opt_cat_publicado_simple: 'Publicado', opt_cat_agendado_simple: 'Agendado',
@@ -5005,6 +5030,13 @@
           lbl_prod_name_req: 'Nom du produit *', ph_prod_name: 'Ex. : T-shirt classique',
           lbl_prod_category: 'Cat\u00e9gorie', ph_prod_category_list: 'Ex. : T-shirts (ou choisissez dans la liste)',
           lbl_price_ht_eur: 'Prix HT (\u20ac)', lbl_vat_pct: 'TVA (%)',
+          lbl_prod_stock_mode: 'Stock (ERP)',
+          opt_prod_stock_auto: 'Automatique',
+          opt_prod_stock_on: 'Avec quantit\u00e9s ERP (blocage + d\u00e9cr\u00e9ment)',
+          opt_prod_stock_off: 'Sur commande (pas de blocage)',
+          hint_prod_stock_mode: 'Auto = suit le r\u00e9glage global \u00ab boutique sur commande \u00bb. Activ\u00e9 = stocks d\u00e9cr\u00e9ment\u00e9s \u00e0 la commande. D\u00e9sactiv\u00e9 = \u00e0 la demande (pas de blocage).',
+          lbl_prod_lead_days: 'D\u00e9lai livraison estim\u00e9 (jours calendaires)',
+          hint_prod_lead_days: 'Affichage vitrine + date provisoire du colis (plus long d\u00e9lai parmi les lignes). Vide = cl\u00e9 CONFIG prazo_entrega_padrao_dias.',
           lbl_visibilidade_catalogo_loja: 'Visibilit\u00e9 catalogue (boutique)',
           opt_cat_rascunho_long: 'Brouillon (aper\u00e7u admin seulement, pas sur la boutique)',
           opt_cat_publicado_simple: 'Publi\u00e9', opt_cat_agendado_simple: 'Programm\u00e9',
@@ -5050,6 +5082,13 @@
           lbl_prod_name_req: 'Product name *', ph_prod_name: 'e.g. Classic tee',
           lbl_prod_category: 'Category', ph_prod_category_list: 'e.g. Tees (or pick from the list)',
           lbl_price_ht_eur: 'Net price (\u20ac)', lbl_vat_pct: 'VAT (%)',
+          lbl_prod_stock_mode: 'Stock (ERP)',
+          opt_prod_stock_auto: 'Automatic',
+          opt_prod_stock_on: 'Tracked stock (enforce + decrement)',
+          opt_prod_stock_off: 'Made to order',
+          hint_prod_stock_mode: 'Automatic = follows global « made to order » setting. On = enforce quantities. Off = unlimited (made on demand).',
+          lbl_prod_lead_days: 'Estimated delivery lead time (calendar days)',
+          hint_prod_lead_days: 'Storefront hint + provisional order ETA (max among lines). Empty = CONFIG prazo_entrega_padrao_dias.',
           lbl_visibilidade_catalogo_loja: 'Catalog visibility (storefront)',
           opt_cat_rascunho_long: 'Draft (admin only, hidden from storefront)',
           opt_cat_publicado_simple: 'Published', opt_cat_agendado_simple: 'Scheduled',
@@ -5095,6 +5134,13 @@
           lbl_prod_name_req: 'Nombre del producto *', ph_prod_name: 'Ej.: camiseta cl\u00e1sica',
           lbl_prod_category: 'Categor\u00eda', ph_prod_category_list: 'Ej.: camisetas (o elija de la lista)',
           lbl_price_ht_eur: 'Precio sin IVA (\u20ac)', lbl_vat_pct: 'IVA (%)',
+          lbl_prod_stock_mode: 'Stock (ERP)',
+          opt_prod_stock_auto: 'Autom\u00e1tico',
+          opt_prod_stock_on: 'Con stock ERP (bloquear + decrementar)',
+          opt_prod_stock_off: 'Sobrepedido sin l\u00edmite',
+          hint_prod_stock_mode: 'Automático = igual al global « boutique sur commande ». Activado = cantidades bloqueadas. Desactivado = bajo pedido.',
+          lbl_prod_lead_days: 'Plazo de entrega estimado (d\u00edas naturales)',
+          hint_prod_lead_days: 'Vitrina + fecha orientativa del pedido (el mayor plazo entre l\u00edneas). Vac\u00edo = CONFIG prazo_entrega_padrao_dias.',
           lbl_visibilidade_catalogo_loja: 'Visibilidad del cat\u00e1logo (tienda)',
           opt_cat_rascunho_long: 'Borrador (solo administraci\u00f3n)',
           opt_cat_publicado_simple: 'Publicado', opt_cat_agendado_simple: 'Programado',
@@ -6247,7 +6293,16 @@
         imagem: document.getElementById('prodImagem').value,
         catalogo_status: cat,
         publicar_em: cat === 'agendado' ? pubEm : '',
-        variantes
+        variantes,
+        gerir_stock: document.getElementById('prodGerirStockSel') && document.getElementById('prodGerirStockSel').value !== undefined
+          ? String(document.getElementById('prodGerirStockSel').value)
+          : '',
+        prazo_entrega_dias: (function () {
+          var px = document.getElementById('prodPrazoEntrega');
+          if (!px || String(px.value).trim() === '') return '';
+          var n = parseInt(String(px.value).trim(), 10);
+          return isNaN(n) ? '' : String(Math.min(Math.max(n, 0), 730));
+        })()
       };
       var payload = id ? { ...data, produto_id: id } : data;
       if (id && variantes.length > 0) payload.replace_variants = true;
@@ -6271,6 +6326,15 @@
       var pem = document.getElementById('prodPublicarEm');
       if (pem) pem.value = p.publicar_em ? formatDateForDatetimeLocal(new Date(p.publicar_em)) : '';
       toggleProdScheduleRow();
+      var gsSel = document.getElementById('prodGerirStockSel');
+      if (gsSel) {
+        var gv = String(p.gerir_stock || '').trim();
+        gsSel.value = (gv === '1' || gv === '0') ? gv : '';
+      }
+      var prInput = document.getElementById('prodPrazoEntrega');
+      if (prInput) {
+        prInput.value = (p.prazo_entrega_dias != null && String(p.prazo_entrega_dias).trim() !== '') ? String(p.prazo_entrega_dias).trim() : '';
+      }
       if (Array.isArray(p.variantes) && p.variantes.length) {
         rebuildVariantEditorTable(p.variantes);
       } else {
@@ -6285,6 +6349,7 @@
         if (prev) { prev.style.display = 'none'; prev.removeAttribute('src'); }
       }
       openModal('modalProduto');
+      try { applyAdminI18n(); } catch (ex1) {}
     }
 
     async function refreshCategoryDatalist() {
@@ -6310,6 +6375,10 @@
       document.getElementById('prodPreco').value = '';
       document.getElementById('prodTva').value = '23';
       document.getElementById('prodImagem').value = '';
+      var gsSelN = document.getElementById('prodGerirStockSel');
+      if (gsSelN) gsSelN.value = '';
+      var prN = document.getElementById('prodPrazoEntrega');
+      if (prN) prN.value = '';
       rebuildVariantEditorTable([]);
       document.getElementById('prodCatalogoStatus').value = 'rascunho';
       var pem = document.getElementById('prodPublicarEm');
@@ -6321,6 +6390,7 @@
       const prev = document.getElementById('prodImgPreview');
       if (prev) { prev.style.display = 'none'; prev.removeAttribute('src'); }
       openModal('modalProduto');
+      try { applyAdminI18n(); } catch (ex2) {}
     }
 
     function fileToBase64ViaReader(file) {
@@ -6484,7 +6554,7 @@
 
     async function deleteProduct(id) {
       if (!confirm(t('prod_delete_confirm'))) return;
-      const r = await api('deleteProduct', { id });
+      const r = await api('deleteProduct', { id, produto_id: id });
       if (r && r.success) { toast(t('prod_toast_moved_trash'), 'success'); loadProdutos(); }
       else if (r) toast('❌ ' + (r.error || t('error')), 'error');
     }
