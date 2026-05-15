@@ -3797,6 +3797,15 @@
               <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-bottom:12px;">
                 <input type="checkbox" id="cfg_promo_banner_enabled"> Mostrar faixa promocional no topo do catálogo
               </label>
+              <p style="font-size:11px;color:var(--text2);margin-bottom:10px;line-height:1.45;">Pode usar os mesmos
+                <code style="font-family:var(--mono);font-size:10px;">{{pct}}</code>,
+                <code style="font-family:var(--mono);font-size:10px;">{{code}}</code>,
+                <code style="font-family:var(--mono);font-size:10px;">{{amount}}</code>,
+                <code style="font-family:var(--mono);font-size:10px;">{{min_cart}}</code>,
+                <code style="font-family:var(--mono);font-size:10px;">{{valid_until}}</code>,
+                <code style="font-family:var(--mono);font-size:10px;">{{free_ship_from}}</code>,
+                <code style="font-family:var(--mono);font-size:10px;">{{promo_label}}</code> que na faixa de anúncio
+                (valores definidos na secção abaixo).</p>
               <div class="form-group"><label>Título do banner</label><input type="text" id="cfg_promo_banner_title"
                   placeholder="Promoções"></div>
               <div class="form-group"><label>Texto do banner</label><textarea id="cfg_promo_banner_text" rows="2"
@@ -3811,12 +3820,17 @@
             <div class="card-header"><span class="card-title">📢 Faixa de anúncio (topo de toda a vitrine)</span></div>
             <div style="padding:20px;">
               <p style="font-size:12px;color:var(--text2);margin-bottom:14px;line-height:1.5;">Barre en haut du site
-                (au-dessus du menu), pour livraison, sur commande, qualité, etc. Activez <strong>Annonce</strong>,
-                saisissez le texte (ex. type Valore : <em>Envio Grátis acima de €80 ✦ Produção por Encomenda ✦ …</em>).
-                Option <strong>défilant</strong> : bande continue qui défile, comme la démo <em>Valore</em>. Dates
-                vides = toujours visible. <code
-                  style="font-family:var(--mono);font-size:11px;background:rgba(0,0,0,.2);padding:2px 6px;border-radius:4px;">{{pct}}</code>
-                dans le texte = valeur « Desconto % ».</p>
+                (au-dessus du menu). Option <strong>défilant</strong> : bande type ticker. Dates vides = toujours
+                visible. <strong>Placeholders</strong> (remplis à partir des champs « Campagne » ci-dessous) :
+                <code style="font-family:var(--mono);font-size:10px;">{{pct}}</code> ·
+                <code style="font-family:var(--mono);font-size:10px;">{{pct2}}</code> (2e %) ·
+                <code style="font-family:var(--mono);font-size:10px;">{{code}}</code> ·
+                <code style="font-family:var(--mono);font-size:10px;">{{amount}}</code> (€) ·
+                <code style="font-family:var(--mono);font-size:10px;">{{min_cart}}</code> ·
+                <code style="font-family:var(--mono);font-size:10px;">{{valid_until}}</code> ·
+                <code style="font-family:var(--mono);font-size:10px;">{{promo_label}}</code> ·
+                <code style="font-family:var(--mono);font-size:10px;">{{currency}}</code> ·
+                <code style="font-family:var(--mono);font-size:10px;">{{free_ship_from}}</code> (depuis Portes / envio grátis).</p>
               <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-bottom:12px;">
                 <input type="checkbox" id="cfg_announcement_enabled"> Mostrar faixa de anúncio
               </label>
@@ -3825,9 +3839,30 @@
               </label>
               <div class="form-group"><label>Texte du bandeau</label><textarea id="cfg_announcement_text" rows="2"
                   placeholder="Ex. : Envio Grátis acima de €80 ✦ Produção por Encomenda ✦ Qualidade Premium ✦ Devolução em 30 Dias"></textarea></div>
-              <div class="form-group"><label>Desconto promocional (%)</label><input type="number"
-                  id="cfg_announcement_promo_pct" min="0" max="100" step="1"
-                  placeholder="ex.: 15 — usado em {{pct}} ou mensagem automática se o texto estiver vazio"></div>
+              <div class="card-header" style="margin:16px 0 10px;padding:0;border:none;"><span class="card-title"
+                  style="font-size:14px;">🎯 Campanha / parâmetros da promoção (vitrine)</span></div>
+              <div class="grid2">
+                <div class="form-group"><label>Desconto principal (%)</label><input type="number"
+                    id="cfg_announcement_promo_pct" min="0" max="100" step="0.01"
+                    placeholder="{{pct}} — ex.: 15"></div>
+                <div class="form-group"><label>Desconto adicional (%)</label><input type="number"
+                    id="cfg_announcement_promo_pct_2" min="0" max="100" step="0.01"
+                    placeholder="{{pct2}} — ex. 2.º artigo"></div>
+                <div class="form-group"><label>Código público</label><input type="text" id="cfg_announcement_promo_code"
+                    placeholder="{{code}} — ex. VALORE25" maxlength="64"></div>
+                <div class="form-group"><label>Valor em € (mensagem)</label><input type="number"
+                    id="cfg_announcement_promo_amount_eur" min="0" step="0.01"
+                    placeholder="{{amount}} — ex. 25 (só texto)"></div>
+                <div class="form-group"><label>Encomenda mínima (€)</label><input type="number"
+                    id="cfg_announcement_promo_min_cart_eur" min="0" step="0.01" placeholder="{{min_cart}}"></div>
+                <div class="form-group"><label>Válido até (data ou texto)</label><input type="text"
+                    id="cfg_announcement_promo_valid_until" placeholder="AAAA-MM-JJ ou ex. 31/12"></div>
+                <div class="form-group" style="grid-column:1/-1;"><label>Rótulo da campanha</label><input type="text"
+                    id="cfg_announcement_promo_label" placeholder="{{promo_label}} — ex. BLACK FRIDAY" maxlength="120">
+                </div>
+              </div>
+              <p style="font-size:11px;color:var(--text2);margin:8px 0 12px;line-height:1.45;">Estes valores <strong>não aplicam desconto automaticamente no checkout</strong> — defina também cupões na área Cupões
+                se quiser desconto real. Servem para mensagens coerentes e profissionais na faixa / banner.</p>
               <div class="grid2">
                 <div class="form-group"><label>Data de início</label><input type="date"
                     id="cfg_announcement_date_start"></div>
@@ -3837,7 +3872,7 @@
               <p style="font-size:11px;color:var(--text2);margin-top:8px;">Deixe as datas em branco para mostrar sempre
                 que a faixa estiver ativa. Com datas, só aparece entre início e fim (inclusive).</p>
               <button type="button" class="btn sm success"
-                onclick="saveBoutiqueConfigPartial(['announcement_enabled','announcement_marquee','announcement_text','announcement_promo_pct','announcement_date_start','announcement_date_end'])">💾
+                onclick="saveBoutiqueConfigPartial(['announcement_enabled','announcement_marquee','announcement_text','announcement_promo_pct','announcement_promo_pct_2','announcement_promo_code','announcement_promo_amount_eur','announcement_promo_min_cart_eur','announcement_promo_valid_until','announcement_promo_label','announcement_date_start','announcement_date_end'])">💾
                 Guardar faixa de anúncio</button>
             </div>
           </div>
@@ -8233,6 +8268,12 @@
       announcement_marquee: 'cfg_announcement_marquee',
       announcement_text: 'cfg_announcement_text',
       announcement_promo_pct: 'cfg_announcement_promo_pct',
+      announcement_promo_pct_2: 'cfg_announcement_promo_pct_2',
+      announcement_promo_code: 'cfg_announcement_promo_code',
+      announcement_promo_amount_eur: 'cfg_announcement_promo_amount_eur',
+      announcement_promo_min_cart_eur: 'cfg_announcement_promo_min_cart_eur',
+      announcement_promo_valid_until: 'cfg_announcement_promo_valid_until',
+      announcement_promo_label: 'cfg_announcement_promo_label',
       announcement_date_start: 'cfg_announcement_date_start',
       announcement_date_end: 'cfg_announcement_date_end',
       contact_public_email: 'cfg_contact_public_email',
@@ -8397,6 +8438,12 @@
       if (anMq) anMq.checked = c.announcement_marquee === true || c.announcement_marquee === '1' || c.announcement_marquee === 'true';
       setEl('cfg_announcement_text', 'announcement_text', '');
       setEl('cfg_announcement_promo_pct', 'announcement_promo_pct', '');
+      setEl('cfg_announcement_promo_pct_2', 'announcement_promo_pct_2', '');
+      setEl('cfg_announcement_promo_code', 'announcement_promo_code', '');
+      setEl('cfg_announcement_promo_amount_eur', 'announcement_promo_amount_eur', '');
+      setEl('cfg_announcement_promo_min_cart_eur', 'announcement_promo_min_cart_eur', '');
+      setEl('cfg_announcement_promo_valid_until', 'announcement_promo_valid_until', '');
+      setEl('cfg_announcement_promo_label', 'announcement_promo_label', '');
       setEl('cfg_announcement_date_start', 'announcement_date_start', '');
       setEl('cfg_announcement_date_end', 'announcement_date_end', '');
       setEl('cfg_contact_public_email', 'contact_public_email', '');
