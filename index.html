@@ -5919,7 +5919,9 @@
 
     async function loadProdutos() {
       syncProdutosToolbarMode();
-      var payload = produtosListMode === 'trash' ? { onlyTrash: true } : { excludeTrash: true };
+      var payload = produtosListMode === 'trash'
+        ? { onlyTrash: true, excludeTrash: false }
+        : { excludeTrash: true };
       const r = await api('getProducts', payload);
       if (!r) return;
       if (r.success === false) {
@@ -5930,6 +5932,9 @@
         return;
       }
       var list = Array.isArray(r) ? r : (Array.isArray(r.products) ? r.products : []);
+      function prodStatusTrash_(p) { return String((p && p.status) ? p.status : '').toLowerCase().trim() === 'lixeira'; }
+      if (produtosListMode === 'trash') list = list.filter(function (p) { return prodStatusTrash_(p); });
+      else list = list.filter(function (p) { return !prodStatusTrash_(p); });
       allProducts = list;
       productIdMap = {};
       allProducts.forEach(function (p) { productIdMap[p.produto_id] = p; });
