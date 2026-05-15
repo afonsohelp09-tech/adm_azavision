@@ -133,7 +133,7 @@
       font-weight: 700;
     }
 
-    html[data-theme="dark"] .sidebar-logo small {
+    html[data-theme="dark"] .sidebar-brand-text small {
       color: var(--text-muted);
     }
 
@@ -185,7 +185,7 @@
       box-shadow: 2px 0 20px rgba(10, 51, 73, 0.06);
     }
 
-    html:not([data-theme="dark"]) .sidebar-logo span {
+    html:not([data-theme="dark"]) .sidebar-brand-text .sidebar-brand-erp {
       color: var(--brand);
       font-family: var(--font-display);
     }
@@ -1143,23 +1143,112 @@
       z-index: 100;
     }
 
-    .sidebar-logo {
-      padding: 24px 20px;
+    /* Marque latérale (logo entreprise + nom — inspiré pattern « sbbrand ») */
+    .sidebar-brand-block {
+      padding: 20px 16px 18px;
       border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
-    .sidebar-logo span {
-      font-size: 20px;
+    .sidebar-brand-mark {
+      position: relative;
+      width: 42px;
+      height: 42px;
+      flex-shrink: 0;
+    }
+
+    .admin-sidebar-logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      object-fit: contain;
+      object-position: center;
+      border: 1px solid var(--border);
+      background: var(--bg3);
+      display: none;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, .08);
+    }
+
+    .admin-sidebar-logo.show {
+      display: block;
+    }
+
+    .admin-sidebar-logo-fb {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      background: linear-gradient(135deg, var(--brand-deep), var(--brand-mid));
+      color: #fff;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, .12);
+    }
+
+    .admin-sidebar-logo.show+.admin-sidebar-logo-fb {
+      display: none;
+    }
+
+    .sidebar-brand-text {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .sidebar-brand-text .sidebar-brand-erp {
+      display: block;
+      font-size: 13px;
       font-weight: 700;
       color: var(--accent);
+      letter-spacing: -.02em;
+      line-height: 1.2;
     }
 
-    .sidebar-logo small {
+    .sidebar-brand-text small {
       display: block;
       font-size: 11px;
       color: var(--text2);
-      margin-top: 2px;
+      margin-top: 3px;
       font-family: var(--mono);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Aperçu marque (écran Configurações → Empresa) */
+    .admin-brand-prev-wrap {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      flex-shrink: 0;
+      background: linear-gradient(135deg, var(--brand-deep), var(--brand-mid));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .admin-brand-prev-wrap img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 5px;
+      background: var(--card);
+      display: none;
+    }
+
+    .admin-brand-prev-wrap.has-logo img {
+      display: block;
+    }
+
+    .admin-brand-prev-wrap.has-logo span {
+      display: none;
     }
 
     .sidebar-nav {
@@ -1981,6 +2070,30 @@
       font-size: 13px;
     }
 
+    /* Bascule catalogue / corbeille — plus visible qu’une liste déroulante seule */
+    .prod-view-toggle {
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: stretch;
+      gap: 0;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .prod-view-toggle .btn.sm {
+      margin: 0;
+      border-radius: 0;
+      border: none;
+      box-shadow: none;
+      white-space: nowrap;
+    }
+
+    .prod-view-toggle .btn.sm + .btn.sm {
+      border-left: 1px solid var(--border);
+    }
+
     .chkb {
       width: 18px;
       height: 18px;
@@ -2102,9 +2215,15 @@
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleAdminSidebar()"></div>
     <!-- SIDEBAR -->
     <aside class="sidebar" aria-label="Navigation principale">
-      <div class="sidebar-logo">
-        <span>🏪 ERP Admin</span>
-        <small id="lojaNome">Minha Loja</small>
+      <div class="sidebar-brand-block">
+        <div class="sidebar-brand-mark" id="adminSidebarLogoMark">
+          <img id="adminSidebarLogo" class="admin-sidebar-logo" alt="">
+          <div class="admin-sidebar-logo-fb" id="adminSidebarLogoFallback" aria-hidden="true">🏪</div>
+        </div>
+        <div class="sidebar-brand-text">
+          <span class="sidebar-brand-erp" data-i18n="sidebar_brand_erp">ERP Admin</span>
+          <small id="lojaNome">Minha Loja</small>
+        </div>
       </div>
       <nav class="sidebar-nav">
         <div class="nav-section" data-i18n="nav_principal">PRINCIPAL</div>
@@ -2120,6 +2239,10 @@
         <div class="nav-section" data-i18n="nav_catalogo">CATÁLOGO</div>
         <div class="nav-item" data-nav="produtos" onclick="showPage('produtos')"><span class="icon">👗</span> <span
             data-i18n="produtos">Produtos</span></div>
+        <div class="nav-item nav-sub" role="button" tabindex="0"
+          onclick="goToProdutosTrash()"
+          onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();goToProdutosTrash();}"><span
+            class="icon">🗑️</span> <span data-i18n="nav_produtos_corbeille">Corbeille produits</span></div>
         <div class="nav-item" data-nav="categorias" onclick="showPage('categorias')"><span class="icon">📂</span> <span
             data-i18n="categorias">Categorias</span></div>
         <div class="nav-item" data-nav="stock" onclick="showPage('stock')"><span class="icon">📦</span> <span
@@ -2483,17 +2606,18 @@
             placeholder="🔍 Pesquisar produtos..." oninput="filterProducts()"
             style="flex:1;min-width:200px;padding:10px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--text);">
           <select id="filterProdCategoria" onchange="filterProducts()"
+            class="prod-hide-in-trash"
             style="padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--text);min-width:160px;">
             <option value="" data-i18n="all_categories">Todas as categorias</option>
           </select>
           <button type="button" class="btn sm outline" onclick="loadProdutos()" data-i18n="btn_refresh">🔄
             Atualizar</button>
-          <select id="produtosViewMode" title="" data-i18n-title="prod_view_mode_title"
-            onchange="setProdutosListMode(this.value)"
-            style="padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--text);min-width:160px;">
-            <option value="catalog" data-i18n="prod_view_catalog">Catálogo</option>
-            <option value="trash" data-i18n="prod_view_trash">🗑️ Lixeira</option>
-          </select>
+          <div class="prod-view-toggle" role="group" data-i18n-aria-label="prod_view_mode_title">
+            <button type="button" id="btnProdViewCatalog" class="btn sm" onclick="setProdutosListMode('catalog')"
+              aria-pressed="true"><span data-i18n="prod_view_catalog">Catálogo</span></button>
+            <button type="button" id="btnProdViewTrash" class="btn sm outline" onclick="setProdutosListMode('trash')"
+              aria-pressed="false"><span data-i18n="prod_view_trash">🗑️ Corbeille</span></button>
+          </div>
           <button type="button" class="btn sm outline prod-hide-in-trash" onclick="refreshAllCatalogData()"
             data-i18n-title="catalog_refresh_title" title="Recarrega categorias, lista de catálogo e produtos"
             data-i18n="btn_catalog_refresh">🔄 Catálogo</button>
@@ -3420,7 +3544,8 @@
             <div class="card-header"><span class="card-title">⚙️ Informações da Empresa</span></div>
             <div style="padding:20px;">
               <div class="grid2">
-                <div class="form-group"><label>Nome da Loja</label><input type="text" id="cfg_nome"></div>
+                <div class="form-group"><label>Nome da Loja</label><input type="text" id="cfg_nome"
+                    oninput="refreshAdminBrandPreviewFromForm()"></div>
                 <div class="form-group"><label>NIF</label><input type="text" id="cfg_nif"></div>
                 <div class="form-group"><label>Email</label><input type="email" id="cfg_email"></div>
                 <div class="form-group"><label>Telefone</label><input type="text" id="cfg_tel"></div>
@@ -3431,11 +3556,23 @@
                 <div class="form-group"><label>Moeda (ISO — folha EMPRESA)</label><input type="text" id="cfg_moeda"
                     placeholder="EUR" maxlength="8" style="font-family:var(--mono);"></div>
                 <div class="form-group"><label>URL do logótipo</label><input type="url" id="cfg_logo_url"
-                    placeholder="https://..."></div>
+                    placeholder="https://..." oninput="refreshAdminBrandPreviewFromForm()"></div>
                 <div class="form-group"><label>URL logótipo vitrine (opcional — prioridade sobre o anterior)</label><input
-                    type="url" id="cfg_store_logo_url" placeholder="https://..."></div>
+                    type="url" id="cfg_store_logo_url" placeholder="https://..."
+                    oninput="refreshAdminBrandPreviewFromForm()"></div>
                 <div class="form-group"><label>Website público</label><input type="url" id="cfg_website"
                     placeholder="https://..."></div>
+              </div>
+              <p style="font-size:12px;color:var(--text2);margin:0 0 10px;line-height:1.45;">Logótipo e nome no menu
+                lateral: usa o URL da empresa; se estiver vazio, o logótipo da vitrine (<code>store_logo_url</code>).</p>
+              <div
+                style="margin-bottom:16px;padding:14px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;gap:12px;">
+                <div id="cfg_admin_brand_preview_wrap" class="admin-brand-prev-wrap"><img
+                    id="cfg_admin_brand_preview_img" alt=""><span id="cfg_admin_brand_preview_fb">🏪</span></div>
+                <div style="min-width:0;">
+                  <div style="font-weight:700;font-size:14px;" id="cfg_admin_brand_preview_name">Minha Loja</div>
+                  <div style="font-size:11px;color:var(--text2);margin-top:3px;">Pré-visualização (barra lateral)</div>
+                </div>
               </div>
               <button class="btn sm success" style="margin-top:16px;" onclick="saveEmpresa()">💾 Guardar
                 Alterações</button>
@@ -3556,16 +3693,21 @@
           <div class="card" style="margin-top:20px;">
             <div class="card-header"><span class="card-title">📢 Faixa de anúncio (topo de toda a vitrine)</span></div>
             <div style="padding:20px;">
-              <p style="font-size:12px;color:var(--text2);margin-bottom:14px;line-height:1.5;">Barra fixa no topo da
-                loja (acima do cabeçalho). Ative quando tiver uma promoção; defina opcionalmente o <strong>desconto
-                  %</strong> e o <strong>intervalo de datas</strong>. Fora do período, a faixa não aparece. Use <code
+              <p style="font-size:12px;color:var(--text2);margin-bottom:14px;line-height:1.5;">Barre en haut du site
+                (au-dessus du menu), pour livraison, sur commande, qualité, etc. Activez <strong>Annonce</strong>,
+                saisissez le texte (ex. type Valore : <em>Envio Grátis acima de €80 ✦ Produção por Encomenda ✦ …</em>).
+                Option <strong>défilant</strong> : bande continue qui défile, comme la démo <em>Valore</em>. Dates
+                vides = toujours visible. <code
                   style="font-family:var(--mono);font-size:11px;background:rgba(0,0,0,.2);padding:2px 6px;border-radius:4px;">{{pct}}</code>
-                no texto para inserir o valor do desconto (ex.: <em>« Até {{pct}}% em artigos selecionados »</em>).</p>
+                dans le texte = valeur « Desconto % ».</p>
               <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-bottom:12px;">
                 <input type="checkbox" id="cfg_announcement_enabled"> Mostrar faixa de anúncio
               </label>
-              <div class="form-group"><label>Texto do anúncio</label><textarea id="cfg_announcement_text" rows="2"
-                  placeholder="Envio grátis acima de 50 € — ou: Até {{pct}}% em coleção selecionada"></textarea></div>
+              <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-bottom:12px;">
+                <input type="checkbox" id="cfg_announcement_marquee"> Texte défilant (bande type « Valore », défilement continu)
+              </label>
+              <div class="form-group"><label>Texte du bandeau</label><textarea id="cfg_announcement_text" rows="2"
+                  placeholder="Ex. : Envio Grátis acima de €80 ✦ Produção por Encomenda ✦ Qualidade Premium ✦ Devolução em 30 Dias"></textarea></div>
               <div class="form-group"><label>Desconto promocional (%)</label><input type="number"
                   id="cfg_announcement_promo_pct" min="0" max="100" step="1"
                   placeholder="ex.: 15 — usado em {{pct}} ou mensagem automática se o texto estiver vazio"></div>
@@ -3578,7 +3720,7 @@
               <p style="font-size:11px;color:var(--text2);margin-top:8px;">Deixe as datas em branco para mostrar sempre
                 que a faixa estiver ativa. Com datas, só aparece entre início e fim (inclusive).</p>
               <button type="button" class="btn sm success"
-                onclick="saveBoutiqueConfigPartial(['announcement_enabled','announcement_text','announcement_promo_pct','announcement_date_start','announcement_date_end'])">💾
+                onclick="saveBoutiqueConfigPartial(['announcement_enabled','announcement_marquee','announcement_text','announcement_promo_pct','announcement_date_start','announcement_date_end'])">💾
                 Guardar faixa de anúncio</button>
             </div>
           </div>
@@ -3806,6 +3948,12 @@
                 <input type="checkbox" id="cfg_guest_checkout_enabled" checked> Permitir finalizar compra sem conta
                 (convidado)
               </label>
+              <label
+                style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;margin-bottom:12px;line-height:1.45;font-size:13px;">
+                <input type="checkbox" id="cfg_boutique_sur_commande" style="margin-top:4px;">
+                <span><strong>Fabrication sur commande</strong> (vitrine) : pas de blocage ni de débit automatique du
+                  stock Sheets — les variantes restent pour tailles / couleurs / photos par nuance.</span>
+              </label>
               <div class="form-group"><label>Texto de termos (rodapé checkout)</label><textarea
                   id="cfg_checkout_terms_hint" rows="2"
                   placeholder="Ao confirmar aceita os nossos termos e política de privacidade."></textarea></div>
@@ -3814,7 +3962,7 @@
                 dos termos (checkbox)
               </label>
               <button type="button" class="btn sm success" style="margin-top:12px;"
-                onclick="saveBoutiqueConfigPartial(['guest_checkout_enabled','checkout_terms_hint','checkout_require_terms'])">💾
+                onclick="saveBoutiqueConfigPartial(['guest_checkout_enabled','boutique_sur_commande','checkout_terms_hint','checkout_require_terms'])">💾
                 Guardar esta secção</button>
             </div>
           </div>
@@ -4320,8 +4468,28 @@
       <div class="form-group"><label data-i18n="lbl_url_imagem_manual">URL</label><input type="text"
           id="prodImagem" placeholder="https://drive.google.com/..." oninput="onProdImagemUrlInput()"></div>
       <div class="form-group"><label data-i18n="lbl_variantes_umalinha">Variantes</label>
-        <textarea id="prodVariantes" rows="4"
-          data-i18n-placeholder="ph_variantes_demo" placeholder=""></textarea>
+        <p style="font-size:11px;color:var(--text2);margin:0 0 8px;line-height:1.45;">Une ligne par combinaison
+          taille / couleur. Colonne « Stock » : indicatif (mettre 0 partout si vous travaillez <strong>sans stock réel</strong> — activer aussi
+          <em>Boutique / sur commande</em> dans la config pour que la vitrine ignore le stock). Colonne « Photo URL » : image pour cette ligne (Drive ou HTTPS). Case « Cat. » :
+          visuel principal lorsque cette nuance est sélectionnée.</p>
+        <div style="overflow-x:auto;border:1px solid var(--border);border-radius:10px;background:var(--bg3);">
+          <table style="width:100%;border-collapse:collapse;font-size:13px;">
+            <thead>
+              <tr style="background:var(--bg2);text-align:left;">
+                <th style="padding:8px;border-bottom:1px solid var(--border);">Taille</th>
+                <th style="padding:8px;border-bottom:1px solid var(--border);">Couleur</th>
+                <th style="padding:8px;border-bottom:1px solid var(--border);width:88px;">Stock (info)</th>
+                <th style="padding:8px;border-bottom:1px solid var(--border);min-width:160px;">Photo URL</th>
+                <th style="padding:8px;border-bottom:1px solid var(--border);width:76px;text-align:center;"
+                  title="Visuel principal au choix de cette nuance">Cat.</th>
+                <th style="padding:8px;border-bottom:1px solid var(--border);width:44px;"></th>
+              </tr>
+            </thead>
+            <tbody id="variantsEditBody"></tbody>
+          </table>
+        </div>
+        <button type="button" class="btn sm outline" style="margin-top:8px;"
+          onclick="addVariantEditorRow()">＋ ligne variante</button>
       </div>
       <div class="form-row">
         <button type="button" class="btn success" onclick="saveProduto()" data-i18n="btn_save">💾</button>
@@ -4646,10 +4814,10 @@
     };
     (function mergeAdminExtraI18n() {
       var X = {
-        pt: { bulk_selected: '{n} selecionado(s)', lbl_selection: 'Seleção:', btn_bulk_bar_activate: '✅ Ativar', btn_bulk_bar_deactivate: '⏸ Desativar', btn_bulk_bar_delete: '🗑 Lixeira', btn_bulk_bar_restore: '↩️ Restaurar', btn_bulk_bar_purge: '⛔ Eliminar def.', btn_bulk_bar_clear: '✖ Limpar', prod_view_catalog: 'Catálogo', prod_view_trash: '🗑️ Lixeira', prod_view_mode_title: 'Catálogo ou lixeira', prod_btn_restore: '↩️ Restaurar', prod_btn_purge: 'Eliminar def.', prod_btn_bulk_restore: '↩️ Restaurar seleção', prod_btn_bulk_purge: '⛔ Eliminar definitivamente', prod_delete_confirm: 'Enviar este produto para a lixeira? Deixa de aparecer na loja.', prod_restore_confirm: 'Restaurar este produto da lixeira?', prod_purge_confirm: 'Apagar esta linha para sempre? Só permitido para itens na lixeira.', prod_restore_ok: 'Produto restaurado.', prod_trash_badge: 'Lixeira', prod_status_inactive: 'Inativo', prod_trash_section_title: 'Lixeira — produtos eliminados', prod_toast_moved_trash: '✅ Movido para a lixeira', bulk_confirm_delete: 'Mover {n} produto(s) para a lixeira?', bulk_confirm_purge: 'Eliminar DEFINITIVAMENTE {n} produto(s)? Não pode desfazer.', bulk_confirm_restore: 'Restaurar {n} produto(s)? Voltam inativos até reativar.', bulk_toast_deleted: '{n} enviado(s) para a lixeira', bulk_toast_restored: '{n} restaurado(s)', bulk_toast_purged: '{n} eliminado(s) definitivamente', dash_recent_activity: '📋 Atividade recente', mediatheque_page_blurb: 'Imagens da pasta ERP_Boutique_Images. Copie o URL ou abra um produto para associar.', nav_boutique_title: 'Abrir a vitrine num novo separador', btn_import_csv: '📥 Importar CSV', btn_catalog_refresh: '🔄 Catálogo', catalog_refresh_title: 'Recarrega categorias, lista de catálogo e produtos', modal_close: 'Fechar', client_modal_title: '👤 Ficha do cliente', btn_preview_email: '👁 Pré-visualizar', card_email_preview: '📧 Pré-visualização da mensagem', fin_revenue_sub: 'Período selecionado', fin_pay_split: '💳 Repartição por método de pagamento', fin_tx_detail: '📋 Detalhe das transações', transporteurs_title: '🚚 Transportadores configurados', dev_return_title: '↩️ Registar uma devolução', dev_return_save: '💾 Guardar devolução', dev_motive_defective: 'Produto defeituoso', dev_motive_wrong_size: 'Tamanho incorreto', dev_motive_not_desc: 'Não conforme à descrição', dev_motive_other: 'Desistência / arrependimento', dev_details_ph: 'Detalhes adicionais...', lbl_qty: 'Quantidade', inv_modal_cancel: 'Cancelar', aria_sidebar: 'Abrir ou fechar o menu lateral', global_search_ph: '🔍 Pesquisar…', fatura_opt_all: 'Todos os estados', fatura_opt_pending: 'Pendente', fatura_opt_paid: 'Paga', fatura_opt_overdue: 'Em atraso', ret_filter_all: 'Todas as devoluções', ret_stat_approved: 'Aprovado', ret_stat_received: 'Recebido', ret_stat_refunded: 'Reembolsado', ret_stat_rejected: 'Rejeitado', ret_new_btn: '+ Nova devolução', ret_card_title: '↩️ Pedidos de devolução', ret_notes_card: '📝 Notas / Política de devoluções (interno)', pay_stat_requested: 'Pedido', th_invoice: 'Nº FATURA', th_client: 'CLIENTE', th_date: 'DATA', th_total: 'TOTAL', th_status_col: 'ESTADO', th_actions_short: 'AÇÕES', ret_th_id: 'ID', ret_th_order: 'PEDIDO', ret_th_product: 'PRODUTO', ret_th_reason: 'MOTIVO', lang_opt_fr: 'Francês', lang_opt_en: 'Inglês', lang_opt_es: 'Espanhol', dash_quick_actions: '⚡ Ações rápidas', btn_stock_min_sel: '📉 Stock mín. (selecionados)', btn_physical_inv: '📋 Inventário físico', err_products: 'Erro ao carregar produtos', err_image: 'Erro de imagem', err_generic_suffix: 'Erro', err_save: 'Erro ao guardar', cfg_danger_title: '⚠️ Zona sensível', cfg_danger_intro: 'Estas ações são irreversíveis. Prossiga com cuidado.', cfg_btn_reset_sheets: '🔄 Reiniciar folhas', sheets_reset_confirm: 'ATENÇÃO: Reiniciar todas as folhas da folha de cálculo? Esta ação é irreversível.', sheets_reset_ok: 'Folhas reiniciadas', stock_inv_intro: 'Leia ou introduza as quantidades reais contadas. Os ajustes serão guardados como movimentos de stock.', login_label_email: 'E-mail', login_brand_title: 'ERP — Loja online', login_brand_sub: 'Painel de gestão do comércio eletrónico (vestuário e acessórios)', login_welcome_hint: 'Introduza o e-mail e a palavra-passe. Português (PT) é a língua por defeito do painel.', login_form_title: 'Iniciar sessão', login_sub: 'Acesso reservado à equipa da loja', login_label_password: 'Palavra-passe', login_pass_placeholder: '••••••••', login_submit: 'Entrar no painel', login_no_api_title: 'URL do Web App não configurada neste ficheiro', login_no_api_text: 'Edite o HTML: defina <code>window.ERP_API_URL_DEFAULT</code> e <code>var API_URL</code> (bloco COLAR) com o URL que termina em <code>/exec</code>. Guarde, publique e recarregue. Neste ecrã só e-mail e palavra-passe — sem campo de URL.', login_theme_light: 'Modo claro', login_theme_dark: 'Modo escuro', login_theme_go_dark: 'Ativar modo escuro', login_theme_go_light: 'Ativar modo claro', api_missing_url_toast: '⚠️ Defina o URL da API no ficheiro HTML (<code>ERP_API_URL_DEFAULT</code> / COLAR) ou em Configurações.', btn_new: '+ Marca', bulk_toast_activated: '{n} produto(s) ativado(s)', bulk_toast_deactivated: '{n} produto(s) desativado(s)', inv_empty_list: 'Sem produtos', inv_no_adjustment: 'Nenhum ajustamento a aplicar', inv_confirm_apply: 'Aplicar {n} ajustamento(s) de stock?', inv_toast_applied: '{ok}/{total} ajustamento(s) aplicado(s)', sheets_reset_fail: 'Erro', session_reconnect_hint: 'Volte a iniciar sessão.' },
-        fr: { bulk_selected: '{n} sélectionné(s)', lbl_selection: 'Sélection :', btn_bulk_bar_activate: '✅ Activer', btn_bulk_bar_deactivate: '⏸ Désactiver', btn_bulk_bar_delete: '🗑 Corbeille', btn_bulk_bar_restore: '↩️ Restaurer', btn_bulk_bar_purge: '⛔ Suppr. déf.', btn_bulk_bar_clear: '✖ Annuler', prod_view_catalog: 'Catalogue', prod_view_trash: '🗑️ Corbeille', prod_view_mode_title: 'Catalogue ou corbeille', prod_btn_restore: '↩️ Restaurer', prod_btn_purge: 'Suppr. déf.', prod_btn_bulk_restore: '↩️ Restaurer la sélection', prod_btn_bulk_purge: '⛔ Supprimer définitivement', prod_delete_confirm: 'Envoyer ce produit à la corbeille ? Il disparaît de la boutique.', prod_restore_confirm: 'Restaurer ce produit depuis la corbeille ?', prod_purge_confirm: 'Supprimer cette ligne définitivement ? Réservé aux articles en corbeille.', prod_restore_ok: 'Produit restauré.', prod_trash_badge: 'Corbeille', prod_status_inactive: 'Inactif', prod_trash_section_title: 'Corbeille — produits supprimés', prod_toast_moved_trash: '✅ Mis en corbeille', bulk_confirm_delete: 'Mettre {n} produit(s) à la corbeille ?', bulk_confirm_purge: 'SUPPRIMER DÉFINITIVEMENT {n} produit(s) ? Irréversible.', bulk_confirm_restore: 'Restaurer {n} produit(s) ? Ils seront inactifs jusqu\'à réactivation.', bulk_toast_deleted: '{n} mis en corbeille', bulk_toast_restored: '{n} restauré(s)', bulk_toast_purged: '{n} supprimé(s) définitivement', dash_recent_activity: '📋 Activité récente', mediatheque_page_blurb: 'Images du dossier ERP_Boutique_Images. Copiez l’URL ou ouvrez un produit pour l’assigner.', nav_boutique_title: 'Ouvrir la vitrine dans un nouvel onglet', btn_import_csv: '📥 Importer CSV', btn_catalog_refresh: '🔄 Catalogue', catalog_refresh_title: 'Recharge catégories, liste catalogue et produits', modal_close: 'Fermer', client_modal_title: '👤 Fiche client', btn_preview_email: '👁 Prévisualiser', card_email_preview: '📧 Prévisualisation du message', fin_revenue_sub: 'Période sélectionnée', fin_pay_split: '💳 Répartition par moyen de paiement', fin_tx_detail: '📋 Détail des transactions', transporteurs_title: '🚚 Transporteurs configurés', dev_return_title: '↩️ Enregistrer un retour', dev_return_save: '💾 Enregistrer le retour', dev_motive_defective: 'Produit défectueux', dev_motive_wrong_size: 'Taille incorrecte', dev_motive_not_desc: 'Non conforme à la description', dev_motive_other: 'Rétractation / changement d’avis', dev_details_ph: 'Détails supplémentaires...', lbl_qty: 'Quantité', inv_modal_cancel: 'Annuler', aria_sidebar: 'Ouvrir ou fermer le menu latéral', global_search_ph: '🔍 Rechercher…', fatura_opt_all: 'Tous les statuts', fatura_opt_pending: 'En attente', fatura_opt_paid: 'Payée', fatura_opt_overdue: 'En retard', ret_filter_all: 'Tous les retours', ret_stat_approved: 'Approuvé', ret_stat_received: 'Reçu', ret_stat_refunded: 'Remboursé', ret_stat_rejected: 'Rejeté', ret_new_btn: '+ Nouveau retour', ret_card_title: '↩️ Demandes de retour', ret_notes_card: '📝 Notes / Politique retours (interne)', pay_stat_requested: 'Demandé', th_invoice: 'Nº FACTURE', th_client: 'CLIENT', th_date: 'DATE', th_total: 'TOTAL', th_status_col: 'STATUT', th_actions_short: 'ACTIONS', ret_th_id: 'ID RETOUR', ret_th_order: 'COMMANDE', ret_th_product: 'PRODUIT', ret_th_reason: 'RAISON', lang_opt_fr: 'Français', lang_opt_en: 'English', lang_opt_es: 'Español', dash_quick_actions: '⚡ Actions rapides', btn_stock_min_sel: '📉 Stock min. (sélection)', btn_physical_inv: '📋 Inventaire physique', err_products: 'Erreur produits', err_image: 'Erreur image', err_generic_suffix: 'Erreur', err_save: 'Erreur de sauvegarde', cfg_danger_title: '⚠️ Zone dangereuse', cfg_danger_intro: 'Ces actions sont irréversibles. Procédez avec prudence.', cfg_btn_reset_sheets: '🔄 Réinitialiser les feuilles', sheets_reset_confirm: 'ATTENTION : réinitialiser toutes les feuilles du classeur ? Cette action est irréversible.', sheets_reset_ok: 'Feuilles réinitialisées', stock_inv_intro: 'Scannez ou saisissez les quantités réelles comptées. Les ajustements seront enregistrés comme mouvements de stock.', login_label_email: 'E-mail', login_brand_title: 'ERP — Boutique en ligne', login_brand_sub: 'Panneau de gestion e-commerce (prêt-à-porter et accessoires)', login_welcome_hint: 'Saisissez e-mail et mot de passe. Le portugais (PT) est la langue par défaut du panneau.', login_form_title: 'Connexion', login_sub: 'Accès réservé à l’équipe de la boutique', login_label_password: 'Mot de passe', login_pass_placeholder: '••••••••', login_submit: 'Ouvrir le panneau', login_no_api_title: 'URL du Web App non configurée dans ce fichier', login_no_api_text: 'Modifiez le HTML : renseignez <code>window.ERP_API_URL_DEFAULT</code> et <code>var API_URL</code> (bloc COLAR) avec l’URL se terminant par <code>/exec</code>. Enregistrez, publiez et rechargez. Cet écran ne demande que l’e-mail et le mot de passe — pas d’URL.', login_theme_light: 'Mode clair', login_theme_dark: 'Mode sombre', login_theme_go_dark: 'Passer en mode sombre', login_theme_go_light: 'Passer en mode clair', api_missing_url_toast: '⚠️ Définissez l’URL de l’API dans le fichier HTML (<code>ERP_API_URL_DEFAULT</code> / COLAR) ou dans Paramètres.', btn_new: '+ Marque', bulk_toast_activated: '{n} produit(s) activé(s)', bulk_toast_deactivated: '{n} produit(s) désactivé(s)', inv_empty_list: 'Aucun produit', inv_no_adjustment: 'Aucun ajustement à appliquer', inv_confirm_apply: 'Appliquer {n} ajustement(s) de stock ?', inv_toast_applied: '{ok}/{total} ajustement(s) appliqué(s)', sheets_reset_fail: 'Erreur', session_reconnect_hint: 'Reconnectez-vous.' },
-        en: { bulk_selected: '{n} selected', lbl_selection: 'Selection:', btn_bulk_bar_activate: '✅ Activate', btn_bulk_bar_deactivate: '⏸ Deactivate', btn_bulk_bar_delete: '🗑 Trash', btn_bulk_bar_restore: '↩️ Restore', btn_bulk_bar_purge: '⛔ Delete forever', btn_bulk_bar_clear: '✖ Clear', prod_view_catalog: 'Catalog', prod_view_trash: '🗑️ Trash', prod_view_mode_title: 'Catalog or trash', prod_btn_restore: '↩️ Restore', prod_btn_purge: 'Delete forever', prod_btn_bulk_restore: '↩️ Restore selection', prod_btn_bulk_purge: '⛔ Permanently delete', prod_delete_confirm: 'Move this product to trash? It will disappear from the storefront.', prod_restore_confirm: 'Restore this product from trash?', prod_purge_confirm: 'Permanently delete this row? Only allowed for items in trash.', prod_restore_ok: 'Product restored.', prod_trash_badge: 'Trash', prod_status_inactive: 'Inactive', prod_trash_section_title: 'Trash — deleted products', prod_toast_moved_trash: '✅ Moved to trash', bulk_confirm_delete: 'Move {n} product(s) to trash?', bulk_confirm_purge: 'PERMANENTLY delete {n} product(s)? This cannot be undone.', bulk_confirm_restore: 'Restore {n} product(s)? They return as inactive until you activate them.', bulk_toast_deleted: '{n} moved to trash', bulk_toast_restored: '{n} restored', bulk_toast_purged: '{n} permanently deleted', dash_recent_activity: '📋 Recent activity', mediatheque_page_blurb: 'Images from ERP_Boutique_Images folder. Copy the URL or open a product to assign.', nav_boutique_title: 'Open storefront in new tab', btn_import_csv: '📥 Import CSV', btn_catalog_refresh: '🔄 Catalog', catalog_refresh_title: 'Reload categories, catalog list and products', modal_close: 'Close', client_modal_title: '👤 Client record', btn_preview_email: '👁 Preview', card_email_preview: '📧 Message preview', fin_revenue_sub: 'Selected period', fin_pay_split: '💳 Split by payment method', fin_tx_detail: '📋 Transaction detail', transporteurs_title: '🚚 Configured carriers', dev_return_title: '↩️ Register a return', dev_return_save: '💾 Save return', dev_motive_defective: 'Defective product', dev_motive_wrong_size: 'Wrong size', dev_motive_not_desc: 'Not as described', dev_motive_other: 'Changed mind', dev_details_ph: 'Additional details...', lbl_qty: 'Quantity', inv_modal_cancel: 'Cancel', aria_sidebar: 'Open or close sidebar', global_search_ph: '🔍 Search…', fatura_opt_all: 'All statuses', fatura_opt_pending: 'Pending', fatura_opt_paid: 'Paid', fatura_opt_overdue: 'Overdue', ret_filter_all: 'All returns', ret_stat_approved: 'Approved', ret_stat_received: 'Received', ret_stat_refunded: 'Refunded', ret_stat_rejected: 'Rejected', ret_new_btn: '+ New return', ret_card_title: '↩️ Return requests', ret_notes_card: '📝 Notes / Returns policy (internal)', pay_stat_requested: 'Requested', th_invoice: 'INVOICE #', th_client: 'CLIENT', th_date: 'DATE', th_total: 'TOTAL', th_status_col: 'STATUS', th_actions_short: 'ACTIONS', ret_th_id: 'RETURN ID', ret_th_order: 'ORDER', ret_th_product: 'PRODUCT', ret_th_reason: 'REASON', lang_opt_fr: 'French', lang_opt_en: 'English', lang_opt_es: 'Spanish', dash_quick_actions: '⚡ Quick actions', btn_stock_min_sel: '📉 Min. stock (selected)', btn_physical_inv: '📋 Physical inventory', err_products: 'Error loading products', err_image: 'Image error', err_generic_suffix: 'Error', err_save: 'Save error', cfg_danger_title: '⚠️ Danger zone', cfg_danger_intro: 'These actions cannot be undone. Proceed with care.', cfg_btn_reset_sheets: '🔄 Reset spreadsheet sheets', sheets_reset_confirm: 'WARNING: Reset all spreadsheet tabs? This cannot be undone.', sheets_reset_ok: 'Sheets reset', stock_inv_intro: 'Scan or enter counted quantities. Adjustments are saved as stock movements.', login_label_email: 'Email', login_brand_title: 'ERP — Online store', login_brand_sub: 'Management panel for your e-commerce (apparel and accessories)', login_welcome_hint: 'Enter your email and password. Portuguese (PT) is the panel default language.', login_form_title: 'Sign in', login_sub: 'Team access to your store', login_label_password: 'Password', login_pass_placeholder: '••••••••', login_submit: 'Open admin panel', login_no_api_title: 'Web App URL not set in this file', login_no_api_text: 'Edit the HTML: set <code>window.ERP_API_URL_DEFAULT</code> and <code>var API_URL</code> (COLAR block) to the URL ending in <code>/exec</code>. Save, publish, and reload. This screen only asks for email and password — no URL field.', login_theme_light: 'Light mode', login_theme_dark: 'Dark mode', login_theme_go_dark: 'Switch to dark mode', login_theme_go_light: 'Switch to light mode', api_missing_url_toast: '⚠️ Set the API URL in the HTML file (<code>ERP_API_URL_DEFAULT</code> / COLAR) or in Settings.', btn_new: '+ Brand', bulk_toast_activated: '{n} product(s) activated', bulk_toast_deactivated: '{n} product(s) deactivated', inv_empty_list: 'No products', inv_no_adjustment: 'No adjustments to apply', inv_confirm_apply: 'Apply {n} stock adjustment(s)?', inv_toast_applied: '{ok}/{total} adjustment(s) applied', sheets_reset_fail: 'Error', session_reconnect_hint: 'Please sign in again.' },
-        es: { bulk_selected: '{n} seleccionado(s)', lbl_selection: 'Selección:', btn_bulk_bar_activate: '✅ Activar', btn_bulk_bar_deactivate: '⏸ Desactivar', btn_bulk_bar_delete: '🗑 Papelera', btn_bulk_bar_restore: '↩️ Restaurar', btn_bulk_bar_purge: '⛔ Borrar ya', btn_bulk_bar_clear: '✖ Limpiar', prod_view_catalog: 'Catálogo', prod_view_trash: '🗑️ Papelera', prod_view_mode_title: 'Catálogo o papelera', prod_btn_restore: '↩️ Restaurar', prod_btn_purge: 'Eliminar def.', prod_btn_bulk_restore: '↩️ Restaurar selección', prod_btn_bulk_purge: '⛔ Eliminar definitivamente', prod_delete_confirm: '¿Enviar este producto a la papelera? Dejará de verse en la tienda.', prod_restore_confirm: '¿Restaurar este producto desde la papelera?', prod_purge_confirm: '¿Eliminar esta fila para siempre? Solo desde la papelera.', prod_restore_ok: 'Producto restaurado.', prod_trash_badge: 'Papelera', prod_status_inactive: 'Inactivo', prod_trash_section_title: 'Papelera — productos eliminados', prod_toast_moved_trash: '✅ Enviado a la papelera', bulk_confirm_delete: '¿Mover {n} producto(s) a la papelera?', bulk_confirm_purge: '¿Eliminar DEFINITIVAMENTE {n} producto(s)? No se puede deshacer.', bulk_confirm_restore: '¿Restaurar {n} producto(s)? Vuelven como inactivos hasta reactivarlos.', bulk_toast_deleted: '{n} enviados a la papelera', bulk_toast_restored: '{n} restaurado(s)', bulk_toast_purged: '{n} borrados definitivamente', dash_recent_activity: '📋 Actividad reciente', mediatheque_page_blurb: 'Imágenes de la carpeta ERP_Boutique_Images. Copie la URL o abra un producto para asignar.', nav_boutique_title: 'Abrir la tienda en una pestaña nueva', btn_import_csv: '📥 Importar CSV', btn_catalog_refresh: '🔄 Catálogo', catalog_refresh_title: 'Recarga categorías, lista de catálogo y productos', modal_close: 'Cerrar', client_modal_title: '👤 Ficha del cliente', btn_preview_email: '👁 Vista previa', card_email_preview: '📧 Vista previa del mensaje', fin_revenue_sub: 'Período seleccionado', fin_pay_split: '💳 Reparto por método de pago', fin_tx_detail: '📋 Detalle de transacciones', transporteurs_title: '🚚 Transportistas configurados', dev_return_title: '↩️ Registrar una devolución', dev_return_save: '💾 Guardar devolución', dev_motive_defective: 'Producto defectuoso', dev_motive_wrong_size: 'Talla incorrecta', dev_motive_not_desc: 'No coincide con la descripción', dev_motive_other: 'Arrepentimiento / desistimiento', dev_details_ph: 'Detalles adicionales...', lbl_qty: 'Cantidad', inv_modal_cancel: 'Cancelar', aria_sidebar: 'Abrir o cerrar el menú lateral', global_search_ph: '🔍 Buscar…', fatura_opt_all: 'Todos los estados', fatura_opt_pending: 'Pendiente', fatura_opt_paid: 'Pagada', fatura_opt_overdue: 'Vencida', ret_filter_all: 'Todas las devoluciones', ret_stat_approved: 'Aprobado', ret_stat_received: 'Recibido', ret_stat_refunded: 'Reembolsado', ret_stat_rejected: 'Rechazado', ret_new_btn: '+ Nueva devolución', ret_card_title: '↩️ Solicitudes de devolución', ret_notes_card: '📝 Notas / Política de devoluciones (interno)', pay_stat_requested: 'Solicitado', th_invoice: 'Nº FACTURA', th_client: 'CLIENTE', th_date: 'FECHA', th_total: 'TOTAL', th_status_col: 'ESTADO', th_actions_short: 'ACCIONES', ret_th_id: 'ID', ret_th_order: 'PEDIDO', ret_th_product: 'PRODUCTO', ret_th_reason: 'MOTIVO', lang_opt_fr: 'Francés', lang_opt_en: 'Inglés', lang_opt_es: 'Español', dash_quick_actions: '⚡ Acciones rápidas', btn_stock_min_sel: '📉 Stock mín. (selección)', btn_physical_inv: '📋 Inventario físico', err_products: 'Error al cargar productos', err_image: 'Error de imagen', err_generic_suffix: 'Error', err_save: 'Error al guardar', cfg_danger_title: '⚠️ Zona peligrosa', cfg_danger_intro: 'Estas acciones son irreversibles. Actúe con cuidado.', cfg_btn_reset_sheets: '🔄 Restablecer hojas', sheets_reset_confirm: 'ATENCIÓN: ¿Restablecer todas las hojas? Esta acción no se puede deshacer.', sheets_reset_ok: 'Hojas reiniciadas', stock_inv_intro: 'Escanee o introduzca las cantidades contadas. Los ajustes se guardan como movimientos de stock.', login_label_email: 'Correo electrónico', login_brand_title: 'ERP — Tienda online', login_brand_sub: 'Panel de gestión del comercio electrónico (textil y accesorios)', login_welcome_hint: 'Introduzca correo y contraseña. El portugués (PT) es el idioma por defecto del panel.', login_form_title: 'Iniciar sesión', login_sub: 'Acceso reservado al equipo de la tienda', login_label_password: 'Contraseña', login_pass_placeholder: '••••••••', login_submit: 'Entrar al panel', login_no_api_title: 'URL del Web App no configurada en este archivo', login_no_api_text: 'Edite el HTML: defina <code>window.ERP_API_URL_DEFAULT</code> y <code>var API_URL</code> (bloque COLAR) con la URL que termina en <code>/exec</code>. Guarde, publique y recargue. En esta pantalla solo correo y contraseña — sin campo de URL.', login_theme_light: 'Modo claro', login_theme_dark: 'Modo oscuro', login_theme_go_dark: 'Activar modo oscuro', login_theme_go_light: 'Activar modo claro', api_missing_url_toast: '⚠️ Configure la URL de la API en el HTML (<code>ERP_API_URL_DEFAULT</code> / COLAR) o en Ajustes.', btn_new: '+ Marca', bulk_toast_activated: '{n} producto(s) activado(s)', bulk_toast_deactivated: '{n} producto(s) desactivado(s)', inv_empty_list: 'Sin productos', inv_no_adjustment: 'No hay ajustes que aplicar', inv_confirm_apply: '¿Aplicar {n} ajuste(s) de stock?', inv_toast_applied: '{ok}/{total} ajuste(s) aplicado(s)', sheets_reset_fail: 'Error', session_reconnect_hint: 'Vuelva a iniciar sesión.' }
+        pt: { bulk_selected: '{n} selecionado(s)', lbl_selection: 'Seleção:', btn_bulk_bar_activate: '✅ Ativar', btn_bulk_bar_deactivate: '⏸ Desativar', btn_bulk_bar_delete: '🗑 Lixeira', btn_bulk_bar_restore: '↩️ Restaurar', btn_bulk_bar_purge: '⛔ Eliminar def.', btn_bulk_bar_clear: '✖ Limpar', prod_view_catalog: 'Catálogo', prod_view_trash: '🗑️ Lixeira', prod_view_mode_title: 'Catálogo ou lixeira', prod_btn_restore: '↩️ Restaurar', prod_btn_purge: 'Eliminar def.', prod_btn_bulk_restore: '↩️ Restaurar seleção', prod_btn_bulk_purge: '⛔ Eliminar definitivamente', prod_delete_confirm: 'Enviar este produto para a lixeira? Deixa de aparecer na loja.', prod_restore_confirm: 'Restaurar este produto da lixeira?', prod_purge_confirm: 'Apagar esta linha para sempre? Só permitido para itens na lixeira.', prod_restore_ok: 'Produto restaurado.', prod_trash_badge: 'Lixeira', prod_status_inactive: 'Inativo', prod_trash_section_title: 'Lixeira — produtos eliminados', prod_toast_moved_trash: '✅ Movido para a lixeira', bulk_confirm_delete: 'Mover {n} produto(s) para a lixeira?', bulk_confirm_purge: 'Eliminar DEFINITIVAMENTE {n} produto(s)? Não pode desfazer.', bulk_confirm_restore: 'Restaurar {n} produto(s)? Voltam inativos até reativar.', bulk_toast_deleted: '{n} enviado(s) para a lixeira', bulk_toast_restored: '{n} restaurado(s)', bulk_toast_purged: '{n} eliminado(s) definitivamente', dash_recent_activity: '📋 Atividade recente', mediatheque_page_blurb: 'Imagens da pasta ERP_Boutique_Images. Copie o URL ou abra um produto para associar.', nav_boutique_title: 'Abrir a vitrine num novo separador', btn_import_csv: '📥 Importar CSV', btn_catalog_refresh: '🔄 Catálogo', catalog_refresh_title: 'Recarrega categorias, lista de catálogo e produtos', modal_close: 'Fechar', client_modal_title: '👤 Ficha do cliente', btn_preview_email: '👁 Pré-visualizar', card_email_preview: '📧 Pré-visualização da mensagem', fin_revenue_sub: 'Período selecionado', fin_pay_split: '💳 Repartição por método de pagamento', fin_tx_detail: '📋 Detalhe das transações', transporteurs_title: '🚚 Transportadores configurados', dev_return_title: '↩️ Registar uma devolução', dev_return_save: '💾 Guardar devolução', dev_motive_defective: 'Produto defeituoso', dev_motive_wrong_size: 'Tamanho incorreto', dev_motive_not_desc: 'Não conforme à descrição', dev_motive_other: 'Desistência / arrependimento', dev_details_ph: 'Detalhes adicionais...', lbl_qty: 'Quantidade', inv_modal_cancel: 'Cancelar', aria_sidebar: 'Abrir ou fechar o menu lateral', global_search_ph: '🔍 Pesquisar…', fatura_opt_all: 'Todos os estados', fatura_opt_pending: 'Pendente', fatura_opt_paid: 'Paga', fatura_opt_overdue: 'Em atraso', ret_filter_all: 'Todas as devoluções', ret_stat_approved: 'Aprovado', ret_stat_received: 'Recebido', ret_stat_refunded: 'Reembolsado', ret_stat_rejected: 'Rejeitado', ret_new_btn: '+ Nova devolução', ret_card_title: '↩️ Pedidos de devolução', ret_notes_card: '📝 Notas / Política de devoluções (interno)', pay_stat_requested: 'Pedido', th_invoice: 'Nº FATURA', th_client: 'CLIENTE', th_date: 'DATA', th_total: 'TOTAL', th_status_col: 'ESTADO', th_actions_short: 'AÇÕES', ret_th_id: 'ID', ret_th_order: 'PEDIDO', ret_th_product: 'PRODUTO', ret_th_reason: 'MOTIVO', lang_opt_fr: 'Francês', lang_opt_en: 'Inglês', lang_opt_es: 'Espanhol', dash_quick_actions: '⚡ Ações rápidas', btn_stock_min_sel: '📉 Stock mín. (selecionados)', btn_physical_inv: '📋 Inventário físico', err_products: 'Erro ao carregar produtos', err_image: 'Erro de imagem', err_generic_suffix: 'Erro', err_save: 'Erro ao guardar', cfg_danger_title: '⚠️ Zona sensível', cfg_danger_intro: 'Estas ações são irreversíveis. Prossiga com cuidado.', cfg_btn_reset_sheets: '🔄 Reiniciar folhas', sheets_reset_confirm: 'ATENÇÃO: Reiniciar todas as folhas da folha de cálculo? Esta ação é irreversível.', sheets_reset_ok: 'Folhas reiniciadas', stock_inv_intro: 'Leia ou introduza as quantidades reais contadas. Os ajustes serão guardados como movimentos de stock.', login_label_email: 'E-mail', login_brand_title: 'ERP — Loja online', login_brand_sub: 'Painel de gestão do comércio eletrónico (vestuário e acessórios)', login_welcome_hint: 'Introduza o e-mail e a palavra-passe. Português (PT) é a língua por defeito do painel.', login_form_title: 'Iniciar sessão', login_sub: 'Acesso reservado à equipa da loja', login_label_password: 'Palavra-passe', login_pass_placeholder: '••••••••', login_submit: 'Entrar no painel', login_no_api_title: 'URL do Web App não configurada neste ficheiro', login_no_api_text: 'Edite o HTML: defina <code>window.ERP_API_URL_DEFAULT</code> e <code>var API_URL</code> (bloco COLAR) com o URL que termina em <code>/exec</code>. Guarde, publique e recarregue. Neste ecrã só e-mail e palavra-passe — sem campo de URL.', login_theme_light: 'Modo claro', login_theme_dark: 'Modo escuro', login_theme_go_dark: 'Ativar modo escuro', login_theme_go_light: 'Ativar modo claro', api_missing_url_toast: '⚠️ Defina o URL da API no ficheiro HTML (<code>ERP_API_URL_DEFAULT</code> / COLAR) ou em Configurações.', btn_new: '+ Marca', bulk_toast_activated: '{n} produto(s) ativado(s)', bulk_toast_deactivated: '{n} produto(s) desativado(s)', inv_empty_list: 'Sem produtos', inv_no_adjustment: 'Nenhum ajustamento a aplicar', inv_confirm_apply: 'Aplicar {n} ajustamento(s) de stock?', inv_toast_applied: '{ok}/{total} ajustamento(s) aplicado(s)', sheets_reset_fail: 'Erro', session_reconnect_hint: 'Volte a iniciar sessão.', nav_produtos_corbeille: '🗑️ Lixeira (eliminados)' },
+        fr: { bulk_selected: '{n} sélectionné(s)', lbl_selection: 'Sélection :', btn_bulk_bar_activate: '✅ Activer', btn_bulk_bar_deactivate: '⏸ Désactiver', btn_bulk_bar_delete: '🗑 Corbeille', btn_bulk_bar_restore: '↩️ Restaurer', btn_bulk_bar_purge: '⛔ Suppr. déf.', btn_bulk_bar_clear: '✖ Annuler', prod_view_catalog: 'Catalogue', prod_view_trash: '🗑️ Corbeille', prod_view_mode_title: 'Catalogue ou corbeille', prod_btn_restore: '↩️ Restaurer', prod_btn_purge: 'Suppr. déf.', prod_btn_bulk_restore: '↩️ Restaurer la sélection', prod_btn_bulk_purge: '⛔ Supprimer définitivement', prod_delete_confirm: 'Envoyer ce produit à la corbeille ? Il disparaît de la boutique.', prod_restore_confirm: 'Restaurer ce produit depuis la corbeille ?', prod_purge_confirm: 'Supprimer cette ligne définitivement ? Réservé aux articles en corbeille.', prod_restore_ok: 'Produit restauré.', prod_trash_badge: 'Corbeille', prod_status_inactive: 'Inactif', prod_trash_section_title: 'Corbeille — produits supprimés', prod_toast_moved_trash: '✅ Mis en corbeille', bulk_confirm_delete: 'Mettre {n} produit(s) à la corbeille ?', bulk_confirm_purge: 'SUPPRIMER DÉFINITIVEMENT {n} produit(s) ? Irréversible.', bulk_confirm_restore: 'Restaurer {n} produit(s) ? Ils seront inactifs jusqu\'à réactivation.', bulk_toast_deleted: '{n} mis en corbeille', bulk_toast_restored: '{n} restauré(s)', bulk_toast_purged: '{n} supprimé(s) définitivement', dash_recent_activity: '📋 Activité récente', mediatheque_page_blurb: 'Images du dossier ERP_Boutique_Images. Copiez l’URL ou ouvrez un produit pour l’assigner.', nav_boutique_title: 'Ouvrir la vitrine dans un nouvel onglet', btn_import_csv: '📥 Importer CSV', btn_catalog_refresh: '🔄 Catalogue', catalog_refresh_title: 'Recharge catégories, liste catalogue et produits', modal_close: 'Fermer', client_modal_title: '👤 Fiche client', btn_preview_email: '👁 Prévisualiser', card_email_preview: '📧 Prévisualisation du message', fin_revenue_sub: 'Période sélectionnée', fin_pay_split: '💳 Répartition par moyen de paiement', fin_tx_detail: '📋 Détail des transactions', transporteurs_title: '🚚 Transporteurs configurés', dev_return_title: '↩️ Enregistrer un retour', dev_return_save: '💾 Enregistrer le retour', dev_motive_defective: 'Produit défectueux', dev_motive_wrong_size: 'Taille incorrecte', dev_motive_not_desc: 'Non conforme à la description', dev_motive_other: 'Rétractation / changement d’avis', dev_details_ph: 'Détails supplémentaires...', lbl_qty: 'Quantité', inv_modal_cancel: 'Annuler', aria_sidebar: 'Ouvrir ou fermer le menu latéral', global_search_ph: '🔍 Rechercher…', fatura_opt_all: 'Tous les statuts', fatura_opt_pending: 'En attente', fatura_opt_paid: 'Payée', fatura_opt_overdue: 'En retard', ret_filter_all: 'Tous les retours', ret_stat_approved: 'Approuvé', ret_stat_received: 'Reçu', ret_stat_refunded: 'Remboursé', ret_stat_rejected: 'Rejeté', ret_new_btn: '+ Nouveau retour', ret_card_title: '↩️ Demandes de retour', ret_notes_card: '📝 Notes / Politique retours (interne)', pay_stat_requested: 'Demandé', th_invoice: 'Nº FACTURE', th_client: 'CLIENT', th_date: 'DATE', th_total: 'TOTAL', th_status_col: 'STATUT', th_actions_short: 'ACTIONS', ret_th_id: 'ID RETOUR', ret_th_order: 'COMMANDE', ret_th_product: 'PRODUIT', ret_th_reason: 'RAISON', lang_opt_fr: 'Français', lang_opt_en: 'English', lang_opt_es: 'Español', dash_quick_actions: '⚡ Actions rapides', btn_stock_min_sel: '📉 Stock min. (sélection)', btn_physical_inv: '📋 Inventaire physique', err_products: 'Erreur produits', err_image: 'Erreur image', err_generic_suffix: 'Erreur', err_save: 'Erreur de sauvegarde', cfg_danger_title: '⚠️ Zone dangereuse', cfg_danger_intro: 'Ces actions sont irréversibles. Procédez avec prudence.', cfg_btn_reset_sheets: '🔄 Réinitialiser les feuilles', sheets_reset_confirm: 'ATTENTION : réinitialiser toutes les feuilles du classeur ? Cette action est irréversible.', sheets_reset_ok: 'Feuilles réinitialisées', stock_inv_intro: 'Scannez ou saisissez les quantités réelles comptées. Les ajustements seront enregistrés comme mouvements de stock.', login_label_email: 'E-mail', login_brand_title: 'ERP — Boutique en ligne', login_brand_sub: 'Panneau de gestion e-commerce (prêt-à-porter et accessoires)', login_welcome_hint: 'Saisissez e-mail et mot de passe. Le portugais (PT) est la langue par défaut du panneau.', login_form_title: 'Connexion', login_sub: 'Accès réservé à l’équipe de la boutique', login_label_password: 'Mot de passe', login_pass_placeholder: '••••••••', login_submit: 'Ouvrir le panneau', login_no_api_title: 'URL du Web App non configurée dans ce fichier', login_no_api_text: 'Modifiez le HTML : renseignez <code>window.ERP_API_URL_DEFAULT</code> et <code>var API_URL</code> (bloc COLAR) avec l’URL se terminant par <code>/exec</code>. Enregistrez, publiez et rechargez. Cet écran ne demande que l’e-mail et le mot de passe — pas d’URL.', login_theme_light: 'Mode clair', login_theme_dark: 'Mode sombre', login_theme_go_dark: 'Passer en mode sombre', login_theme_go_light: 'Passer en mode clair', api_missing_url_toast: '⚠️ Définissez l’URL de l’API dans le fichier HTML (<code>ERP_API_URL_DEFAULT</code> / COLAR) ou dans Paramètres.', btn_new: '+ Marque', bulk_toast_activated: '{n} produit(s) activé(s)', bulk_toast_deactivated: '{n} produit(s) désactivé(s)', inv_empty_list: 'Aucun produit', inv_no_adjustment: 'Aucun ajustement à appliquer', inv_confirm_apply: 'Appliquer {n} ajustement(s) de stock ?', inv_toast_applied: '{ok}/{total} ajustement(s) appliqué(s)', sheets_reset_fail: 'Erreur', session_reconnect_hint: 'Reconnectez-vous.', nav_produtos_corbeille: '🗑️ Corbeille (articles supprimés)' },
+        en: { bulk_selected: '{n} selected', lbl_selection: 'Selection:', btn_bulk_bar_activate: '✅ Activate', btn_bulk_bar_deactivate: '⏸ Deactivate', btn_bulk_bar_delete: '🗑 Trash', btn_bulk_bar_restore: '↩️ Restore', btn_bulk_bar_purge: '⛔ Delete forever', btn_bulk_bar_clear: '✖ Clear', prod_view_catalog: 'Catalog', prod_view_trash: '🗑️ Trash', prod_view_mode_title: 'Catalog or trash', prod_btn_restore: '↩️ Restore', prod_btn_purge: 'Delete forever', prod_btn_bulk_restore: '↩️ Restore selection', prod_btn_bulk_purge: '⛔ Permanently delete', prod_delete_confirm: 'Move this product to trash? It will disappear from the storefront.', prod_restore_confirm: 'Restore this product from trash?', prod_purge_confirm: 'Permanently delete this row? Only allowed for items in trash.', prod_restore_ok: 'Product restored.', prod_trash_badge: 'Trash', prod_status_inactive: 'Inactive', prod_trash_section_title: 'Trash — deleted products', prod_toast_moved_trash: '✅ Moved to trash', bulk_confirm_delete: 'Move {n} product(s) to trash?', bulk_confirm_purge: 'PERMANENTLY delete {n} product(s)? This cannot be undone.', bulk_confirm_restore: 'Restore {n} product(s)? They return as inactive until you activate them.', bulk_toast_deleted: '{n} moved to trash', bulk_toast_restored: '{n} restored', bulk_toast_purged: '{n} permanently deleted', dash_recent_activity: '📋 Recent activity', mediatheque_page_blurb: 'Images from ERP_Boutique_Images folder. Copy the URL or open a product to assign.', nav_boutique_title: 'Open storefront in new tab', btn_import_csv: '📥 Import CSV', btn_catalog_refresh: '🔄 Catalog', catalog_refresh_title: 'Reload categories, catalog list and products', modal_close: 'Close', client_modal_title: '👤 Client record', btn_preview_email: '👁 Preview', card_email_preview: '📧 Message preview', fin_revenue_sub: 'Selected period', fin_pay_split: '💳 Split by payment method', fin_tx_detail: '📋 Transaction detail', transporteurs_title: '🚚 Configured carriers', dev_return_title: '↩️ Register a return', dev_return_save: '💾 Save return', dev_motive_defective: 'Defective product', dev_motive_wrong_size: 'Wrong size', dev_motive_not_desc: 'Not as described', dev_motive_other: 'Changed mind', dev_details_ph: 'Additional details...', lbl_qty: 'Quantity', inv_modal_cancel: 'Cancel', aria_sidebar: 'Open or close sidebar', global_search_ph: '🔍 Search…', fatura_opt_all: 'All statuses', fatura_opt_pending: 'Pending', fatura_opt_paid: 'Paid', fatura_opt_overdue: 'Overdue', ret_filter_all: 'All returns', ret_stat_approved: 'Approved', ret_stat_received: 'Received', ret_stat_refunded: 'Refunded', ret_stat_rejected: 'Rejected', ret_new_btn: '+ New return', ret_card_title: '↩️ Return requests', ret_notes_card: '📝 Notes / Returns policy (internal)', pay_stat_requested: 'Requested', th_invoice: 'INVOICE #', th_client: 'CLIENT', th_date: 'DATE', th_total: 'TOTAL', th_status_col: 'STATUS', th_actions_short: 'ACTIONS', ret_th_id: 'RETURN ID', ret_th_order: 'ORDER', ret_th_product: 'PRODUCT', ret_th_reason: 'REASON', lang_opt_fr: 'French', lang_opt_en: 'English', lang_opt_es: 'Spanish', dash_quick_actions: '⚡ Quick actions', btn_stock_min_sel: '📉 Min. stock (selected)', btn_physical_inv: '📋 Physical inventory', err_products: 'Error loading products', err_image: 'Image error', err_generic_suffix: 'Error', err_save: 'Save error', cfg_danger_title: '⚠️ Danger zone', cfg_danger_intro: 'These actions cannot be undone. Proceed with care.', cfg_btn_reset_sheets: '🔄 Reset spreadsheet sheets', sheets_reset_confirm: 'WARNING: Reset all spreadsheet tabs? This cannot be undone.', sheets_reset_ok: 'Sheets reset', stock_inv_intro: 'Scan or enter counted quantities. Adjustments are saved as stock movements.', login_label_email: 'Email', login_brand_title: 'ERP — Online store', login_brand_sub: 'Management panel for your e-commerce (apparel and accessories)', login_welcome_hint: 'Enter your email and password. Portuguese (PT) is the panel default language.', login_form_title: 'Sign in', login_sub: 'Team access to your store', login_label_password: 'Password', login_pass_placeholder: '••••••••', login_submit: 'Open admin panel', login_no_api_title: 'Web App URL not set in this file', login_no_api_text: 'Edit the HTML: set <code>window.ERP_API_URL_DEFAULT</code> and <code>var API_URL</code> (COLAR block) to the URL ending in <code>/exec</code>. Save, publish, and reload. This screen only asks for email and password — no URL field.', login_theme_light: 'Light mode', login_theme_dark: 'Dark mode', login_theme_go_dark: 'Switch to dark mode', login_theme_go_light: 'Switch to light mode', api_missing_url_toast: '⚠️ Set the API URL in the HTML file (<code>ERP_API_URL_DEFAULT</code> / COLAR) or in Settings.', btn_new: '+ Brand', bulk_toast_activated: '{n} product(s) activated', bulk_toast_deactivated: '{n} product(s) deactivated', inv_empty_list: 'No products', inv_no_adjustment: 'No adjustments to apply', inv_confirm_apply: 'Apply {n} stock adjustment(s)?', inv_toast_applied: '{ok}/{total} adjustment(s) applied', sheets_reset_fail: 'Error', session_reconnect_hint: 'Please sign in again.', nav_produtos_corbeille: '🗑️ Trash (deleted items)' },
+        es: { bulk_selected: '{n} seleccionado(s)', lbl_selection: 'Selección:', btn_bulk_bar_activate: '✅ Activar', btn_bulk_bar_deactivate: '⏸ Desactivar', btn_bulk_bar_delete: '🗑 Papelera', btn_bulk_bar_restore: '↩️ Restaurar', btn_bulk_bar_purge: '⛔ Borrar ya', btn_bulk_bar_clear: '✖ Limpiar', prod_view_catalog: 'Catálogo', prod_view_trash: '🗑️ Papelera', prod_view_mode_title: 'Catálogo o papelera', prod_btn_restore: '↩️ Restaurar', prod_btn_purge: 'Eliminar def.', prod_btn_bulk_restore: '↩️ Restaurar selección', prod_btn_bulk_purge: '⛔ Eliminar definitivamente', prod_delete_confirm: '¿Enviar este producto a la papelera? Dejará de verse en la tienda.', prod_restore_confirm: '¿Restaurar este producto desde la papelera?', prod_purge_confirm: '¿Eliminar esta fila para siempre? Solo desde la papelera.', prod_restore_ok: 'Producto restaurado.', prod_trash_badge: 'Papelera', prod_status_inactive: 'Inactivo', prod_trash_section_title: 'Papelera — productos eliminados', prod_toast_moved_trash: '✅ Enviado a la papelera', bulk_confirm_delete: '¿Mover {n} producto(s) a la papelera?', bulk_confirm_purge: '¿Eliminar DEFINITIVAMENTE {n} producto(s)? No se puede deshacer.', bulk_confirm_restore: '¿Restaurar {n} producto(s)? Vuelven como inactivos hasta reactivarlos.', bulk_toast_deleted: '{n} enviados a la papelera', bulk_toast_restored: '{n} restaurado(s)', bulk_toast_purged: '{n} borrados definitivamente', dash_recent_activity: '📋 Actividad reciente', mediatheque_page_blurb: 'Imágenes de la carpeta ERP_Boutique_Images. Copie la URL o abra un producto para asignar.', nav_boutique_title: 'Abrir la tienda en una pestaña nueva', btn_import_csv: '📥 Importar CSV', btn_catalog_refresh: '🔄 Catálogo', catalog_refresh_title: 'Recarga categorías, lista de catálogo y productos', modal_close: 'Cerrar', client_modal_title: '👤 Ficha del cliente', btn_preview_email: '👁 Vista previa', card_email_preview: '📧 Vista previa del mensaje', fin_revenue_sub: 'Período seleccionado', fin_pay_split: '💳 Reparto por método de pago', fin_tx_detail: '📋 Detalle de transacciones', transporteurs_title: '🚚 Transportistas configurados', dev_return_title: '↩️ Registrar una devolución', dev_return_save: '💾 Guardar devolución', dev_motive_defective: 'Producto defectuoso', dev_motive_wrong_size: 'Talla incorrecta', dev_motive_not_desc: 'No coincide con la descripción', dev_motive_other: 'Arrepentimiento / desistimiento', dev_details_ph: 'Detalles adicionales...', lbl_qty: 'Cantidad', inv_modal_cancel: 'Cancelar', aria_sidebar: 'Abrir o cerrar el menú lateral', global_search_ph: '🔍 Buscar…', fatura_opt_all: 'Todos los estados', fatura_opt_pending: 'Pendiente', fatura_opt_paid: 'Pagada', fatura_opt_overdue: 'Vencida', ret_filter_all: 'Todas las devoluciones', ret_stat_approved: 'Aprobado', ret_stat_received: 'Recibido', ret_stat_refunded: 'Reembolsado', ret_stat_rejected: 'Rechazado', ret_new_btn: '+ Nueva devolución', ret_card_title: '↩️ Solicitudes de devolución', ret_notes_card: '📝 Notas / Política de devoluciones (interno)', pay_stat_requested: 'Solicitado', th_invoice: 'Nº FACTURA', th_client: 'CLIENTE', th_date: 'FECHA', th_total: 'TOTAL', th_status_col: 'ESTADO', th_actions_short: 'ACCIONES', ret_th_id: 'ID', ret_th_order: 'PEDIDO', ret_th_product: 'PRODUCTO', ret_th_reason: 'MOTIVO', lang_opt_fr: 'Francés', lang_opt_en: 'Inglés', lang_opt_es: 'Español', dash_quick_actions: '⚡ Acciones rápidas', btn_stock_min_sel: '📉 Stock mín. (selección)', btn_physical_inv: '📋 Inventario físico', err_products: 'Error al cargar productos', err_image: 'Error de imagen', err_generic_suffix: 'Error', err_save: 'Error al guardar', cfg_danger_title: '⚠️ Zona peligrosa', cfg_danger_intro: 'Estas acciones son irreversibles. Actúe con cuidado.', cfg_btn_reset_sheets: '🔄 Restablecer hojas', sheets_reset_confirm: 'ATENCIÓN: ¿Restablecer todas las hojas? Esta acción no se puede deshacer.', sheets_reset_ok: 'Hojas reiniciadas', stock_inv_intro: 'Escanee o introduzca las cantidades contadas. Los ajustes se guardan como movimientos de stock.', login_label_email: 'Correo electrónico', login_brand_title: 'ERP — Tienda online', login_brand_sub: 'Panel de gestión del comercio electrónico (textil y accesorios)', login_welcome_hint: 'Introduzca correo y contraseña. El portugués (PT) es el idioma por defecto del panel.', login_form_title: 'Iniciar sesión', login_sub: 'Acceso reservado al equipo de la tienda', login_label_password: 'Contraseña', login_pass_placeholder: '••••••••', login_submit: 'Entrar al panel', login_no_api_title: 'URL del Web App no configurada en este archivo', login_no_api_text: 'Edite el HTML: defina <code>window.ERP_API_URL_DEFAULT</code> y <code>var API_URL</code> (bloque COLAR) con la URL que termina en <code>/exec</code>. Guarde, publique y recargue. En esta pantalla solo correo y contraseña — sin campo de URL.', login_theme_light: 'Modo claro', login_theme_dark: 'Modo oscuro', login_theme_go_dark: 'Activar modo oscuro', login_theme_go_light: 'Activar modo claro', api_missing_url_toast: '⚠️ Configure la URL de la API en el HTML (<code>ERP_API_URL_DEFAULT</code> / COLAR) o en Ajustes.', btn_new: '+ Marca', bulk_toast_activated: '{n} producto(s) activado(s)', bulk_toast_deactivated: '{n} producto(s) desactivado(s)', inv_empty_list: 'Sin productos', inv_no_adjustment: 'No hay ajustes que aplicar', inv_confirm_apply: '¿Aplicar {n} ajuste(s) de stock?', inv_toast_applied: '{ok}/{total} ajuste(s) aplicado(s)', sheets_reset_fail: 'Error', session_reconnect_hint: 'Vuelva a iniciar sesión.', nav_produtos_corbeille: '🗑️ Papelera (eliminados)' }
       };
       Object.keys(X).forEach(function (k) { if (langs[k]) Object.assign(langs[k], X[k]); });
     })();
@@ -4931,17 +5099,20 @@
         titleEl.setAttribute('data-i18n', tk);
         titleEl.textContent = t(tk);
       }
-      var svm = document.getElementById('produtosViewMode');
-      if (svm && svm.value !== produtosListMode) svm.value = produtosListMode;
+      var catBtn = document.getElementById('btnProdViewCatalog');
+      var trBtn = document.getElementById('btnProdViewTrash');
+      if (catBtn && trBtn) {
+        catBtn.className = trash ? 'btn sm outline' : 'btn sm';
+        trBtn.className = trash ? 'btn sm' : 'btn sm outline';
+        catBtn.setAttribute('aria-pressed', trash ? 'false' : 'true');
+        trBtn.setAttribute('aria-pressed', trash ? 'true' : 'false');
+      }
       syncBulkBarTrashMode();
-      try {
-        document.querySelectorAll('#produtosViewMode option').forEach(function (opt) {
-          var k = opt.getAttribute('data-i18n');
-          if (!k) return;
-          var v = (langs[lang] && langs[lang][k]) || (langs.pt && langs.pt[k]);
-          if (v) opt.textContent = v;
-        });
-      } catch (eOpts) { }
+    }
+
+    function goToProdutosTrash() {
+      showPage('produtos');
+      setTimeout(function () { setProdutosListMode('trash'); }, 60);
     }
 
     function setProdutosListMode(mode) {
@@ -5225,10 +5396,7 @@
         document.getElementById('app').style.display = 'flex';
         updateTopNav('dashboard');
         await loadDashboard();
-        loadConfig();
-        loadAvaliacoesBadge();
-        loadDashCharts();
-        loadNotifications();
+        await Promise.all([loadConfig(), loadAvaliacoesBadge(), loadDashCharts(), loadNotifications()]);
         applyAdminI18n();
         startAdminSessionKeepAlive();
         toast('✅ Bem-vindo, ' + r.user.nome + '!', 'success');
@@ -5268,11 +5436,8 @@
         document.getElementById('userName').textContent = nome;
         document.getElementById('userInitial').textContent = nome.charAt(0).toUpperCase();
         updateTopNav('dashboard');
-        await loadDashboard();
-        loadConfig();
-        loadAvaliacoesBadge();
-        loadDashCharts();
-        loadNotifications();
+        await loadDashboard(r);
+        await Promise.all([loadConfig(), loadAvaliacoesBadge(), loadDashCharts(), loadNotifications()]);
         applyAdminI18n();
         startAdminSessionKeepAlive();
       }
@@ -5350,8 +5515,10 @@
     // ============================================================
     // DASHBOARD
     // ============================================================
-    async function loadDashboard() {
-      const r = await api('getDashboard');
+    async function loadDashboard(precachedDashboard) {
+      const r = (precachedDashboard && precachedDashboard.success)
+        ? precachedDashboard
+        : await api('getDashboard');
       const tbody = document.getElementById('recentOrdersBody');
       const stockW = document.getElementById('stockAlertsWidget');
       const actEl = document.getElementById('activityLogBody');
@@ -5389,11 +5556,12 @@
       var ts = document.getElementById('dashLastUpdate');
       if (ts) ts.textContent = 'Dernière MAJ: ' + new Date().toLocaleTimeString();
       try {
-        var ordR = await api('getOrders', {});
+        var ordCliRet = await Promise.all([api('getOrders', {}), api('getClients', {}), api('getReturns', {})]);
+        var ordR = ordCliRet[0];
+        var cliR = ordCliRet[1];
+        var retR = ordCliRet[2];
         var allOrd = ordR?.orders || [];
-        var cliR = await api('getClients', {});
         var allCli = cliR?.clients || [];
-        var retR = await api('getReturns', {});
         var retCount = retR?.returns?.length || 0;
         var rrEl = document.getElementById('kpiReturnRate');
         if (rrEl) rrEl.textContent = (allOrd.length ? ((retCount / allOrd.length) * 100).toFixed(1) : '0') + '%';
@@ -5407,8 +5575,7 @@
         var ltvEl = document.getElementById('kpiLTV');
         if (ltvEl) ltvEl.textContent = '€' + ltv.toFixed(2);
       } catch (e) { }
-      await loadStockAlerts();
-      await loadRecentActivity();
+      await Promise.all([loadStockAlerts(), loadRecentActivity()]);
     }
 
     var _dashRefreshInterval = null;
@@ -5743,6 +5910,71 @@
       if (p) await editProduct(p);
     }
 
+    function rebuildVariantEditorTable(rows) {
+      var tb = document.getElementById('variantsEditBody');
+      if (!tb) return;
+      tb.innerHTML = '';
+      if (!rows || !rows.length) {
+        addVariantEditorRow({});
+        return;
+      }
+      rows.forEach(function (row) {
+        addVariantEditorRow(row);
+      });
+    }
+
+    function addVariantEditorRow(row) {
+      row = row || {};
+      var tb = document.getElementById('variantsEditBody');
+      if (!tb) return;
+      var tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td style="padding:6px;"><input type="text" class="ve-t input" placeholder="S" style="width:100%;min-width:56px;"></td>' +
+        '<td style="padding:6px;"><input type="text" class="ve-c input" placeholder="" style="width:100%;min-width:72px;"></td>' +
+        '<td style="padding:6px;"><input type="number" class="ve-q input" min="0" step="1" style="width:100%;"></td>' +
+        '<td style="padding:6px;"><input type="text" class="ve-i input" placeholder="https://" style="width:100%;font-size:12px;"></td>' +
+        '<td style="padding:6px;text-align:center;"><input type="checkbox" class="ve-vis" title="Visuel catalogue"></td>' +
+        '<td style="padding:6px;"><button type="button" class="btn sm danger ve-del">−</button></td>';
+      tr.querySelector('.ve-t').value = row.tamanho != null ? row.tamanho : '';
+      tr.querySelector('.ve-c').value = row.cor != null ? row.cor : '';
+      tr.querySelector('.ve-q').value = row.stock != null ? row.stock : 0;
+      tr.querySelector('.ve-i').value = row.imagem_variante != null ? row.imagem_variante : '';
+      var vc = row.visuel_catalogue != null ? row.visuel_catalogue : row.visuel_catalogo;
+      tr.querySelector('.ve-vis').checked = vc === true || vc === '1' || vc === 'true';
+      tr.querySelector('.ve-del').onclick = function () {
+        tr.remove();
+        if (!tb.querySelector('tr')) addVariantEditorRow({});
+      };
+      tb.appendChild(tr);
+    }
+
+    function collectVariantEditorPayload() {
+      var tb = document.getElementById('variantsEditBody');
+      var out = [];
+      if (!tb) return out;
+      tb.querySelectorAll('tr').forEach(function (tr) {
+        var t = tr.querySelector('.ve-t');
+        var c = tr.querySelector('.ve-c');
+        var q = tr.querySelector('.ve-q');
+        var i = tr.querySelector('.ve-i');
+        var vis = tr.querySelector('.ve-vis');
+        if (!t || !c) return;
+        var tamanho = (t.value || '').trim();
+        var cor = (c.value || '').trim();
+        var img = i ? String(i.value || '').trim() : '';
+        var visCk = !!(vis && vis.checked);
+        if (!tamanho && !cor && !img && !(parseInt(q && q.value, 10) > 0)) return;
+        out.push({
+          tamanho: tamanho || '—',
+          cor: cor || '—',
+          stock: parseInt(q && q.value, 10) || 0,
+          imagem_variante: img,
+          visuel_catalogue: visCk ? '1' : ''
+        });
+      });
+      return out;
+    }
+
     async function saveProduto() {
       const id = document.getElementById('editProdutoId').value;
       const cat = document.getElementById('prodCatalogoStatus') && document.getElementById('prodCatalogoStatus').value || 'rascunho';
@@ -5752,8 +5984,7 @@
         if (!dt) { toast(t('toast_schedule_datetime_required'), 'error'); return; }
         pubEm = new Date(dt).toISOString();
       }
-      const variantLines = document.getElementById('prodVariantes').value.trim().split('\n').filter(l => l.trim());
-      const variantes = variantLines.map(l => { const [tamanho, cor, stock] = l.split(':'); return { tamanho: tamanho?.trim(), cor: cor?.trim(), stock: parseInt(stock) || 0 }; });
+      const variantes = collectVariantEditorPayload();
       const data = {
         nome: document.getElementById('prodNome').value,
         categoria: document.getElementById('prodCategoria').value,
@@ -5766,7 +5997,7 @@
         variantes
       };
       var payload = id ? { ...data, produto_id: id } : data;
-      if (id && variantLines.length > 0) payload.replace_variants = true;
+      if (id && variantes.length > 0) payload.replace_variants = true;
       const r = await api(id ? 'updateProduct' : 'createProduct', payload);
       if (r?.success) { toast(t('toast_prod_saved'), 'success'); closeModal('modalProduto'); loadProdutos(); }
       else toast('❌ ' + (r?.error || 'Erro'), 'error');
@@ -5788,11 +6019,9 @@
       if (pem) pem.value = p.publicar_em ? formatDateForDatetimeLocal(new Date(p.publicar_em)) : '';
       toggleProdScheduleRow();
       if (Array.isArray(p.variantes) && p.variantes.length) {
-        document.getElementById('prodVariantes').value = p.variantes.map(function (v) {
-          return (v.tamanho || '') + ':' + (v.cor || '') + ':' + (v.stock != null ? v.stock : 0);
-        }).join('\n');
+        rebuildVariantEditorTable(p.variantes);
       } else {
-        document.getElementById('prodVariantes').value = '';
+        rebuildVariantEditorTable([]);
       }
       const f = document.getElementById('prodImagemFile');
       if (f) f.value = '';
@@ -5828,7 +6057,7 @@
       document.getElementById('prodPreco').value = '';
       document.getElementById('prodTva').value = '23';
       document.getElementById('prodImagem').value = '';
-      document.getElementById('prodVariantes').value = '';
+      rebuildVariantEditorTable([]);
       document.getElementById('prodCatalogoStatus').value = 'rascunho';
       var pem = document.getElementById('prodPublicarEm');
       if (pem) pem.value = '';
@@ -7659,6 +7888,7 @@
       promo_banner_title: 'cfg_promo_banner_title',
       promo_banner_text: 'cfg_promo_banner_text',
       announcement_enabled: 'cfg_announcement_enabled',
+      announcement_marquee: 'cfg_announcement_marquee',
       announcement_text: 'cfg_announcement_text',
       announcement_promo_pct: 'cfg_announcement_promo_pct',
       announcement_date_start: 'cfg_announcement_date_start',
@@ -7672,6 +7902,7 @@
       meta_description: 'cfg_meta_description',
       newsletter_footer_enabled: 'cfg_newsletter_footer_enabled',
       guest_checkout_enabled: 'cfg_guest_checkout_enabled',
+      boutique_sur_commande: 'cfg_boutique_sur_commande',
       checkout_terms_hint: 'cfg_checkout_terms_hint',
       legal_terms_url: 'cfg_legal_terms_url',
       legal_privacy_url: 'cfg_legal_privacy_url',
@@ -7820,6 +8051,8 @@
       setEl('cfg_promo_banner_text', 'promo_banner_text', '');
       var anEn = document.getElementById('cfg_announcement_enabled');
       if (anEn) anEn.checked = c.announcement_enabled === true || c.announcement_enabled === '1' || c.announcement_enabled === 'true';
+      var anMq = document.getElementById('cfg_announcement_marquee');
+      if (anMq) anMq.checked = c.announcement_marquee === true || c.announcement_marquee === '1' || c.announcement_marquee === 'true';
       setEl('cfg_announcement_text', 'announcement_text', '');
       setEl('cfg_announcement_promo_pct', 'announcement_promo_pct', '');
       setEl('cfg_announcement_date_start', 'announcement_date_start', '');
@@ -7835,6 +8068,8 @@
       if (nw) nw.checked = c.newsletter_footer_enabled === undefined || c.newsletter_footer_enabled === '' || c.newsletter_footer_enabled === true || c.newsletter_footer_enabled === '1' || c.newsletter_footer_enabled === 'true';
       var gc = document.getElementById('cfg_guest_checkout_enabled');
       if (gc) gc.checked = c.guest_checkout_enabled === undefined || c.guest_checkout_enabled === '' || c.guest_checkout_enabled === true || c.guest_checkout_enabled === '1' || c.guest_checkout_enabled === 'true';
+      var scm = document.getElementById('cfg_boutique_sur_commande');
+      if (scm) scm.checked = c.boutique_sur_commande === true || c.boutique_sur_commande === '1' || c.boutique_sur_commande === 'true';
       setEl('cfg_checkout_terms_hint', 'checkout_terms_hint', '');
       setEl('cfg_legal_terms_url', 'legal_terms_url', '');
       setEl('cfg_legal_privacy_url', 'legal_privacy_url', '');
@@ -7876,14 +8111,82 @@
       var data = {};
       keys.forEach(function (k) { data[k] = readBoutiqueCfgValue(k); });
       const r = await api('updateConfig', data);
-      if (r?.success) toast(t('saved'), 'success');
-      else toast('❌ ' + (r?.error || t('error')), 'error');
+      if (r?.success) {
+        toast(t('saved'), 'success');
+        if (keys.indexOf('store_logo_url') >= 0) {
+          var ne = document.getElementById('cfg_nome');
+          var le = document.getElementById('cfg_logo_url');
+          applyAdminSidebarBranding(
+            { nome: ne ? ne.value : '', logo_url: le ? le.value : '' },
+            { store_logo_url: readBoutiqueCfgValue('store_logo_url') }
+          );
+        }
+      } else toast('❌ ' + (r?.error || t('error')), 'error');
+    }
+
+    function setBrandImage(imgEl, src, onVisible) {
+      if (!imgEl || typeof onVisible !== 'function') return;
+      var clean = String(src || '').trim();
+      imgEl.onload = function () { onVisible(true); };
+      imgEl.onerror = function () {
+        imgEl.removeAttribute('src');
+        onVisible(false);
+      };
+      if (!clean) {
+        imgEl.removeAttribute('src');
+        onVisible(false);
+        return;
+      }
+      if (imgEl.getAttribute('src') === clean && imgEl.complete && imgEl.naturalWidth > 0) {
+        onVisible(true);
+        return;
+      }
+      onVisible(false);
+      imgEl.src = clean;
+    }
+
+    function resolveAdminLogoUrl(empresa, cfg) {
+      var a = String((empresa && empresa.logo_url) || '').trim();
+      if (a) return a;
+      return String((cfg && cfg.store_logo_url) || '').trim();
+    }
+
+    /** Logo + nom entreprise dans la barre latérale (même idée que Fligenio · sbbrand). */
+    function applyAdminSidebarBranding(empresa, cfg) {
+      var nome = String((empresa && empresa.nome) || '').trim();
+      var elNome = document.getElementById('lojaNome');
+      if (elNome) elNome.textContent = nome || 'Minha Loja';
+      var img = document.getElementById('adminSidebarLogo');
+      var url = resolveAdminLogoUrl(empresa, cfg);
+      if (img) img.alt = nome ? 'Logo · ' + nome : '';
+      setBrandImage(img, url, function (visible) {
+        if (img) img.classList.toggle('show', !!visible);
+      });
+    }
+
+    function refreshAdminBrandPreviewFromForm() {
+      var n = document.getElementById('cfg_nome');
+      var nome = (n && n.value) ? String(n.value).trim() : '';
+      var pn = document.getElementById('cfg_admin_brand_preview_name');
+      if (pn) pn.textContent = nome || 'Minha Loja';
+      var logoEmp = document.getElementById('cfg_logo_url');
+      var logoStore = document.getElementById('cfg_store_logo_url');
+      var a = logoEmp ? String(logoEmp.value || '').trim() : '';
+      var b = logoStore ? String(logoStore.value || '').trim() : '';
+      var url = a || b;
+      var prevImg = document.getElementById('cfg_admin_brand_preview_img');
+      var prevWrap = document.getElementById('cfg_admin_brand_preview_wrap');
+      setBrandImage(prevImg, url, function (visible) {
+        if (prevWrap) prevWrap.classList.toggle('has-logo', !!visible);
+      });
     }
 
     async function loadConfig() {
+      var empresaBrand = {};
       const r = await api('getEmpresa');
       if (r?.success) {
         const e = r.empresa;
+        empresaBrand = e || {};
         document.getElementById('cfg_nome').value = e.nome || '';
         document.getElementById('cfg_nif').value = e.nif || '';
         document.getElementById('cfg_email').value = e.email || '';
@@ -7895,11 +8198,12 @@
         document.getElementById('cfg_moeda').value = e.moeda || 'EUR';
         document.getElementById('cfg_logo_url').value = e.logo_url || '';
         document.getElementById('cfg_website').value = e.website || '';
-        document.getElementById('lojaNome').textContent = e.nome || 'Minha Loja';
       }
       document.getElementById('apiUrlInput').value = parseGsWebAppUrl(API_URL) || '';
       const cfg = await api('getConfig', {});
+      var confObj = {};
       if (cfg && cfg.success && cfg.config) {
+        confObj = cfg.config;
         fillBoutiqueConfigFields(cfg.config);
         fillSheetsAdvancedConfig(cfg.config);
         fillCustomConfigLines(cfg.config);
@@ -7909,6 +8213,8 @@
         if (cm) document.getElementById('cfg_color_main').value = cm.length === 7 ? cm : '#1a1a1a';
         if (ca) document.getElementById('cfg_color_accent').value = ca.length === 7 ? ca : '#c9a96e';
       }
+      applyAdminSidebarBranding(empresaBrand, confObj);
+      refreshAdminBrandPreviewFromForm();
       showConfigTab('boutique');
     }
 
@@ -8099,7 +8405,11 @@
       var r2 = await api('updateConfig', { store_logo_url: slo ? String(slo.value || '').trim() : '' });
       if (r?.success && r2?.success) {
         toast('✅ Empresa atualizada!', 'success');
-        document.getElementById('lojaNome').textContent = document.getElementById('cfg_nome').value;
+        applyAdminSidebarBranding({
+          nome: document.getElementById('cfg_nome').value,
+          logo_url: document.getElementById('cfg_logo_url').value
+        }, { store_logo_url: slo ? String(slo.value || '').trim() : '' });
+        refreshAdminBrandPreviewFromForm();
       } else toast('❌ ' + ((r && !r.success && r.error) || (r2 && !r2.success && r2.error) || t('error')), 'error');
     }
 
