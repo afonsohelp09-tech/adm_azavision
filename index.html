@@ -4719,7 +4719,19 @@
     <div class="modal" style="max-width:760px;">
       <h2 data-i18n="modal_mediathek_h2">📷 Drive</h2>
       <p data-i18n="modal_mediathek_intro_p"
-        style="font-size:12px;color:var(--text2);margin-bottom:12px;line-height:1.5;"></p>
+        style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5;"></p>
+      <div id="mediaLibImportModeRow" role="radiogroup" aria-label=""
+        style="display:flex;flex-wrap:wrap;gap:14px 20px;margin-bottom:14px;align-items:center;font-size:13px;color:var(--text);">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;">
+          <input type="radio" name="mediaLibImportMode" id="mediaLibModeImageOnly" value="image" checked>
+          <span data-i18n="mediathek_mode_image_only">Image (URL) only</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;">
+          <input type="radio" name="mediaLibImportMode" id="mediaLibModeAuto" value="auto">
+          <span data-i18n="mediathek_mode_auto_fields">Name + category + URL (from Drive path)</span>
+        </label>
+      </div>
+      <p data-i18n="mediathek_mode_hint_p" style="font-size:11px;color:var(--text2);margin:-6px 0 12px;line-height:1.45;"></p>
       <div id="mediaLibraryGrid"
         style="display:grid;grid-template-columns:repeat(auto-fill,minmax(108px,1fr));gap:10px;max-height:440px;overflow-y:auto;min-height:100px;padding:4px;">
       </div>
@@ -5098,7 +5110,11 @@
           toast_saved_drive_cat: 'Imagem guardada no Drive (pasta por categoria).',
           toast_upload_failed: 'Falha no envio',
           modal_mediathek_h2: '\ud83d\udcf7 Mediateca (Google Drive)',
-          modal_mediathek_intro_p: 'Imagens na pasta ERP_Boutique_Images. Clique numa miniatura para preencher o URL.',
+          modal_mediathek_intro_p: 'Imagens na pasta ERP_Boutique_Images. Escolha o modo abaixo e clique numa miniatura.',
+          mediathek_mode_image_only: 'S\u00f3 imagem (URL)',
+          mediathek_mode_auto_fields: 'Nome + categoria + URL (a partir da pasta no Drive)',
+          mediathek_mode_hint_p: 'Modo completo: usa a estrutura ERP_Boutique_Images / categoria / ID_produto / ficheiro. Campos vazios s\u00f3 s\u00e3o preenchidos em produto novo ou se estiverem em branco.',
+          toast_mediathek_auto_applied: 'URL, nome e categoria aplicados (quando detetados no Drive).',
           toast_prod_saved: '\u2713 Produto guardado!', err_file_read_fail: 'N\u00e3o foi poss\u00edvel ler o ficheiro.', err_not_image_file: 'O ficheiro n\u00e3o parece uma imagem v\u00e1lida.'
         },
         fr: {
@@ -5153,7 +5169,11 @@
           toast_saved_drive_cat: 'Image enregistr\u00e9e sur Drive (dossier par cat\u00e9gorie).',
           toast_upload_failed: '\u00c9chec de l\u2019envoi',
           modal_mediathek_h2: '\ud83d\udcf7 M\u00e9diath\u00e8que (Google Drive)',
-          modal_mediathek_intro_p: 'Images dans le dossier ERP_Boutique_Images. Cliquez sur une vignette pour remplir l\u2019URL du produit.',
+          modal_mediathek_intro_p: 'Images dans le dossier ERP_Boutique_Images. Choisissez le mode ci-dessous puis cliquez sur une vignette.',
+          mediathek_mode_image_only: 'Image (URL) seulement',
+          mediathek_mode_auto_fields: 'Nom + cat\u00e9gorie + URL (selon le chemin Drive)',
+          mediathek_mode_hint_p: 'Mode complet : structure ERP_Boutique_Images / cat\u00e9gorie / ID_produit / fichier. Les champs vides ne sont remplis qu\u2019en cr\u00e9ation ou s\u2019ils sont vides.',
+          toast_mediathek_auto_applied: 'URL, nom et cat\u00e9gorie appliqu\u00e9s (si d\u00e9tect\u00e9s sur Drive).',
           toast_prod_saved: '\u2713 Produit enregistr\u00e9 !', err_file_read_fail: 'Lecture du fichier impossible.', err_not_image_file: 'Fichier non reconnu comme image.'
         },
         en: {
@@ -5208,7 +5228,11 @@
           toast_saved_drive_cat: 'Image saved to Drive (folder per category).',
           toast_upload_failed: 'Upload failed',
           modal_mediathek_h2: '\ud83d\udcf7 Media library (Google Drive)',
-          modal_mediathek_intro_p: 'Images in ERP_Boutique_Images. Click a tile to fill the product URL.',
+          modal_mediathek_intro_p: 'Images in ERP_Boutique_Images. Pick a mode below, then click a tile.',
+          mediathek_mode_image_only: 'Image (URL) only',
+          mediathek_mode_auto_fields: 'Name + category + URL (from Drive path)',
+          mediathek_mode_hint_p: 'Full mode expects ERP_Boutique_Images / category / product_id / file. Empty fields are filled only for a new product or when left blank.',
+          toast_mediathek_auto_applied: 'URL, name and category applied (when detected from Drive).',
           toast_prod_saved: '\u2713 Product saved!', err_file_read_fail: 'Could not read the file.', err_not_image_file: 'File does not look like an image.'
         },
         es: {
@@ -5263,7 +5287,11 @@
           toast_saved_drive_cat: 'Imagen guardada en Drive (por categor\u00eda).',
           toast_upload_failed: 'Error al subir',
           modal_mediathek_h2: '\ud83d\udcf7 Mediateca (Google Drive)',
-          modal_mediathek_intro_p: 'Im\u00e1genes en ERP_Boutique_Images. Pulse una miniatura para rellenar la URL.',
+          modal_mediathek_intro_p: 'Im\u00e1genes en ERP_Boutique_Images. Elija el modo y pulse una miniatura.',
+          mediathek_mode_image_only: 'Solo imagen (URL)',
+          mediathek_mode_auto_fields: 'Nombre + categor\u00eda + URL (ruta Drive)',
+          mediathek_mode_hint_p: 'Modo completo: ERP_Boutique_Images / categor\u00eda / ID_producto / archivo. Los campos vac\u00edos solo se rellenan en producto nuevo o si est\u00e1n en blanco.',
+          toast_mediathek_auto_applied: 'URL, nombre y categor\u00eda aplicados (si Drive los aporta).',
           toast_prod_saved: '\u2713 Producto guardado!', err_file_read_fail: 'No se pudo leer el archivo.', err_not_image_file: 'El archivo no parece una imagen v\u00e1lida.'
         }
       };
@@ -6595,6 +6623,7 @@
 
     function openMediaLibraryModal() {
       openModal('modalMediaLibrary');
+      try { applyAdminI18n(); } catch (ea) { }
       loadMediaLibrary();
     }
 
@@ -6651,7 +6680,13 @@
         const url = im.url || '';
         const th = im.thumbnailUrl || url;
         const name = im.name || '';
-        return '<button type="button" class="media-lib-tile" data-media-url="' + escAttr(url) + '" style="border:1px solid var(--border);border-radius:10px;padding:6px;background:var(--bg3);cursor:pointer;text-align:left;">' +
+        var exObj = {
+          nome: String(im.nome_sugerido || '').trim(),
+          categoria: String(im.drive_categoria || '').trim(),
+          produto_folder: String(im.drive_produto_folder || '').trim()
+        };
+        var exRaw = encodeURIComponent(JSON.stringify(exObj));
+        return '<button type="button" class="media-lib-tile" data-media-extra="' + escAttr(exRaw) + '" data-media-url="' + escAttr(url) + '" style="border:1px solid var(--border);border-radius:10px;padding:6px;background:var(--bg3);cursor:pointer;text-align:left;">' +
           '<img src="' + escAttr(th) + '" alt="" style="width:100%;height:96px;object-fit:cover;border-radius:8px;display:block;background:var(--bg2);" loading="lazy">' +
           '<div style="font-size:10px;color:var(--text2);margin-top:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + escAttr(name) + '">' + escHtml(name) + '</div></button>';
       }).join('');
@@ -6660,11 +6695,42 @@
         if (!tile) return;
         const u = tile.getAttribute('data-media-url');
         if (!u) return;
-        document.getElementById('prodImagem').value = u;
-        setProdImagePreview(u);
-        closeModal('modalMediaLibrary');
-        toast(t('toast_img_url_applied'), 'success');
+        applyMediaLibrarySelectionToProduto(u, parseMediaLibTileExtra(tile));
       };
+    }
+
+    function parseMediaLibTileExtra(tile) {
+      try {
+        var raw = tile.getAttribute('data-media-extra');
+        if (!raw) return {};
+        return JSON.parse(decodeURIComponent(raw));
+      } catch (e) { return {}; }
+    }
+
+    /** Applique l’URL image ; si mode « auto », remplit nom / catégorie selon métadonnées Drive (voir listProductImages). */
+    function applyMediaLibrarySelectionToProduto(url, meta) {
+      meta = meta || {};
+      var imageOnlyEl = document.getElementById('mediaLibModeImageOnly');
+      var imageOnly = !!(imageOnlyEl && imageOnlyEl.checked);
+      document.getElementById('prodImagem').value = url;
+      setProdImagePreview(url);
+      closeModal('modalMediaLibrary');
+      if (imageOnly) {
+        toast(t('toast_img_url_applied'), 'success');
+        return;
+      }
+      var isNew = !document.getElementById('editProdutoId').value.trim();
+      var nmEl = document.getElementById('prodNome');
+      var ctEl = document.getElementById('prodCategoria');
+      var nm = String(meta.nome || '').trim();
+      if (!nm && String(meta.produto_folder || '').trim())
+        nm = String(meta.produto_folder).replace(/_/g, ' ').trim();
+      var cat = String(meta.categoria || '').trim();
+      if (nmEl && nm && (isNew || !String(nmEl.value || '').trim()))
+        nmEl.value = nm;
+      if (ctEl && cat && (isNew || !String(ctEl.value || '').trim()))
+        ctEl.value = cat;
+      toast(t('toast_mediathek_auto_applied'), 'success');
     }
 
     async function uploadProdutoImagem() {
