@@ -32,7 +32,7 @@
         (COLAR / ERP_API_URL_DEFAULT) ou dans Paramètres une fois connecté.
 
    2) Exemple d’URL valide :
-      https://script.google.com/macros/s/AKfycbwUEYjnXoEPzFpZKPN0NQ3HilMYQy4PEpslHyLpSVavcixzlf55Piv8nrAT_NsI441s/exec
+      https://script.google.com/macros/s/AKfycby_4CEQn_4i7uOFWbBib4GethqkgxzjABbOEqblteZMnBoz8z3CnoLD54MYDwBq2oxH/exec
 
    3) Connexion : écran e-commerce (bandeau + formulaire), PT · FR · EN · ES sur la page de login (PT par défaut) ; ☀️/🌙 pour le thème.
    4) Téléphone : menu ☰ pour ouvrir / fermer le panneau latéral (≤900px).
@@ -4958,7 +4958,7 @@
   <script>
     /* ═══ ADMIN — déploiement 02-admin-erp (GitHub Pages) ═══
        Aligné sur VENTE EN LIGNE TPE/admin_erp.html ; URL API identique (COLAR + ce script). */
-    window.ERP_API_URL_DEFAULT = 'https://script.google.com/macros/s/AKfycbwUEYjnXoEPzFpZKPN0NQ3HilMYQy4PEpslHyLpSVavcixzlf55Piv8nrAT_NsI441s/exec';
+    window.ERP_API_URL_DEFAULT = 'https://script.google.com/macros/s/AKfycby_4CEQn_4i7uOFWbBib4GethqkgxzjABbOEqblteZMnBoz8z3CnoLD54MYDwBq2oxH/exec';
     /* Vide = détection auto (DEPLOIEMENT-GITHUB : ../01-boutique-client/index.html). Sinon URL HTTPS absolue de la vitrine. */
     window.ERP_BOUTIQUE_URL = '';
     window.ERP_ADMIN_URL = 'index.html';
@@ -5013,7 +5013,7 @@
 -->
   <script>
     // ▼▼▼ COLAR O URL AQUI — APENAS NESTA LINHA ▼▼▼
-    var API_URL = 'https://script.google.com/macros/s/AKfycbwUEYjnXoEPzFpZKPN0NQ3HilMYQy4PEpslHyLpSVavcixzlf55Piv8nrAT_NsI441s/exec';
+    var API_URL = 'https://script.google.com/macros/s/AKfycby_4CEQn_4i7uOFWbBib4GethqkgxzjABbOEqblteZMnBoz8z3CnoLD54MYDwBq2oxH/exec';
     // ▲▲▲ NÃO ALTERAR MAIS NADA AQUI ▲▲▲
   </script>
   <script>
@@ -6228,6 +6228,13 @@
       loadProdutos();
     }
 
+    function normalizeAdminCategoryKey_(v) {
+      if (v == null || v === '') return '';
+      var s = String(v).trim().replace(/\s+/g, ' ');
+      try { if (typeof s.normalize === 'function') s = s.normalize('NFKC'); } catch (e) { }
+      return s.toLowerCase();
+    }
+
     async function loadProdutos() {
       syncProdutosToolbarMode();
       var payload = produtosListMode === 'trash'
@@ -6259,10 +6266,20 @@
       const sel = document.getElementById('filterProdCategoria');
       if (sel) {
         const cur = sel.value;
-        const cats = [...new Set(allProducts.map(function (p) { return p.categoria; }).filter(Boolean))].sort();
+        var seenCat = new Map();
+        allProducts.forEach(function (p) {
+          var raw = p.categoria || p.category;
+          if (raw == null || raw === '') return;
+          var disp = String(raw).trim();
+          if (!disp) return;
+          var k = normalizeAdminCategoryKey_(disp);
+          if (!seenCat.has(k)) seenCat.set(k, disp);
+        });
+        const cats = Array.from(seenCat.values()).sort(function (a, b) { return a.localeCompare(b, 'fr', { sensitivity: 'base' }); });
         sel.innerHTML = '<option value="">' + t('all_categories') + '</option>' +
           cats.map(function (c) { return '<option value="' + String(c).replace(/"/g, '&quot;') + '">' + escHtml(c) + '</option>'; }).join('');
-        sel.value = cats.indexOf(cur) >= 0 ? cur : '';
+        var curKey = cur ? normalizeAdminCategoryKey_(cur) : '';
+        sel.value = curKey ? (cats.find(function (c) { return normalizeAdminCategoryKey_(c) === curKey; }) || '') : '';
       }
       filterProducts();
     }
@@ -6270,6 +6287,7 @@
     function filterProducts() {
       const q = (document.getElementById('searchProdutos') && document.getElementById('searchProdutos').value.toLowerCase()) || '';
       const cat = (document.getElementById('filterProdCategoria') && document.getElementById('filterProdCategoria').value) || '';
+      const catKey = cat ? normalizeAdminCategoryKey_(cat) : '';
       const statusEl = document.getElementById('filterProdStatus');
       const vitEl = document.getElementById('filterProdVitrine');
       var stF = (statusEl && statusEl.value) ? statusEl.value : 'ativo';
@@ -6279,8 +6297,9 @@
         vitF = '';
       }
       const list = allProducts.filter(function (p) {
-        const okQ = !q || (p.nome && p.nome.toLowerCase().includes(q)) || (p.categoria && p.categoria.toLowerCase().includes(q)) || (p.produto_id && String(p.produto_id).toLowerCase().includes(q));
-        const okC = !cat || p.categoria === cat;
+        const okQ = !q || (p.nome && p.nome.toLowerCase().includes(q)) || (p.categoria && p.categoria.toLowerCase().includes(q)) ||
+          (p.category && String(p.category).toLowerCase().includes(q)) || (p.produto_id && String(p.produto_id).toLowerCase().includes(q));
+        const okC = !catKey || normalizeAdminCategoryKey_(p.categoria || p.category) === catKey;
         var okVit = !vitF || prodNormalizedCatalogStatus_(p) === vitF;
         var okStat = true;
         if (stF === 'ativo') okStat = prodIsAtivoERP_(p);
