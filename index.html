@@ -7883,6 +7883,17 @@
     // ============================================================
     // CUPONS
     // ============================================================
+    /** Identifiant de ligne envoyé au script (colonnes réelles : cupon_id, cupom_id, codigo, etc.). */
+    function couponAdminRowKey_(c) {
+      if (!c) return '';
+      var keys = ['cupon_id', 'cupom_id', 'id', 'codigo', 'coupon_code'];
+      for (var ki = 0; ki < keys.length; ki++) {
+        var v = c[keys[ki]];
+        if (v != null && String(v).trim() !== '') return String(v).trim();
+      }
+      return '';
+    }
+
     async function loadCupons() {
       const r = await api('getCoupons');
       cuponsAllRaw = (r && r.success && Array.isArray(r.coupons)) ? r.coupons : [];
@@ -7905,6 +7916,7 @@
         return;
       }
       tbody.innerHTML = list.map(function (c) {
+        var rowKey = couponAdminRowKey_(c);
         return '<tr>' +
           '<td><strong style="font-family:var(--mono);">' + escHtml(c.codigo) + '</strong></td>' +
           '<td>' + (c.tipo === 'percent' ? '%' : '€') + '</td>' +
@@ -7915,14 +7927,19 @@
           '<td>' + (c.status === 'ativo' ? '<span class="badge green">Ativo</span>' : '<span class="badge red">Inativo</span>') + '</td>' +
           '<td style="white-space:nowrap;">' +
           '<button type="button" class="btn sm outline" onclick="openEditCupom(' + JSON.stringify(JSON.stringify(c)) + ')">✏️</button> ' +
-          '<button type="button" class="btn sm outline" onclick="setCupomInactive(\'' + String(c.cupon_id || c.codigo).replace(/'/g, "\\'") + '\')">⏸</button> ' +
-          '<button type="button" class="btn sm danger" onclick="deleteCupom(\'' + String(c.cupon_id || c.codigo).replace(/'/g, "\\'") + '\')">🗑</button>' +
+          '<button type="button" class="btn sm outline" onclick="setCupomInactive(' + htmlAttrJsonArg(rowKey) + ')">⏸</button> ' +
+          '<button type="button" class="btn sm danger" onclick="deleteCupom(' + htmlAttrJsonArg(rowKey) + ')">🗑</button>' +
           '</td></tr>';
       }).join('');
     }
 
     async function setCupomInactive(id) {
-      var r = await api('updateCoupon', { cupon_id: id, status: 'inativo' });
+      var sid = id != null ? String(id).trim() : '';
+      if (!sid) {
+        toast('❌ Cupão sem identificador na linha. Verifique as colunas cupon_id / codigo na folha CUPONS.', 'error');
+        return;
+      }
+      var r = await api('updateCoupon', { cupon_id: sid, status: 'inativo' });
       if (r && r.success) { toast(t('saved'), 'success'); loadCupons(); }
       else toast('\u274c ' + ((r && r.error) ? r.error : t('error')), 'error');
     }
@@ -7935,7 +7952,7 @@
 
     function openEditCupom(jsonStr) {
       const c = JSON.parse(jsonStr);
-      document.getElementById('editCupId').value = c.cupon_id || c.codigo;
+      document.getElementById('editCupId').value = couponAdminRowKey_(c);
       document.getElementById('editCupCodigo').value = c.codigo || '';
       document.getElementById('editCupTipo').value = c.tipo || 'percent';
       document.getElementById('editCupValor').value = c.valor || '';
@@ -7963,9 +7980,14 @@
     }
 
     async function deleteCupom(id) {
-      if (!confirm('Tem a certeza que pretende apagar este cupão?')) return;
-      const r = await api('deleteCoupon', { cupon_id: id });
-      if (r?.success) { toast('✅ Cupão removido', 'success'); loadCupons(); }
+      var sid = id != null ? String(id).trim() : '';
+      if (!sid) {
+        toast('❌ Cupão sem identificador na linha. Verifique as colunas cupon_id / codigo na folha CUPONS.', 'error');
+        return;
+      }
+      if (!confirm('Tem a certeza que pretende enviar este cupão para o lixo (desativado e arquivado)?')) return;
+      const r = await api('deleteCoupon', { cupon_id: sid });
+      if (r?.success) { toast('✅ Cupão enviado para a lixeira (inativo + arquivo)', 'success'); loadCupons(); }
       else toast('❌ ' + (r?.error || 'Erro'), 'error');
     }
 
